@@ -33,6 +33,9 @@ if has("gui")
 	hi Normal guifg=white guibg=black
 endif
 
+" What to display in list mode
+set listchars=tab:>-,trail:-,eol:$
+
 syntax on
 
 set ts=4
