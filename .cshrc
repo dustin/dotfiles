@@ -115,11 +115,6 @@ if ($?prompt) then
 		source  ~/.cshrc.local
 	endif
 
-	# Set up us the classpath if there's a classpath setter.
-	if ( -r ~/bin/classpath.csh ) then
-		source ~/bin/classpath.csh
-	endif
-
 endif
 # set autologout=30
 
