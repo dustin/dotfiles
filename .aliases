@@ -40,9 +40,6 @@ alias kinit /usr/local/bin/kinit -pf
 alias rlogin /usr/local/bin/rlogin -x -f
 alias rcp /usr/local/bin/rcp -x
 
-# Postgres
-alias psql /usr/local/pgsql/bin/psql
-
 alias pine "pine -p '{mail.west.spy.net}INBOX.pine.remote_pinerc'"
 
 if ( -r /usr/local/bin/ctags ) then
