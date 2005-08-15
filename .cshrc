@@ -118,4 +118,5 @@ if ($?prompt) then
 endif
 # set autologout=30
 
-limit coredumpsize unlimited
+# Cores suck in OS X.  I'll enable it when I need it.
+limit coredumpsize 0
