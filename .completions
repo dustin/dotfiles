@@ -24,7 +24,23 @@ if ( $? == 0 ) then
 	complete tla 'p/1/$tlacommands/'
 endif
 
-# TLA completions
+# baz completions
+if(! $?bazcommands) then
+	set bazcommands=()
+endif
+set bazpath=`which baz`
+if ( $? == 0 ) then
+	if ( -f $completecache && { test $bazpath -ot $completecache } ) then
+		:
+	else
+		set updatecache=1
+		set bazcommands=( \
+			`baz help | grep -v alias | sed -n 's,:.*,,p' | sort -u ` )
+	endif
+	complete baz 'p/1/$bazcommands/'
+endif
+
+# ABA completions
 if(! $?abacommands) then
 	set abacommands=()
 endif
@@ -72,6 +88,7 @@ if ($updatecache == 1) then
 	rm -f $completecache
 	touch $completecache
 	echo "set tlacommands=($tlacommands)" >> $completecache
+	echo "set bazcommands=($bazcommands)" >> $completecache
 	echo "set abacommands=($abacommands)" >> $completecache
 	echo "set darcscommands=($darcscommands)" >> $completecache
 endif
