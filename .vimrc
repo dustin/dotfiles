@@ -78,6 +78,7 @@ au BufNewFile,BufReadPost *.ojava setlocal filetype=java
 au BufNewFile,BufReadPost *.jad setlocal filetype=java
 au BufNewFile,BufReadPost *.tld setlocal filetype=xml
 au BufNewFile,BufReadPost *.spt setlocal filetype=sql
+au BufNewFile,BufReadPost *.hrl setlocal filetype=erlang
 
 " Python and jython stuff.  I'm going to go ahead and uses spaces in python
 au BufNewFile,BufReadPost *.jy setlocal filetype=python expandtab
