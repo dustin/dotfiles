@@ -2,7 +2,7 @@ indexing
 	description: "";
 	version: "1.0";
 	author: "Dustin Sallings <dustin@spy.net>";
-	copyright: "2005";
+	copyright: "2006";
 	license: "See forum.txt.";
 
 --
