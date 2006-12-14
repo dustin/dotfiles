@@ -8,7 +8,7 @@ set systype=`echo $version | sed -e 's/(//g' -e 's/)//g' | awk '{print $5}'`
 set originalpath=($path)
 set path=()
 # Stuff we want put in front of the path
-foreach d (~/local.bin ~/bin ~/bin/$systype /opt/local/bin )
+foreach d (~/local.bin ~/bin ~/bin/$systype /opt/local/bin)
 	if (-d $d) then
 		set path=($path $d)
 	endif
@@ -18,8 +18,8 @@ set path=($path $originalpath)
 # Don't need the original path anymore
 unset originalpath
 # Build out the rest of the path
-foreach d (/usr/pkg/bin /usr/local/bin /usr/pkg/sbin /usr/X11R6/bin /sbin \
-		/usr/sbin /usr/pkg/java/bin \
+foreach d (/usr/pkg/bin /usr/local/bin /usr/pkg/sbin \
+		/usr/X11R6/bin /sbin /usr/sbin /usr/pkg/java/bin \
 		/usr/local/teTeX/bin/powerpc-apple-darwin-current \
 		/afs/@cell/system/@sys/usr/afsws/bin \
 		/afs/@cell/system/@sys/usr/afs/bin )
