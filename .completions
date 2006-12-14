@@ -72,6 +72,22 @@ if ( $? == 0 ) then
 	complete darcs 'p/1/$darcscommands/'
 endif
 
+# mercurial completions
+if(! $?hgcommands) then
+	set hgcommands=()
+endif
+set hgpath=`which hg`
+if ( $? == 0 ) then
+	if ( -f $completecache && { test $hgpath -ot $completecache } ) then
+		:
+	else
+		set updatecache=1
+		set hgcommands=( \
+			`hg help | egrep "^ " | awk '{print $1}' | sort -u ` )
+	endif
+	complete hg 'p/1/$hgcommands/'
+endif
+
 # And perforce
 which p4 >& /dev/null
 if ( $? == 0 ) then
@@ -91,6 +107,7 @@ if ($updatecache == 1) then
 	echo "set bazcommands=($bazcommands)" >> $completecache
 	echo "set abacommands=($abacommands)" >> $completecache
 	echo "set darcscommands=($darcscommands)" >> $completecache
+	echo "set hgcommands=($hgcommands)" >> $completecache
 endif
 
 # Smarteiffel completions
