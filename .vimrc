@@ -72,6 +72,7 @@ au BufNewFile,BufReadPost * call GeneralFileStuff(expand("%:e"))
 au BufNewFile,BufReadPost *.xtp setlocal filetype=jsp
 au BufNewFile,BufReadPost *.nqc setlocal filetype=c
 au BufNewFile,BufReadPost *.xsl setlocal filetype=xml
+au BufNewFile,BufReadPost *.zul setlocal filetype=xml
 " :au BufNewFile,BufReadPost *.xinc setlocal syntax=xml
 au BufNewFile,BufReadPost *.mocha setlocal filetype=java
 au BufNewFile,BufReadPost *.ojava setlocal filetype=java

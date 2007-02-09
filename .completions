@@ -17,6 +17,7 @@ if ( $? == 0 ) then
 	if ( -f $completecache && { test $tlapath -ot $completecache } ) then
 		:
 	else
+		echo "updating tla"
 		set updatecache=1
 		set tlacommands=( \
 			`tla help | grep -v alias | sed -n 's,:.*,,p' | sort -u ` )
@@ -33,6 +34,7 @@ if ( $? == 0 ) then
 	if ( -f $completecache && { test $bazpath -ot $completecache } ) then
 		:
 	else
+		echo "updating baz"
 		set updatecache=1
 		set bazcommands=( \
 			`baz help | grep -v alias | sed -n 's,:.*,,p' | sort -u ` )
@@ -49,6 +51,7 @@ if ( $? == 0 ) then
 	if ( -f $completecache && { test $abapath -ot $completecache } ) then
 		:
 	else
+		echo "updating aba"
 		set updatecache=1
 		set abacommands=( \
 			`aba help | grep -v alias | sed -n 's,:.*,,p' | sort -u ` )
@@ -65,6 +68,7 @@ if ( $? == 0 ) then
 	if ( -f $completecache && { test $darcspath -ot $completecache } ) then
 		:
 	else
+		echo "Updating darcs"
 		set updatecache=1
 		set darcscommands=( \
 			`darcs | egrep "^  " | awk '{print $1}' | sort -u ` )
@@ -81,11 +85,29 @@ if ( $? == 0 ) then
 	if ( -f $completecache && { test $hgpath -ot $completecache } ) then
 		:
 	else
+		echo "Updating mercurial"
 		set updatecache=1
 		set hgcommands=( \
 			`hg help | egrep "^ " | awk '{print $1}' | sort -u ` )
 	endif
 	complete hg 'p/1/$hgcommands/'
+endif
+
+# svn completions
+if(! $?svncommands) then
+	set svncommands=()
+endif
+set svnpath=`which svn`
+if ( $? == 0 ) then
+	if ( -f $completecache && { test $svnpath -ot $completecache } ) then
+		:
+	else
+		echo "Updating svn"
+		set updatecache=1
+		set svncommands=( \
+			`svn help | egrep "^   " | sed 's/[,()?]//g' | sort -u ` )
+	endif
+	complete svn 'p/1/$svncommands/'
 endif
 
 # And perforce
@@ -108,6 +130,7 @@ if ($updatecache == 1) then
 	echo "set abacommands=($abacommands)" >> $completecache
 	echo "set darcscommands=($darcscommands)" >> $completecache
 	echo "set hgcommands=($hgcommands)" >> $completecache
+	echo "set svncommands=($svncommands)" >> $completecache
 endif
 
 # Smarteiffel completions
