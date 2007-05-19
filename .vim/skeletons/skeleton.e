@@ -6,9 +6,7 @@ indexing
 	license: "See forum.txt.";
 
 --
--- Copyright (c) 2003  Dustin Sallings
---
--- $Id: skeleton.e,v 1.2 2003/01/03 08:43:19 dustin Exp $
+-- Copyright (c) 2007  Dustin Sallings
 --
 class CLASSNAME
 

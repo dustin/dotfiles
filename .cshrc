@@ -1,5 +1,4 @@
 # Copyright (c) 2002 Dustin Sallings
-# $Id: .cshrc,v 1.14 2003/09/15 15:47:31 dustin Exp $
 
 # Need this for the path stuff below
 set systype=`echo $version | sed -e 's/(//g' -e 's/)//g' | awk '{print $5}'`
