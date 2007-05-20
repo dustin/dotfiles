@@ -163,6 +163,8 @@ au BufNewFile,BufReadPost *.xml  setlocal ts=2
 map <Leader>o :!p4 edit %:setlocal noro
 map <Leader>pa :!p4 add %
 
+map <Leader>n :nohls
+
 " Get rid of that stupid control a thing.
 imap <C-A> <ESC>a
 
