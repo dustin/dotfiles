@@ -209,6 +209,8 @@ if filereadable("maven.xml")
 	set makeprg=maven
 elseif filereadable("build.xml")
 	set makeprg=ant\ -emacs\ -logger\ org.apache.tools.ant.DefaultLogger
+elseif filereadable("SConstruct")
+	set makeprg=scons
 endif
 
 " Look around for a template file.
