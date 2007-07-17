@@ -93,6 +93,23 @@ if ( $? == 0 ) then
 	complete hg 'p/1/$hgcommands/'
 endif
 
+# git completions
+if(! $?gitcommands) then
+	set gitcommands=()
+endif
+set gitpath=`which git`
+if ( $? == 0 ) then
+	if ( -f $completecache && { test $gitpath -ot $completecache } ) then
+		:
+	else
+		echo "Updating git"
+		set updatecache=1
+		set gitcommands=( \
+			`git help -a | egrep "^  " | sort -u ` )
+	endif
+	complete git 'p/1/$gitcommands/'
+endif
+
 # svn completions
 if(! $?svncommands) then
 	set svncommands=()
@@ -130,6 +147,7 @@ if ($updatecache == 1) then
 	echo "set abacommands=($abacommands)" >> $completecache
 	echo "set darcscommands=($darcscommands)" >> $completecache
 	echo "set hgcommands=($hgcommands)" >> $completecache
+	echo "set gitcommands=($gitcommands)" >> $completecache
 	echo "set svncommands=($svncommands)" >> $completecache
 endif
 
