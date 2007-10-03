@@ -151,12 +151,8 @@ map <Leader>at :call AddArchTag()
 set tags=./tags,tags,~/.twtags
 
 " Compliance with coding standards.
-au BufNewFile,BufReadPost */2wire/*.java setlocal expandtab
-au BufNewFile,BufReadPost */2wire/*.jsp  setlocal expandtab
 au BufNewFile,BufReadPost *.jsp  setlocal ts=2
-au BufNewFile,BufReadPost */2wire/*.html  setlocal expandtab
 au BufNewFile,BufReadPost *.html  setlocal ts=2
-au BufNewFile,BufReadPost */2wire/*.xml  setlocal expandtab
 au BufNewFile,BufReadPost *.xml  setlocal ts=2
 
 " Perforce stuff
