@@ -85,6 +85,7 @@ au BufNewFile,BufReadPost *.hrl setlocal filetype=erlang
 au BufNewFile,BufReadPost *.jy setlocal filetype=python expandtab
 au BufNewFile,BufReadPost *.tac setlocal filetype=python expandtab
 au BufNewFile,BufReadPost *.py setlocal expandtab
+au BufNewFile,BufReadPost *.rb setlocal expandtab ts=2
 
 " Scheme stuff
 au BufNewFile,BufReadPost *.scm setlocal lisp
