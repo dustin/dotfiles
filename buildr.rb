@@ -39,6 +39,7 @@ def gen_build_info(pkg)
     f.write "#{prop}=#{s.getProperty(prop)}\n"
   end
   f.write "build.date=#{DateTime.now.strftime '%Y/%m/%d %H:%M'}\n"
+  f.write "tree.version=#{tree_version}\n"
   f.close
 
   # Do the changelog
