@@ -86,6 +86,7 @@ au BufNewFile,BufReadPost *.jy setlocal filetype=python expandtab
 au BufNewFile,BufReadPost *.tac setlocal filetype=python expandtab
 au BufNewFile,BufReadPost *.py setlocal expandtab
 au BufNewFile,BufReadPost *.rb setlocal expandtab ts=2
+au BufNewFile,BufReadPost *.rake setlocal expandtab ts=2
 
 " Scheme stuff
 au BufNewFile,BufReadPost *.scm setlocal lisp
@@ -208,6 +209,8 @@ elseif filereadable("build.xml")
 	set makeprg=ant\ -emacs\ -logger\ org.apache.tools.ant.DefaultLogger
 elseif filereadable("SConstruct")
 	set makeprg=scons
+elseif filereadable("buildfile")
+	set makeprg=buildr
 endif
 
 " Look around for a template file.
