@@ -117,5 +117,7 @@ if ($?prompt) then
 endif
 # set autologout=30
 
+setenv PAGER less
+
 # Cores suck in OS X.  I'll enable it when I need it.
 limit coredumpsize 0
