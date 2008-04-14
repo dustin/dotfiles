@@ -2,11 +2,11 @@ indexing
 	description: "";
 	version: "1.0";
 	author: "Dustin Sallings <dustin@spy.net>";
-	copyright: "2007";
+	copyright: "2008";
 	license: "See forum.txt.";
 
 --
--- Copyright (c) 2007  Dustin Sallings
+-- Copyright (c) 2008  Dustin Sallings
 --
 class CLASSNAME
 

@@ -1,4 +1,4 @@
-; Copyright (c) 2007  Dustin Sallings <dustin@spy.net>
+; Copyright (c) 2008  Dustin Sallings <dustin@spy.net>
 
 (module MODULE (main main))
 
