@@ -44,7 +44,8 @@ set wildmenu
 set ignorecase
 set smartcase
 
-set title
+" This is nice, but leaves a really stupid title when you close vim.
+" set title
 
 set ruler
 
