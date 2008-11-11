@@ -35,8 +35,20 @@ endif
 
 " What to display in list mode
 set listchars=tab:>-,trail:-,eol:$
+nmap <silent> <leader>s :set nolist!<CR>
 
 syntax on
+
+set wildmenu
+
+set ignorecase
+set smartcase
+
+set title
+
+set ruler
+
+
 
 set ts=4
 " wrapmargin is deprecated in favor of textwidth
