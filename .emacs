@@ -1,3 +1,6 @@
+; I like paren matching
+(show-paren-mode t)
+
 (add-hook 'text-mode-hook
   (lambda()
     (auto-fill-mode)))
