@@ -9,6 +9,9 @@
   (lambda ()
     (setq tab-width 2)))
 
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
+(require 'magit)
+
 ;; I haven't really figured out what I want to use for colors
 ; (set-background-color "black")
 ; (set-foreground-color "white")
