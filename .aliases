@@ -1,0 +1,67 @@
+#!/bin/csh
+# Copyright (c) 2002  Dustin Sallings
+# $Id: .aliases,v 1.4 2003/08/20 06:03:41 dustin Exp $
+
+# Let's grab the architecture for machine dependant aliases
+set arch=`uname -m`
+
+# cwdcmd, what to do when I change directories
+
+switch ($TERM)
+    case "iris*"
+	alias cwdcmd 'printf "\033P1.y${USER}@${mch}:${PWD}\033\\"'
+        alias periodic 'printf "\033P1.y${USER}@${mch}:${PWD}    `/usr/local/bin/getquote.txt`@`date`\033\\"'
+
+    breaksw
+endsw
+
+alias ls ls -AF
+alias ll ls -l
+alias up cd ..
+alias uns 'unset autologout'
+alias cpan '/usr/local/bin/perl -MCPAN -e shell'
+
+alias propcvs cvs -d ":ext:propaganda.spy.net:/home/dustin/CVS"
+alias homecvs cvs -d ":ext:bleu.west.spy.net:/usr/src2/CVS"
+
+alias rawplay 'sfplay -i byteorder little integer 16 2 chan 2 rate 44100 end'
+
+# Use the vim detected in the .cshrc
+alias vi $EDITOR
+alias vim $EDITOR
+
+# alias bbs tisca bbs=bbs.digitech.org
+# alias bbs ssh -v bbs@bbs.digitech.org
+# alias bbs ssh -v bbs@bbs.minot.com
+alias bbs ssh -v bbs@hipster.org
+
+# Kerb stuff
+alias kinit /usr/local/bin/kinit -pf
+alias rlogin /usr/local/bin/rlogin -x -f
+alias rcp /usr/local/bin/rcp -x
+
+# Postgres
+alias psql /usr/local/pgsql/bin/psql
+
+alias pine "pine -p '{mail.west.spy.net}INBOX.pine.remote_pinerc'"
+
+if ( -r /usr/local/bin/ctags ) then
+	alias ctags /usr/local/bin/ctags
+endif
+
+# If I do this in .antrc,I can't undo it later.
+alias ant ant -logger org.apache.tools.ant.listener.AnsiColorLogger
+
+alias ircfreenet epic $FNIRCSERVER
+alias ircefnet epic $EFIRCSERVER
+
+# make-log and edit command for tla
+alias tlog 'vi `tla make-log`'
+
+if ( -r ~/".aliases.$arch" ) then
+    source ~/".aliases.$arch"
+endif
+
+if ( -r ~/".aliases.local" ) then
+    source ~/".aliases.local"
+endif

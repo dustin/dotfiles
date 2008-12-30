@@ -1,0 +1,82 @@
+# Location of the completion cache
+set completecache=~/.complete.cache
+set updatecache=0
+
+# Load the existing cache first if it's there.  If anything's changed, we'll
+# override it, but we need the initial definitions.
+if ( -f $completecache ) then
+	source $completecache
+endif
+
+# TLA completions
+if(! $?tlacommands) then
+	set tlacommands=()
+endif
+set tlapath=`which tla`
+if ( $? == 0 ) then
+	if ( -f $completecache && { test $tlapath -ot $completecache } ) then
+		:
+	else
+		set updatecache=1
+		set tlacommands=( \
+			`tla help | grep -v alias | sed -n 's,:.*,,p' | sort -u ` )
+	endif
+	complete tla 'p/1/$tlacommands/'
+endif
+
+# TLA completions
+if(! $?abacommands) then
+	set abacommands=()
+endif
+set abapath=`which aba`
+if ( $? == 0 ) then
+	if ( -f $completecache && { test $abapath -ot $completecache } ) then
+		:
+	else
+		set updatecache=1
+		set abacommands=( \
+			`aba help | grep -v alias | sed -n 's,:.*,,p' | sort -u ` )
+	endif
+	complete aba 'p/1/$abacommands/'
+endif
+
+# darcs completions
+if(! $?darcscommands) then
+	set darcscommands=()
+endif
+set darcspath=`which darcs`
+if ( $? == 0 ) then
+	if ( -f $completecache && { test $darcspath -ot $completecache } ) then
+		:
+	else
+		set updatecache=1
+		set darcscommands=( \
+			`darcs | egrep "^  " | awk '{print $1}' | sort -u ` )
+	endif
+	complete darcs 'p/1/$darcscommands/'
+endif
+
+# And perforce
+which p4 >& /dev/null
+if ( $? == 0 ) then
+	set p4commands=(add branch branches edit integrate resolve revert \
+		submit opened sync delete)
+	complete p4 'p/1/$p4commands/' \
+		'n/add/f/' 'n/edit/f/' 'n/-b/$p4branches/' \
+		'n/branch/$p4branches/' 'n/delete/f/'
+endif
+
+# If we need to update the cache, update the cache
+if ($updatecache == 1) then
+	echo "Updating the completion cache."
+	rm -f $completecache
+	touch $completecache
+	echo "set tlacommands=($tlacommands)" >> $completecache
+	echo "set abacommands=($abacommands)" >> $completecache
+	echo "set darcscommands=($darcscommands)" >> $completecache
+endif
+
+# Smarteiffel completions
+complete se 'p/1/(compile pretty finder clean short)/'
+
+# vim: syntax=csh

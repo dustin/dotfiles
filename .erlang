@@ -1,0 +1,23 @@
+% inet_db:set_lookup([native]).
+
+% Set up the path
+
+ELibDir = os:getenv("HOME") ++ "/lib/erlang".
+
+% io:format("ElibDir is ~p~n", [ELibDir]).
+
+case file:list_dir(ELibDir) of
+	{ok, Libs} ->
+		lists:foreach(fun (E) ->
+				Ebin = ELibDir ++ "/" ++ E ++ "/ebin",
+				case file:read_file_info(Ebin) of
+					{ok, Info} ->
+						code:add_path(Ebin);
+					{error, Reason} ->
+						error_logger:error_msg("Lib has no ebin:  ~p (~p)~n",
+							[ELibDir ++ "/" + E, Reason])
+				end
+			end, Libs);
+	{error, Reason} ->
+		error_logger:error_msg("No libs:  ~p~n", [Reason])
+end.
