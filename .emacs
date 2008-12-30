@@ -18,6 +18,12 @@
 (setq auto-mode-alist
    (cons '("\\.markdown" . markdown-mode) auto-mode-alist))
 
+(require 'haml-mode nil 't)
+(add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
+
+(require 'sass-mode nil 't)
+(add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
+
 ;; I haven't really figured out what I want to use for colors
 ; (set-background-color "black")
 ; (set-foreground-color "white")
