@@ -24,6 +24,9 @@
 (require 'sass-mode nil 't)
 (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
 
+;; Do I want this to be like textmate?
+; (global-set-key "\M-t" 'find-tag)
+
 ;; I haven't really figured out what I want to use for colors
 ; (set-background-color "black")
 ; (set-foreground-color "white")
