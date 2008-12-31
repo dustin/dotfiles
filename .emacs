@@ -24,6 +24,10 @@
 (require 'sass-mode nil 't)
 (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
 
+; http://www.emacswiki.org/emacs/DynamicAbbreviations
+(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
+(define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
+
 ;; Do I want this to be like textmate?
 ; (global-set-key "\M-t" 'find-tag)
 
