@@ -31,6 +31,10 @@
 ; Yay, highlighting
 (transient-mark-mode 't)
 
+; Ido
+(ido-mode t)
+(setq ido-enable-flex-matching t)
+
 ;; Do I want this to be like textmate?
 ; (global-set-key "\M-t" 'find-tag)
 
