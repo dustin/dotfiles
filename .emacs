@@ -28,6 +28,9 @@
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
 
+; Yay, highlighting
+(transient-mark-mode 't)
+
 ;; Do I want this to be like textmate?
 ; (global-set-key "\M-t" 'find-tag)
 
