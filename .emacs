@@ -16,6 +16,8 @@
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
 (require 'magit)
 
+(add-to-list 'exec-path "/opt/local/bin")
+
 (add-to-list 'load-path "~/.emacs.d")
 (autoload 'markdown-mode "markdown-mode.el"
    "Major mode for editing Markdown files" t)
