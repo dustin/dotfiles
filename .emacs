@@ -1,6 +1,10 @@
 ; I like paren matching
 (show-paren-mode t)
 
+; Keep the weird, not-very mac-like bindings.
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier 'meta)
+
 (add-hook 'text-mode-hook
   (lambda()
     (auto-fill-mode)))
