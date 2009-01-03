@@ -1,6 +1,9 @@
 ; I like paren matching
 (show-paren-mode t)
 
+; Stupid trailing whitespace.
+(setq-default show-trailing-whitespace t)
+
 ; Keep the weird, not-very mac-like bindings.
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'meta)
