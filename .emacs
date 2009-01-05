@@ -44,6 +44,8 @@
 (ido-mode t)
 (setq ido-enable-flex-matching t)
 
+(server-start)
+
 ;; Do I want this to be like textmate?
 ; (global-set-key "\M-t" 'find-tag)
 
