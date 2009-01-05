@@ -65,6 +65,8 @@ if ($?prompt) then
 		endif
 	endif
 
+	setenv ALTERNATE_EDITOR $EDITOR
+	setenv EDITOR emacsclient
 	setenv VISUAL $EDITOR
 	setenv NNTPSERVER news
 	setenv CVS_RSH ssh
