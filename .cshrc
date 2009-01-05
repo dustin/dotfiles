@@ -64,9 +64,15 @@ if ($?prompt) then
 			setenv EDITOR vim
 		endif
 	endif
+	# Find emacs
+	if ( -d $HOME/MyApps/Emacs.app) then
+	    setenv EMACSCLIENT $HOME/MyApps/Emacs.app/Contents/MacOS/bin/emacsclient
+	else
+	    setenv EMACSCLIENT emacsclient
+	endif
 
 	setenv ALTERNATE_EDITOR $EDITOR
-	setenv EDITOR emacsclient
+	setenv EDITOR $EMACSCLIENT
 	setenv VISUAL $EDITOR
 	setenv NNTPSERVER news
 	setenv CVS_RSH ssh
