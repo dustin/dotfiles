@@ -55,13 +55,14 @@ if ($?prompt) then
 
 	# Default editor is vi
 	setenv EDITOR vi
+	setenv VEEEYE vi
 	# Find vim
 	if (-d $HOME/MyApps/Vim.app) then
-		setenv EDITOR $HOME/MyApps/Vim.app/Contents/MacOS/Vim
+		setenv VEEEYE $HOME/MyApps/Vim.app/Contents/MacOS/Vim
 	else
 		which vim >& /dev/null
 		if ( $? == 0 ) then
-			setenv EDITOR vim
+			setenv VEEEYE vim
 		endif
 	endif
 	# Find emacs
@@ -71,7 +72,7 @@ if ($?prompt) then
 	    setenv EMACSCLIENT emacsclient
 	endif
 
-	setenv ALTERNATE_EDITOR $EDITOR
+	setenv ALTERNATE_EDITOR $VEEEYE
 	setenv EDITOR $EMACSCLIENT
 	setenv VISUAL $EDITOR
 	setenv NNTPSERVER news

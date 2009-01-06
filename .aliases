@@ -27,8 +27,8 @@ alias homecvs cvs -d ":ext:bleu.west.spy.net:/usr/src2/CVS"
 alias rawplay 'sfplay -i byteorder little integer 16 2 chan 2 rate 44100 end'
 
 # Use the vim detected in the .cshrc
-alias vi $EDITOR
-alias vim $EDITOR
+alias vi $VEEEYE
+alias vim $VEEEYE
 
 # alias bbs tisca bbs=bbs.digitech.org
 # alias bbs ssh -v bbs@bbs.digitech.org
