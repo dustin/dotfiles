@@ -44,6 +44,10 @@
 (ido-mode t)
 (setq ido-enable-flex-matching t)
 
+; Time?  Why not
+(setq display-time-24hr-format t)
+(display-time-mode t)
+
 (server-start)
 
 ;; Do I want this to be like textmate?
