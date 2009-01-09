@@ -27,6 +27,9 @@
 (setq auto-mode-alist
    (cons '("\\.markdown" . markdown-mode) auto-mode-alist))
 
+(setq auto-mode-alist
+   (cons '("\\.tac" . python-mode) auto-mode-alist))
+
 (require 'haml-mode nil 't)
 (add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
 
