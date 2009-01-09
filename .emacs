@@ -51,6 +51,21 @@
 (setq display-time-24hr-format t)
 (display-time-mode t)
 
+; Look.  I can read email *sigh*
+(setq imap-ssl-program "openssl s_client -tls1 -connect %s:%p")
+(setq gnus-select-method '(nnimap "spy.net"
+                                  (nnimap-address "imap.west.spy.net")
+                                  (nnimap-stream ssl)))
+
+(setq gnus-posting-styles
+      '((".*"
+         (name "Dustin Sallings")
+         ("X-URL" "http://bleu.west.spy.net/~dustin/"))
+        ("work"
+         (address "dustin@spy.net"))
+        ("spy.net"
+         (address "dustin@spy.net"))))
+
 (server-start)
 
 ;; Do I want this to be like textmate?
@@ -60,3 +75,10 @@
 ; (set-background-color "black")
 ; (set-foreground-color "white")
 ; (set-cursor-color "white")
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(jabber-account-list (quote (("dustin@sallings.org/emacs"
+				(:network-server . "talk.google.com"))))))
