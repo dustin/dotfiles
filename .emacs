@@ -57,14 +57,16 @@
                                   (nnimap-address "imap.west.spy.net")
                                   (nnimap-stream ssl)))
 
+(setq user-mail-address "dustin@spy.net")
+
 (setq gnus-posting-styles
       '((".*"
          (name "Dustin Sallings")
          ("X-URL" "http://bleu.west.spy.net/~dustin/"))
         ("work"
-         (address "dustin@spy.net"))
+         (address user-mail-address))
         ("spy.net"
-         (address "dustin@spy.net"))))
+         (address user-mail-address))))
 
 (server-start)
 
