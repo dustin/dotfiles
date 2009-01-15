@@ -70,6 +70,8 @@
         ("spy.net"
          (address user-mail-address))))
 
+(setq inhibit-startup-message t)
+
 (server-start)
 
 ;; Do I want this to be like textmate?
