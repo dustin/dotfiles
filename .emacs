@@ -90,3 +90,5 @@
 				(:network-server . "talk.google.com"))))))
 
 (put 'upcase-region 'disabled nil)
+; This is a little buggy in OS X.
+(tooltip-mode 0)
