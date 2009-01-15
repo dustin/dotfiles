@@ -16,6 +16,8 @@
   (lambda ()
     (setq tab-width 2)))
 
+(setq-default indent-tabs-mode nil)
+
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
 (require 'magit)
 
