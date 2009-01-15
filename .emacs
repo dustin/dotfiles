@@ -38,6 +38,17 @@
 (require 'sass-mode nil 't)
 (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
 
+; caml modes
+
+(add-to-list 'load-path "~/.emacs.d/caml")
+
+(setq auto-mode-alist
+          (cons '("\\.ml[iyl]?$" .  caml-mode) auto-mode-alist))
+
+(autoload 'caml-mode "ocaml" (interactive)
+  "Major mode for editing Caml code." t)
+(autoload 'camldebug "camldebug" (interactive) "Debug caml mode")
+
 ; http://www.emacswiki.org/emacs/DynamicAbbreviations
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
