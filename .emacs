@@ -88,3 +88,5 @@
   ;; If there is more than one, they won't work right.
  '(jabber-account-list (quote (("dustin@sallings.org/emacs"
 				(:network-server . "talk.google.com"))))))
+
+(put 'upcase-region 'disabled nil)
