@@ -4,3 +4,6 @@
 [submodule "elisp/planner"]
 	path = elisp/planner
 	url = git://repo.or.cz/planner-el.git
+[submodule "elisp/remember"]
+	path = elisp/remember
+	url = git://repo.or.cz/remember-el.git
