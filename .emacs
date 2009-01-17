@@ -84,6 +84,10 @@
 
 (setq inhibit-startup-message t)
 
+(add-to-list 'load-path "~/elisp/muse/lisp")
+(add-to-list 'load-path "~/elisp/planner")
+(add-to-list 'load-path "~/elisp/remember")
+
 (server-start)
 
 ;; Do I want this to be like textmate?
