@@ -1,0 +1,3 @@
+[submodule "elisp/muse"]
+	path = elisp/muse
+	url = git://repo.or.cz/muse-el.git
