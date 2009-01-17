@@ -23,7 +23,7 @@
 
 (add-to-list 'exec-path "/opt/local/bin")
 
-(add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/elisp")
 (autoload 'markdown-mode "markdown-mode.el"
    "Major mode for editing Markdown files" t)
 (setq auto-mode-alist
@@ -40,7 +40,7 @@
 
 ; caml modes
 
-(add-to-list 'load-path "~/.emacs.d/caml")
+(add-to-list 'load-path "~/elisp/caml")
 
 (setq auto-mode-alist
           (cons '("\\.ml[iyl]?$" .  caml-mode) auto-mode-alist))
