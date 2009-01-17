@@ -88,6 +88,9 @@
 (add-to-list 'load-path "~/elisp/planner")
 (add-to-list 'load-path "~/elisp/remember")
 
+(require 'remember)
+(require 'planner)
+
 (server-start)
 
 ;; Do I want this to be like textmate?
