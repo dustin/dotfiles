@@ -50,8 +50,9 @@
 (autoload 'camldebug "camldebug" (interactive) "Debug caml mode")
 
 ; http://www.emacswiki.org/emacs/DynamicAbbreviations
-(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
-(define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
+; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
+(global-set-key (kbd "M-/") 'hippie-expand)
+(define-key minibuffer-local-map (kbd "C-<tab>") 'hippie-expand)
 
 ; Yay, highlighting
 (transient-mark-mode 't)
