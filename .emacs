@@ -114,5 +114,6 @@
 
 (put 'upcase-region 'disabled nil)
 ; This is a little buggy in OS X.
-(tooltip-mode 0)
+(if (fboundp 'tooltip-mode)
+    (tooltip-mode 0))
 (put 'erase-buffer 'disabled nil)
