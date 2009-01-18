@@ -19,11 +19,9 @@
 (setq-default indent-tabs-mode nil)
 
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
-(if (not
-     (condition-case nil
-         (require 'magit)
-       (error nil)))
-    (message "Failed to load magit."))
+(condition-case nil
+    (require 'magit)
+  (file-error (message "Failed to load magit.")))
 
 (add-to-list 'exec-path "/opt/local/bin")
 
