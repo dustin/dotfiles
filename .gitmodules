@@ -7,3 +7,6 @@
 [submodule "elisp/remember"]
 	path = elisp/remember
 	url = git://repo.or.cz/remember-el.git
+[submodule "elisp/magit"]
+	path = elisp/magit
+	url = git://gitorious.org/magit/mainline.git

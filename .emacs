@@ -18,11 +18,6 @@
 
 (setq-default indent-tabs-mode nil)
 
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp")
-(condition-case nil
-    (require 'magit)
-  (file-error (message "Failed to load magit.")))
-
 (add-to-list 'exec-path "/opt/local/bin")
 
 (add-to-list 'load-path "~/elisp")
@@ -89,7 +84,9 @@
 (add-to-list 'load-path "~/elisp/muse/lisp")
 (add-to-list 'load-path "~/elisp/planner")
 (add-to-list 'load-path "~/elisp/remember")
+(add-to-list 'load-path "~/elisp/magit")
 
+(require 'magit)
 (require 'remember)
 (require 'planner)
 
