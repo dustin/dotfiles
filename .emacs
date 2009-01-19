@@ -122,4 +122,8 @@
   ;; If there is more than one, they won't work right.
  )
 
-(global-set-key (kbd "C-c a") 'org-agenda)
+; Local key binding lazily loaded for org-mode.
+(add-hook 'org-mode-hook
+          '(lambda ()
+             (define-key org-mode-map "\C-ca"
+               'org-agenda)))
