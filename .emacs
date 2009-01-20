@@ -128,6 +128,7 @@
 
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#emacs" "#git" "#github" "#memcached")))
+(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
 
 ;;; This was installed by package-install.el.
 ;;; This provides support for the package system and
