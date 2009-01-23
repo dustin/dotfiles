@@ -83,16 +83,24 @@
 
 (setq inhibit-startup-message t)
 
-(add-to-list 'load-path "~/elisp/muse/lisp")
-(add-to-list 'load-path "~/elisp/planner")
-(add-to-list 'load-path "~/elisp/remember")
-(add-to-list 'load-path "~/elisp/magit")
-(add-to-list 'load-path "~/elisp/growl")
+(require 'cl)
 
-(require 'magit)
-(require 'remember)
-(require 'planner)
-(require 'growl)
+(defun dustin-libs-and-paths (l)
+  "Load some libs and require something from them."
+  (if l
+      (progn
+        (add-to-list 'load-path (concat "~/elisp/" (caar l)))
+        (if (cadar l)
+            (require (cadar l)))
+        (dustin-libs-and-paths (cdr l)))))
+
+(dustin-libs-and-paths
+ '(
+   ("muse/lisp")
+   ("remember/" remember)
+   ("planner/" planner)
+   ("magit" magit)
+   ("growl" growl)))
 
 (server-start)
 
