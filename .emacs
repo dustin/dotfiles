@@ -92,6 +92,7 @@
 (require 'magit)
 (require 'remember)
 (require 'planner)
+(require 'growl)
 
 (server-start)
 
