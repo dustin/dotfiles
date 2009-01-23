@@ -133,6 +133,16 @@
       '(("freenode.net" "#emacs" "#git" "#github" "#memcached")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
 
+(defun my-growl-erc-hook (match-type nick message)
+  "Basic growl notification when someone says my nick in an irc channel."
+  (and (eq match-type 'current-nick)
+       (growl (concat "Your nick was mentioned on: "
+                      (buffer-name (current-buffer))
+                      "\n"
+                      message))))
+
+(add-hook 'erc-text-matched-hook 'my-growl-erc-hook)
+
 ;;; This was installed by package-install.el.
 ;;; This provides support for the package system and
 ;;; interfacing with ELPA, the package archive.
