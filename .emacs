@@ -87,6 +87,7 @@
 (add-to-list 'load-path "~/elisp/planner")
 (add-to-list 'load-path "~/elisp/remember")
 (add-to-list 'load-path "~/elisp/magit")
+(add-to-list 'load-path "~/elisp/growl")
 
 (require 'magit)
 (require 'remember)
