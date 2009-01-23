@@ -139,7 +139,7 @@
                'org-agenda)))
 
 (setq erc-autojoin-channels-alist
-      '(("freenode.net" "#emacs" "#git" "#github" "#memcached")))
+      '(("freenode.net" "#git" "#github" "#memcached")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
 
 (defun my-growl-erc-hook (match-type nick message)
