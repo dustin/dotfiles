@@ -159,9 +159,12 @@
 Currently runs my-periodic-task about every four hours.")
 
 (defun my-periodic-task ()
-  "A task to run every once in a while."
+  "A task to run every once in a while.
+
+This runs my-periodic-task-hooks after doing its normal thing."
   (message "Doing periodic cleanup stuff.")
-  (clean-buffer-list))
+  (clean-buffer-list)
+  (run-hooks 'my-periodic-task-hooks))
 
 (setq my-periodic-timer
       (run-at-time "4 hours" (* 4 60 60) 'my-periodic-task))
