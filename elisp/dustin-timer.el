@@ -42,7 +42,7 @@ This runs dustin-periodic-task-hooks after doing its normal thing."
                                  out-words)
                                 (cdr in-words))
                      (funcall f current out-words (cdr in-words))))
-               (dustin-join (reverse out-words) ", ")))))
+               (mapconcat (lambda (x) x) (reverse out-words) ", ")))))
     (funcall f duration '() (reverse timer-duration-words))))
 
 (defun dustin-timer-next-run-in-words (timer)
