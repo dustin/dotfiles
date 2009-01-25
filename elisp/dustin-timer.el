@@ -10,9 +10,10 @@ Currently runs dustin-periodic-task about every four hours.")
   "A task to run every once in a while.
 
 This runs dustin-periodic-task-hooks after doing its normal thing."
-  (message "Doing periodic cleanup stuff.")
-  (clean-buffer-list)
-  (run-hooks 'dustin-periodic-task-hooks))
+  (message "Doing periodic cleanup stuff soon.")
+  (run-with-idle-timer 10 nil (lambda ()
+                               (clean-buffer-list)
+                               (run-hooks 'dustin-periodic-task-hooks))))
 
 (setq dustin-periodic-timer
       (run-at-time "4 hours" (* 4 60 60) 'dustin-periodic-task))
