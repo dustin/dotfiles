@@ -13,3 +13,6 @@
 [submodule "elisp/growl"]
 	path = elisp/growl
 	url = git://github.com/elim/emacs-growl.git
+[submodule "elisp/slime"]
+	path = elisp/slime
+	url = git://github.com/nablaone/slime.git
