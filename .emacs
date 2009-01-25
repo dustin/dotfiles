@@ -156,6 +156,7 @@
 ; Keep things tidy
 ; Keep old buffers away aggressively
 (setq clean-buffer-list-delay-special 300)
+(setq clean-buffer-list-delay-general 1)
 ; Run the periodic tasks hourly (keep in mind it only runs when idle)
 (dustin-schedule-periodic (* 60 60))
 
