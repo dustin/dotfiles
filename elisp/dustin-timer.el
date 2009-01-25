@@ -15,8 +15,12 @@ This runs dustin-periodic-task-hooks after doing its normal thing."
                                (clean-buffer-list)
                                (run-hooks 'dustin-periodic-task-hooks))))
 
-(setq dustin-periodic-timer
-      (run-at-time "4 hours" (* 4 60 60) 'dustin-periodic-task))
+(defun dustin-schedule-periodic (period)
+  "Schedule the timer to run on the given period."
+  (if dustin-periodic-timer
+      (cancel-timer dustin-periodic-timer))
+  (setq dustin-periodic-timer
+        (run-at-time period period 'dustin-periodic-task)))
 
 (defun dustin-timer-next-run (timer)
   "How long until the given timer runs?"
