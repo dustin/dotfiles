@@ -152,22 +152,7 @@
 
 (add-hook 'erc-text-matched-hook 'my-growl-erc-hook)
 
-;; I like midnight mode, but I don't want it to run at midnight.
-(defvar my-periodic-timer nil
-  "Timer for supporting some periodic cleanup tasks.
-
-Currently runs my-periodic-task about every four hours.")
-
-(defun my-periodic-task ()
-  "A task to run every once in a while.
-
-This runs my-periodic-task-hooks after doing its normal thing."
-  (message "Doing periodic cleanup stuff.")
-  (clean-buffer-list)
-  (run-hooks 'my-periodic-task-hooks))
-
-(setq my-periodic-timer
-      (run-at-time "4 hours" (* 4 60 60) 'my-periodic-task))
+(require 'dustin-timer)
 
 ;;; This was installed by package-install.el.
 ;;; This provides support for the package system and
