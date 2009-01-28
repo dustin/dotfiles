@@ -100,7 +100,8 @@
    ("remember/" remember)
    ("planner/" planner)
    ("magit" magit)
-   ("growl" growl)))
+   ("growl" growl)
+   ("slime" slime)))
 
 (global-set-key (kbd "C-c m") 'magit-status)
 
