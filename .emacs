@@ -102,6 +102,8 @@
    ("magit" magit)
    ("growl" growl)))
 
+(global-set-key (kbd "C-c m") 'magit-status)
+
 (server-start)
 
 ;; Do I want this to be like textmate?
