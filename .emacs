@@ -22,6 +22,10 @@
 
 (add-to-list 'exec-path "/opt/local/bin")
 
+; I want html to use nxml mode
+(setq auto-mode-alist
+          (cons '("\\.html$" .  nxml-mode) auto-mode-alist))
+
 (add-to-list 'load-path "~/elisp")
 (autoload 'markdown-mode "markdown-mode.el"
    "Major mode for editing Markdown files" t)
@@ -47,10 +51,6 @@
 (autoload 'caml-mode "ocaml" (interactive)
   "Major mode for editing Caml code." t)
 (autoload 'camldebug "camldebug" (interactive) "Debug caml mode")
-
-; I want html to use nxml mode
-(setq auto-mode-alist
-          (cons '("\\.html" .  nxml-mode) auto-mode-alist))
 
 ; http://www.emacswiki.org/emacs/DynamicAbbreviations
 ; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
