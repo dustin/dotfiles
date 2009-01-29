@@ -159,6 +159,9 @@
 
 (add-hook 'erc-text-matched-hook 'my-growl-erc-hook)
 
+; tramp is neat
+(setq tramp-default-method "ssh")
+
 (require 'dustin-timer)
 ; Keep things tidy
 ; Keep old buffers away aggressively
