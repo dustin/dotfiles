@@ -161,6 +161,7 @@
 
 ; tramp is neat
 (setq tramp-default-method "ssh")
+(setq tramp-auto-save-directory "~/tmp/tramp/")
 
 (require 'dustin-timer)
 ; Keep things tidy
