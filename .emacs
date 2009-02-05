@@ -149,6 +149,11 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "INPROGRESS(i)" "|" "DONE(d)")))
 
+(org-remember-insinuate)
+(setq org-directory "~/Documents/")
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(define-key global-map "\C-cr" 'org-remember)
+
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#git" "#github" "#memcached" "#buildbot")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
