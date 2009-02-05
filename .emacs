@@ -145,6 +145,10 @@
              (define-key org-mode-map "\C-ca"
                'org-agenda)))
 
+(setq org-log-done 'time)
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "INPROGRESS(i)" "|" "DONE(d)")))
+
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#git" "#github" "#memcached" "#buildbot")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
