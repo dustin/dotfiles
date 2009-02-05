@@ -148,10 +148,12 @@
 (setq org-log-done 'time)
 (setq org-todo-keywords
       '((sequence "TODO(t)" "INPROGRESS(i)" "|" "DONE(d)")))
+(setq org-refile-use-outline-path t)
+(setq org-refile-targets '((nil . (:maxlevel . 3))))
 
 (org-remember-insinuate)
-(setq org-directory "~/Documents/")
-(setq org-default-notes-file (concat org-directory "/notes.org"))
+(setq org-directory "~/")
+(setq org-default-notes-file (concat org-directory "/todo.org"))
 (define-key global-map "\C-cr" 'org-remember)
 
 (setq erc-autojoin-channels-alist
