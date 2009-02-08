@@ -35,10 +35,10 @@
 (setq auto-mode-alist
    (cons '("\\.tac" . python-mode) auto-mode-alist))
 
-(require 'haml-mode nil 't)
+(autoload 'haml-mode "haml-mode")
 (add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
 
-(require 'sass-mode nil 't)
+(autoload 'sass-mode "sass-mode")
 (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
 
 ; caml modes
@@ -105,7 +105,9 @@
    ("planner/" planner)
    ("magit" magit)
    ("growl" growl)
-   ("slime" slime)))
+   ("slime")))
+
+(autoload 'slime "slime")
 
 (global-set-key (kbd "C-c m") 'magit-status)
 
