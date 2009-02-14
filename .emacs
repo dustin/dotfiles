@@ -153,7 +153,13 @@
 (setq org-refile-use-outline-path t)
 (setq org-refile-targets '((nil . (:maxlevel . 3))))
 
-(org-remember-insinuate)
+(if (fboundp 'org-remember-insinuate)
+    (org-remember-insinuate)
+  (progn
+    (setq remember-annotation-functions '(org-remember-annotation))
+    (setq remember-handler-functions '(org-remember-handler))
+    (add-hook 'remember-mode-hook 'org-remember-apply-template)))
+
 (setq org-directory "~/")
 (setq org-default-notes-file (concat org-directory "/todo.org"))
 (define-key global-map "\C-cr" 'org-remember)
