@@ -22,9 +22,9 @@
 
 (add-to-list 'exec-path "/opt/local/bin")
 
-; I want html to use nxml mode
-(setq auto-mode-alist
-          (cons '("\\.html$" .  nxml-mode) auto-mode-alist))
+;; ; I want html to use nxml mode
+;; (setq auto-mode-alist
+;;           (cons '("\\.html$" .  nxml-mode) auto-mode-alist))
 
 (add-to-list 'load-path "~/elisp")
 (autoload 'markdown-mode "markdown-mode.el"
