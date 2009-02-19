@@ -193,6 +193,7 @@
 (defun dustin-cleanup-rnc-crap ()
   "Remove all of the RNC input buffers that litter up my world."
 
+  (interactive)
   (dolist (buffer (buffer-list))
     (if (string-match "RNC Input" (buffer-name buffer))
         (progn
