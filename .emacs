@@ -190,6 +190,17 @@
 ; Run the periodic tasks hourly (keep in mind it only runs when idle)
 (dustin-schedule-periodic (* 60 60))
 
+(defun dustin-cleanup-rnc-crap ()
+  "Remove all of the RNC input buffers that litter up my world."
+
+  (dolist (buffer (buffer-list))
+    (if (string-match "RNC Input" (buffer-name buffer))
+        (progn
+          (message "Killing %s" (buffer-name buffer))
+          (kill-buffer buffer)))))
+
+(add-hook 'dustin-periodic-task-hooks 'dustin-cleanup-rnc-crap)
+
 ;;; This was installed by package-install.el.
 ;;; This provides support for the package system and
 ;;; interfacing with ELPA, the package archive.
