@@ -6,22 +6,6 @@
 
 Currently runs dustin-periodic-task about every four hours.")
 
-(defun dustin-periodic-task ()
-  "A task to run every once in a while.
-
-This runs dustin-periodic-task-hooks after doing its normal thing."
-  (message "Doing periodic cleanup stuff soon.")
-  (run-with-idle-timer 10 nil (lambda ()
-                               (clean-buffer-list)
-                               (run-hooks 'dustin-periodic-task-hooks))))
-
-(defun dustin-schedule-periodic (period)
-  "Schedule the timer to run on the given period."
-  (if dustin-periodic-timer
-      (cancel-timer dustin-periodic-timer))
-  (setq dustin-periodic-timer
-        (run-at-time period period 'dustin-periodic-task)))
-
 (defun dustin-timer-next-run (timer)
   "How long until the given timer runs?"
   (-
@@ -48,5 +32,26 @@ This runs dustin-periodic-task-hooks after doing its normal thing."
 (defun dustin-timer-next-run-in-words (timer)
   "How long until the given timer runs (in English)?"
   (duration-in-words (dustin-timer-next-run timer)))
+
+(defun dustin-periodic-task ()
+  "A task to run every once in a while.
+
+This runs dustin-periodic-task-hooks after doing its normal thing."
+
+  ; run-at-time stacks a bunch of these things up, so ensure that the next
+  ; execution is in the future before proceeding here.
+  (if (> (dustin-timer-next-run dustin-periodic-timer) 0)
+      (progn
+        (message "Doing periodic cleanup stuff soon.")
+        (run-with-idle-timer 10 nil (lambda ()
+                                      (clean-buffer-list)
+                                      (run-hooks 'dustin-periodic-task-hooks))))))
+
+(defun dustin-schedule-periodic (period)
+  "Schedule the timer to run on the given period."
+  (if dustin-periodic-timer
+      (cancel-timer dustin-periodic-timer))
+  (setq dustin-periodic-timer
+        (run-at-time period period 'dustin-periodic-task)))
 
 (provide 'dustin-timer)
