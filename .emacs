@@ -143,6 +143,10 @@
 (if (fboundp 'tool-bar-mode)
     (tool-bar-mode nil))
 
+(if (file-readable-p "~/.emacs.local")
+    (load
+     (expand-file-name "~/.emacs.local")))
+
 (put 'erase-buffer 'disabled nil)
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
