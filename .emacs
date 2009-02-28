@@ -139,6 +139,10 @@
 ; This is a little buggy in OS X.
 (if (fboundp 'tooltip-mode)
     (tooltip-mode 0))
+; Give me more of my ubuntu window.
+(if (fboundp 'tool-bar-mode)
+    (tool-bar-mode nil))
+
 (put 'erase-buffer 'disabled nil)
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
