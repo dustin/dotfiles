@@ -141,7 +141,7 @@
     (tooltip-mode 0))
 ; Give me more of my ubuntu window.
 (if (fboundp 'tool-bar-mode)
-    (tool-bar-mode nil))
+    (tool-bar-mode 0))
 
 (put 'erase-buffer 'disabled nil)
 (custom-set-faces
