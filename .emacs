@@ -133,7 +133,7 @@
   ;; If there is more than one, they won't work right.
  '(erc-nick "dsal")
  '(jabber-account-list (quote (("dustin@sallings.org/emacs" (:network-server . "talk.google.com")))))
- '(org-agenda-files (quote ("~/todo.org"))))
+ '(org-agenda-files (quote ("~/Dropbox/work/todo.org"))))
 
 (put 'upcase-region 'disabled nil)
 ; This is a little buggy in OS X.
@@ -170,7 +170,7 @@
     (setq remember-handler-functions '(org-remember-handler))
     (add-hook 'remember-mode-hook 'org-remember-apply-template)))
 
-(setq org-directory "~/")
+(setq org-directory "~/Dropbox/work")
 (setq org-default-notes-file (concat org-directory "/todo.org"))
 (define-key global-map "\C-cr" 'org-remember)
 
