@@ -178,6 +178,8 @@
       '(("freenode.net" "#git" "#github" "#memcached" "#buildbot" "#slumbrparty")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
 
+(add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
+
 (defun my-growl-erc-hook (match-type nick message)
   "Basic growl notification when someone says my nick in an irc channel."
   (and (eq match-type 'current-nick)
