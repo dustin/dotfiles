@@ -67,6 +67,9 @@
 (autoload 'literate-haskell-mode "haskell-mode"
   "Major mode for editing literate Haskell scripts." t)
 
+(setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+
 ; http://www.emacswiki.org/emacs/DynamicAbbreviations
 ; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
 (global-set-key (kbd "M-/") 'hippie-expand)
