@@ -54,6 +54,19 @@
   "Major mode for editing Caml code." t)
 (autoload 'camldebug "camldebug" (interactive) "Debug caml mode")
 
+; haskell mode
+(add-to-list 'load-path "~/elisp/haskell-mode")
+(setq auto-mode-alist
+      (append auto-mode-alist
+              '(("\\.[hg]s$"  . haskell-mode)
+                ("\\.hi$"     . haskell-mode)
+                ("\\.l[hg]s$" . literate-haskell-mode))))
+
+(autoload 'haskell-mode "haskell-mode"
+  "Major mode for editing Haskell scripts." t)
+(autoload 'literate-haskell-mode "haskell-mode"
+  "Major mode for editing literate Haskell scripts." t)
+
 ; http://www.emacswiki.org/emacs/DynamicAbbreviations
 ; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
 (global-set-key (kbd "M-/") 'hippie-expand)
