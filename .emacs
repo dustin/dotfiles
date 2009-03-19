@@ -191,7 +191,7 @@
 (define-key global-map "\C-cr" 'org-remember)
 
 (setq erc-autojoin-channels-alist
-      '(("freenode.net" "#git" "#github" "#memcached" "#buildbot" "#slumbrparty")))
+      '(("freenode.net" "#github" "#memcached" "#buildbot" "#slumbrparty")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
 
 (add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
