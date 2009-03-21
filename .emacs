@@ -243,6 +243,8 @@
       (package-initialize))
   (file-error (message "Failed to load package stuff.")))
 
+(autoload 'revbufs "revbufs" (interactive) "Buffer reverter.")
+
 (if (file-readable-p "~/.emacs.local")
     (load
      (expand-file-name "~/.emacs.local")))
