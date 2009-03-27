@@ -71,6 +71,10 @@
 (autoload 'js2-mode "js2" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
+;; D
+(autoload 'd-mode "d-mode" "Major mode for editing D code." t)
+(add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+
 (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
