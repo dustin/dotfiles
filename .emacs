@@ -237,6 +237,16 @@
           (message "Killing %s" (buffer-name buffer))
           (kill-buffer buffer)))))
 
+(defun reformat-file ()
+  "Reformat a file using tab expansion, buffer marking, etc..."
+  (interactive)
+  (save-excursion
+    ; Probably best to just let the buffer set it itself
+    ; (setq tab-width 4)
+    (untabify (point-min) (point-max))
+    (indent-region (point-min) (point-max))
+    (delete-trailing-whitespace)))
+
 (add-hook 'dustin-periodic-task-hooks 'dustin-cleanup-rnc-crap)
 
 ;;; This was installed by package-install.el.
