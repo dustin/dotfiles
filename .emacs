@@ -43,6 +43,9 @@
 (autoload 'sass-mode "sass-mode")
 (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
 
+(autoload 'yaml-mode "yaml-mode")
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
 ; caml modes
 
 (add-to-list 'load-path "~/elisp/caml")
