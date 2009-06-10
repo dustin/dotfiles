@@ -46,6 +46,9 @@
 (autoload 'yaml-mode "yaml-mode")
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
+; This doesn't work like normal things.
+(load "cucumber-mode.el")
+
 ; caml modes
 
 (add-to-list 'load-path "~/elisp/caml")
