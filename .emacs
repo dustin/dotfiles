@@ -46,8 +46,8 @@
 (autoload 'yaml-mode "yaml-mode")
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
-; This doesn't work like normal things.
-(load "cucumber-mode.el")
+(autoload 'feature-mode "feature-mode" "Mode for editing cucumber files" t)
+(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 
 ; caml modes
 
