@@ -49,6 +49,11 @@
 (autoload 'feature-mode "feature-mode" "Mode for editing cucumber files" t)
 (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 
+; orgtbl-mode is very nice in feature mode.
+(add-hook 'feature-mode-hook
+          (lambda ()
+            (orgtbl-mode)))
+
 ; caml modes
 
 (add-to-list 'load-path "~/elisp/caml")
