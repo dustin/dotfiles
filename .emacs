@@ -37,6 +37,9 @@
 (setq auto-mode-alist
    (cons '("\\.tac" . python-mode) auto-mode-alist))
 
+(setq auto-mode-alist
+   (cons '("\\.rake" . ruby-mode) auto-mode-alist))
+
 (autoload 'haml-mode "haml-mode")
 (add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
 
