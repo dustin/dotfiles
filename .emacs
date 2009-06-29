@@ -168,7 +168,8 @@
   ;; If there is more than one, they won't work right.
  '(erc-nick "dsal")
  '(jabber-account-list (quote (("dustin@sallings.org/emacs" (:network-server . "talk.google.com")))))
- '(org-agenda-files (quote ("~/Dropbox/work/todo.org"))))
+ '(org-agenda-files (quote ("~/Dropbox/work/todo.org")))
+ '(safe-local-variable-values (quote ((test-case-name . wokkel\.test\.test_data_form) (test-case-name . wokkel\.test\.test_pubsub) (test-case-name . wokkel\.test\.test_client) (test-case-name . wokkel\.test\.test_xmppim) (test-case-name . twisted\.words\.test\.test_jabberclient) (test-case-name . wokkel\.test\.test_subprotocols) (test-case-name . wokkel\.test\.test_generic) (test-case-name . wokkel\.test\.test_disco)))))
 
 (put 'upcase-region 'disabled nil)
 ; This is a little buggy in OS X.
