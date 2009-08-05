@@ -26,6 +26,9 @@
 ;; (setq auto-mode-alist
 ;;           (cons '("\\.html$" .  nxml-mode) auto-mode-alist))
 
+(autoload 'django-html-mode "django-html-mode.el"
+   "Major mode for editing django template files" t)
+
 (add-to-list 'load-path "~/elisp")
 (autoload 'markdown-mode "markdown-mode.el"
    "Major mode for editing Markdown files" t)
