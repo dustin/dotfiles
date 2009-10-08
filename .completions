@@ -71,7 +71,7 @@ if ( $? == 0 ) then
 		echo "Updating git"
 		set updatecache=1
 		set gitcommands=( \
-			`git help -a | egrep "^  " | sort -u ` )
+			`git help -a | egrep "^  [A-z]" | sort -u ` )
 	endif
 	complete git 'p/1/$gitcommands/'
 endif
