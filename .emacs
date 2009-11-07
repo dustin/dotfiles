@@ -37,6 +37,12 @@
 (setq auto-mode-alist
    (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
+(autoload 'wikipedia-mode
+  "wikipedia-mode.el"
+  "Major mode for editing documents in Wikipedia markup." t)
+(setq auto-mode-alist
+      (cons '("\\.wiki\\'" . wikipedia-mode) auto-mode-alist))
+
 (setq auto-mode-alist
    (cons '("\\.tac" . python-mode) auto-mode-alist))
 
