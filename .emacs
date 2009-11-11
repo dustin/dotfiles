@@ -72,6 +72,17 @@
   "Major mode for editing Caml code." t)
 (autoload 'camldebug "camldebug" (interactive) "Debug caml mode")
 
+(autoload (quote go-mode) "go-mode" "\
+Major mode for editing Go source text.
+
+This provides basic syntax highlighting for keywords, built-ins,
+functions, and some types.  It also provides indentation that is
+\(almost) identical to gofmt.
+
+\(fn)" t nil)
+
+(add-to-list (quote auto-mode-alist) (cons "\\.go$" (function go-mode)))
+
 ; haskell mode
 (add-to-list 'load-path "~/elisp/haskell-mode")
 (setq auto-mode-alist
