@@ -436,7 +436,7 @@ functions, and some types.  It also provides indentation that is
   ;; Remove stale text properties
   (save-restriction
     (widen)
-    (remove-list-of-text-properties 1 (buffer-size)
+    (remove-list-of-text-properties 1 (+ (buffer-size) 1)
                                     '(go-mode-cs go-mode-nesting)))
 
   ;; Reset the syntax mark caches
@@ -470,3 +470,9 @@ Useful for development work."
   (go-mode))
 
 (provide 'go-mode)
+
+(defun gofmt ()
+  "Pipe the current buffer through the external tool `gofmt`."
+
+  (interactive)
+  (shell-command-on-region 1 (+ (buffer-size) 1) "gofmt" t t shell-command-default-error-buffer))

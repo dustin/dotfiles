@@ -298,6 +298,10 @@ functions, and some types.  It also provides indentation that is
 
 (autoload 'revbufs "revbufs" (interactive) "Buffer reverter.")
 
+(defun my-go-mode-hook ()
+  (setq tab-width 8 indent-tabs-mode 1))
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
 (if (file-readable-p "~/.emacs.local")
     (load
      (expand-file-name "~/.emacs.local")))
