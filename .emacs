@@ -47,6 +47,9 @@
    (cons '("\\.tac" . python-mode) auto-mode-alist))
 
 (setq auto-mode-alist
+      (cons '("\\.pde" . c++-mode) auto-mode-alist))
+
+(setq auto-mode-alist
    (cons '("\\.rake" . ruby-mode) auto-mode-alist))
 
 (autoload 'haml-mode "haml-mode")
