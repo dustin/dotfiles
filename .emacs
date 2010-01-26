@@ -242,6 +242,44 @@ functions, and some types.  It also provides indentation that is
 (setq org-default-notes-file (concat org-directory "/todo.org"))
 (define-key global-map "\C-cr" 'org-remember)
 
+; Export for google code
+(org-set-generic-type
+ "googlecode"
+ '(:file-suffix        	    ".txt"
+     :key-binding                   ?G
+
+     :header-prefix            	    ""
+     :header-suffix            	    ""
+
+     :title-format             	    "= %s =\n"
+
+     :date-export        	        t
+     :date-format                   "Date: %s\n"
+
+     :toc-export                    nil
+
+     :body-header-section-numbers   nil
+     :body-section-prefix           "\n"
+
+     :body-section-header-prefix    ("== " "=== "
+				     "==== " "===== " "====== ")
+     :body-section-header-suffix    (" ==\n" " ===\n"
+				     " ====\n" " =====\n" " ======\n")
+
+     :body-line-export-preformated  t          ;; yes/no/maybe???
+     :body-line-format              "%s\n"
+     :body-line-wrap                75
+
+     :body-line-fixed-prefix       "{{{\n"
+     :body-line-fixed-format       "%s\n"
+     :body-line-fixed-suffix       "}}}\n"
+
+     :body-list-format              "  * %s\n"
+     :body-number-list-format       "  # %s\n"
+
+     :body-bullet-list-prefix       ("* " "** " "*** " "**** " "***** ")
+   ))
+
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#github" "#memcached" "#buildbot" "#slumbrparty")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
