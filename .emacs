@@ -201,6 +201,8 @@ functions, and some types.  It also provides indentation that is
  '(erc-nick "dsal")
  '(jabber-account-list (quote (("dustin@sallings.org/emacs" (:network-server . "talk.google.com")))))
  '(org-agenda-files (quote ("~/Dropbox/work/todo.org")))
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-deadline-warning-days 3)
  '(safe-local-variable-values (quote ((test-case-name . twisted\.test\.test_defer) (test-case-name . buildbot\.test\.test_steps\,buildbot\.test\.test_properties) (test-case-name . buildbot\.test\.test_mailparse) (test-case-name . buildbot\.test\.test_svnpoller) (test-case-name . buildbot\.test\.test_transfer) (test-case-name . buildbot\.test\.test_changes) (test-case-name . buildbot\.test\.test_web) (test-case-name . buildbot\.test\.test_runner) (test-case-name . buildbot\.test\.test_status) (test-case-name . wokkel\.test\.test_data_form) (test-case-name . wokkel\.test\.test_pubsub) (test-case-name . wokkel\.test\.test_client) (test-case-name . wokkel\.test\.test_xmppim) (test-case-name . twisted\.words\.test\.test_jabberclient) (test-case-name . wokkel\.test\.test_subprotocols) (test-case-name . wokkel\.test\.test_generic) (test-case-name . wokkel\.test\.test_disco)))))
 
 (put 'upcase-region 'disabled nil)
