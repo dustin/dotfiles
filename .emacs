@@ -242,6 +242,9 @@ functions, and some types.  It also provides indentation that is
 (setq org-default-notes-file (concat org-directory "/todo.org"))
 (define-key global-map "\C-cr" 'org-remember)
 
+(load
+ (expand-file-name "~/elisp/org-export-generic.el"))
+
 ; Export for google code
 (org-set-generic-type
  "googlecode"
