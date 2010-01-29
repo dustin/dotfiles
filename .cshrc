@@ -50,7 +50,7 @@ if ($?prompt) then
 
 	set cdpath=( $HOME )
 	set watch=(all all)
-	umask 077
+	umask 022
 	setenv PAGER more
 
 	# Default editor is vi
