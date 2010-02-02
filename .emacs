@@ -348,6 +348,12 @@ functions, and some types.  It also provides indentation that is
   (setq tab-width 8 indent-tabs-mode 1))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
+(require 'color-theme)
+(eval-after-load "color-theme"
+  '(progn
+     (color-theme-initialize)
+     (color-theme-taming-mr-arneson)))
+
 (if (file-readable-p "~/.emacs.local")
     (load
      (expand-file-name "~/.emacs.local")))
