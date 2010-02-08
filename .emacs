@@ -26,7 +26,7 @@
 ;; (setq auto-mode-alist
 ;;           (cons '("\\.html$" .  nxml-mode) auto-mode-alist))
 
-(autoload 'cheat "cheat" "Cheater.")
+(autoload 'cheat "cheat" "Cheater." t)
 
 (autoload 'django-html-mode "django-html-mode.el"
    "Major mode for editing django template files" t)
@@ -44,6 +44,10 @@
   "Major mode for editing documents in Wikipedia markup." t)
 (setq auto-mode-alist
       (cons '("\\.wiki\\'" . wikipedia-mode) auto-mode-alist))
+
+(autoload 'protobuf-mode "protobuf-mode.el" "Probuffer mode.")
+(setq auto-mode-alist
+      (cons '("\\.proto\\'" . protobuf-mode) auto-mode-alist))
 
 (setq auto-mode-alist
    (cons '("\\.tac" . python-mode) auto-mode-alist))
