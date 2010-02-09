@@ -1,9 +1,6 @@
 ; I like paren matching
 (show-paren-mode t)
 
-; Stupid trailing whitespace.
-(setq-default show-trailing-whitespace t)
-
 ; Keep the weird, not-very mac-like bindings.
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'meta)
@@ -357,6 +354,22 @@ functions, and some types.  It also provides indentation that is
   '(progn
      (color-theme-initialize)
      (color-theme-taming-mr-arneson)))
+
+(defun my-general-programming-hooks ()
+  ; Stupid trailing whitespace.
+  (setq show-trailing-whitespace t)
+  )
+
+(setq my-programming-modes-list
+      '(c-mode c++-mode erlang-mode markdown-mode protobuf-mode
+               python-mode haml-mode sass-mode yaml-mode feature-mode
+               wikipedia-mode caml-mode go-mode haskell-mode js2-mode
+               d-mode lua-mode lisp-mode emacs-lisp-mode))
+
+(dolist (mode my-programming-modes-list)
+  (add-hook
+   (intern (concatenate 'string (symbol-name mode) "-hook"))
+   'my-general-programming-hooks))
 
 (if (file-readable-p "~/.emacs.local")
     (load
