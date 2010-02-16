@@ -235,7 +235,7 @@ functions, and some types.  It also provides indentation that is
     (setq remember-handler-functions '(org-remember-handler))
     (add-hook 'remember-mode-hook 'org-remember-apply-template)))
 
-(setq org-directory "~/Dropbox/work")
+(setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/todo.org"))
 (define-key global-map "\C-cr" 'org-remember)
 
