@@ -94,7 +94,6 @@ if ($?prompt) then
 	set filec
 	set history=1000
 	set prompt = "%m:%~ \!%# "
-	set time="%Uu %Ss %E %P %X+%Dk %I+%Oio %Fpf+%Ww"
 
 	bindkey -k up history-search-backward
 	bindkey -k down history-search-forward
@@ -123,6 +122,7 @@ if ($?prompt) then
 		source  ~/.cshrc.local
 	endif
 
+	set time="%Uu %Ss %E %P %X+%Dk %I+%Oio %Fpf+%Ww"
 endif
 # set autologout=30
 
