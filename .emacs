@@ -71,6 +71,9 @@
 (setq auto-mode-alist (append auto-mode-alist
                               '(("\\.cflow$" . cflow-mode))))
 
+(setq auto-mode-alist
+   (cons '("\\.app" . erlang-mode) auto-mode-alist))
+
 ; caml modes
 
 (add-to-list 'load-path "~/elisp/caml")
