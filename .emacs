@@ -368,7 +368,7 @@ functions, and some types.  It also provides indentation that is
   "Set up a line sorting hook if visiting a file that needs sorting."
   (if (and (buffer-file-name)
            (equal ".gitignore" (file-name-nondirectory (buffer-file-name))))
-      (add-hook 'before-save-hook 'dustin-sort-lines-hook)))
+      (add-hook 'before-save-hook 'dustin-sort-lines-hook nil t)))
 
 (add-hook 'find-file-hook 'dustin-maybe-visiting-gitignore-hook)
 
