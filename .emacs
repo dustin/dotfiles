@@ -36,6 +36,10 @@
 (setq auto-mode-alist
    (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
+(autoload 'graphviz-dot-mode "graphviz-dot-mode.el"
+  "Major mode for graphviz")
+(add-to-list 'auto-mode-alist '("\\.dot\\'" . graphviz-dot-mode))
+
 (autoload 'wikipedia-mode
   "wikipedia-mode.el"
   "Major mode for editing documents in Wikipedia markup." t)
