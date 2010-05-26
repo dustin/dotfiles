@@ -52,6 +52,8 @@ alias ant ant -logger org.apache.tools.ant.listener.AnsiColorLogger
 alias ircfreenet epic $FNIRCSERVER
 alias ircefnet epic $EFIRCSERVER
 
+alias ec $EMACSCLIENT -n
+
 # make-log and edit command for tla
 alias tlog 'vi `tla make-log`'
 
