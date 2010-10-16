@@ -287,6 +287,44 @@ functions, and some types.  It also provides indentation that is
      :body-bullet-list-prefix       ("* " "** " "*** " "**** " "***** ")
    ))
 
+; Export for google code
+(org-set-generic-type
+ "twiki"
+ '(:file-suffix        	    ".txt"
+     :key-binding                   ?T
+
+     :header-prefix            	    "---"
+     :header-suffix            	    ""
+
+     :title-format             	    ""
+
+     :date-export        	        t
+     :date-format                   ""
+
+     :toc-export                    nil
+
+     :body-header-section-numbers   nil
+     :body-section-prefix           "\n"
+
+     :body-section-header-prefix    ("---+ " "---++ "
+				     "---+++ " "---++++ " "---+++++ ")
+     :body-section-header-suffix    ("\n" "\n" "\n" "\n" "\n")
+
+     :body-line-export-preformated  t          ;; yes/no/maybe???
+     :body-line-format              "%s\n"
+     :body-line-wrap                75
+
+     :body-line-fixed-prefix       "<verbatim>\n"
+     :body-line-fixed-format       "%s\n"
+     :body-line-fixed-suffix       "</verbatim>\n"
+
+     :body-list-format              "%s\n"
+     :body-number-list-format       "  # %s\n"
+
+     :body-bullet-list-prefix       ("   * " "      * " "         * "
+                                     "            * " "               * ")
+   ))
+
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#github" "#memcached" "#buildbot" "#slumbrparty")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
