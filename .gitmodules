@@ -16,6 +16,3 @@
 [submodule "elisp/slime"]
 	path = elisp/slime
 	url = git://github.com/nablaone/slime.git
-[submodule "elisp/jabber"]
-	path = elisp/jabber
-	url = git://emacs-jabber.git.sourceforge.net/gitroot/emacs-jabber/emacs-jabber
