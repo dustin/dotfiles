@@ -431,21 +431,6 @@ functions, and some types.  It also provides indentation that is
    'my-general-programming-hooks))
 
 
-;; Electric Pairs
-(defun dustin-python-electric-pair ()
-  "Insert character pair without surrounding spaces"
-  (interactive)
-  (let (parens-require-spaces)
-    (insert-pair)))
-(defun dustin-python-electric-hook ()
-  (define-key python-mode-map "\"" 'dustin-python-electric-pair)
-  (define-key python-mode-map "\'" 'dustin-python-electric-pair)
-  (define-key python-mode-map "(" 'dustin-python-electric-pair)
-  (define-key python-mode-map "[" 'dustin-python-electric-pair)
-  (define-key python-mode-map "{" 'dustin-python-electric-pair))
-
-(add-hook 'python-mode-hook 'dustin-python-electric-hook)
-
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
     (load
