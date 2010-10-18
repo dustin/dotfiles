@@ -9,7 +9,7 @@
 	url = git://repo.or.cz/remember-el.git
 [submodule "elisp/magit"]
 	path = elisp/magit
-	url = git://gitorious.org/magit/mainline.git
+    url = git://github.com/philjackson/magit.git
 [submodule "elisp/growl"]
 	path = elisp/growl
 	url = git://github.com/elim/emacs-growl.git
