@@ -16,6 +16,7 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
+(c-set-offset 'innamespace 0)
 
 (add-to-list 'exec-path "/opt/local/bin")
 
