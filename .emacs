@@ -224,6 +224,9 @@ functions, and some types.  It also provides indentation that is
   ;; If there is more than one, they won't work right.
  )
 
+; use custom org-mode if I have it
+(setq load-path (cons "~/prog/eprojects/org-mode/lisp" load-path))
+
 ; Local key binding lazily loaded for org-mode.
 (add-hook 'org-mode-hook
           '(lambda ()
