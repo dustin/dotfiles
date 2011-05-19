@@ -19,5 +19,5 @@ case file:list_dir(ELibDir) of
 				end
 			end, Libs);
 	{error, Reason} ->
-		error_logger:error_msg("No libs:  ~p~n", [Reason])
+        ok
 end.
