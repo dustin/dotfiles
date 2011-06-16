@@ -16,3 +16,6 @@
 [submodule "elisp/slime"]
 	path = elisp/slime
 	url = git://github.com/nablaone/slime.git
+[submodule "elisp/coffee"]
+	path = elisp/coffee
+	url = git://github.com/defunkt/coffee-mode.git
