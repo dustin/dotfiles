@@ -123,6 +123,11 @@ functions, and some types.  It also provides indentation that is
 (autoload 'js2-mode "js2" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
+
+
+(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
+(add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
+
 ;; D
 (autoload 'd-mode "d-mode" "Major mode for editing D code." t)
 (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
@@ -185,6 +190,7 @@ functions, and some types.  It also provides indentation that is
 (dustin-libs-and-paths
  '(
    ("muse/lisp")
+   ("coffee" coffee-mode)
    ("remember/" remember)
    ("planner/" planner)
    ("magit" magit)
