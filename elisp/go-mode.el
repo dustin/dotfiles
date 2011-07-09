@@ -27,8 +27,8 @@
 
 (defvar go-mode-syntax-table
   (let ((st (make-syntax-table)))
-    ;; Symbols
-    (modify-syntax-entry ?_  "_" st)
+    ;; Add _ to :word: character class
+    (modify-syntax-entry ?_  "w" st)
 
     ;; Operators (punctuation)
     (modify-syntax-entry ?+  "." st)
@@ -59,21 +59,22 @@
     st)
   "Syntax table for Go mode.")
 
+(defvar go-mode-keywords
+  '("break"    "default"     "func"   "interface" "select"
+    "case"     "defer"       "go"     "map"       "struct"
+    "chan"     "else"        "goto"   "package"   "switch"
+    "const"    "fallthrough" "if"     "range"     "type"
+    "continue" "for"         "import" "return"    "var")
+  "All keywords in the Go language.  Used for font locking and
+some syntax analysis.")
+
 (defvar go-mode-font-lock-keywords
-  (let ((keywords '("import" "package"
-                    "var" "const" "type" "func"
-                    "struct" "interface"
-                    "chan" "map"
-                    "if" "else" "for" "switch" "select"
-                    "range" "case" "default"
-                    "return" "continue" "break" "fallthrough" "goto"
-                    "go" "defer"))
-        (builtins '("cap" "close" "closed" "len" "make" "new"
+  (let ((builtins '("cap" "close" "closed" "len" "make" "new"
                     "panic" "panicln" "print" "println"))
         (constants '("nil" "true" "false" "iota"))
         (type-name "\\s *\\(?:[*(]\\s *\\)*\\(?:\\w+\\s *\\.\\s *\\)?\\(\\w+\\)")
         )
-    `((,(regexp-opt keywords 'words) . font-lock-keyword-face)
+    `((,(regexp-opt go-mode-keywords 'words) . font-lock-keyword-face)
       (,(regexp-opt builtins 'words) . font-lock-builtin-face)
       (,(regexp-opt constants 'words) . font-lock-constant-face)
       ;; Function names in declarations
@@ -91,7 +92,7 @@
       ;; Map key type
       (,(concat "\\<map\\s *\\[" type-name) 1 font-lock-type-face)
       ;; Channel value type
-      (,(concat "\\<chan\\s *\\(?:<-\\)?" type-name) 1 font-lock-type-face)
+      (,(concat "\\<chan\\>\\s *\\(?:<-\\)?" type-name) 1 font-lock-type-face)
       ;; new/make type
       (,(concat "\\<\\(?:new\\|make\\)\\>\\(?:\\s \\|)\\)*(" type-name) 1 font-lock-type-face)
       ;; Type conversion
@@ -178,14 +179,16 @@ marked from the beginning up to this point.")
   "An after-change-function that clears the comment/string and
 nesting caches from the modified point on."
 
-  (when (< b go-mode-mark-cs-end)
-    (remove-text-properties b (min go-mode-mark-cs-end (buffer-size)) '(go-mode-cs nil))
-    (setq go-mode-mark-cs-end b
-          go-mode-mark-cs-state nil))
+  (save-restriction
+    (widen)
+    (when (< b go-mode-mark-cs-end)
+      (remove-text-properties b (min go-mode-mark-cs-end (point-max)) '(go-mode-cs nil))
+      (setq go-mode-mark-cs-end b
+            go-mode-mark-cs-state nil))
 
-  (when (< b go-mode-mark-nesting-end)
-    (remove-text-properties b (min go-mode-mark-nesting-end (buffer-size)) '(go-mode-nesting nil))
-    (setq go-mode-mark-nesting-end b)))
+    (when (< b go-mode-mark-nesting-end)
+      (remove-text-properties b (min go-mode-mark-nesting-end (point-max)) '(go-mode-nesting nil))
+      (setq go-mode-mark-nesting-end b))))
 
 (defmacro go-mode-parser (&rest body)
   "Evaluate BODY in an environment set up for parsers that use
@@ -312,6 +315,37 @@ encountered the close character."
 ;; Indentation
 ;;
 
+(defvar go-mode-non-terminating-keywords-regexp
+  (let* ((kws go-mode-keywords)
+         (kws (remove "break" kws))
+         (kws (remove "continue" kws))
+         (kws (remove "fallthrough" kws))
+         (kws (remove "return" kws)))
+    (regexp-opt kws 'words))
+  "Regular expression matching all Go keywords that *do not*
+implicitly terminate a statement.")
+
+(defun go-mode-semicolon-p ()
+  "True iff point immediately follows either an explicit or
+implicit semicolon.  Point should immediately follow the last
+token on the line."
+
+  ;; #Semicolons
+  (case (char-before)
+    ((?\;) t)
+    ;; String literal
+    ((?' ?\" ?`) t)
+    ;; One of the operators and delimiters ++, --, ), ], or }
+    ((?+) (eq (char-before (1- (point))) ?+))
+    ((?-) (eq (char-before (1- (point))) ?-))
+    ((?\) ?\] ?\}) t)
+    ;; An identifier or one of the keywords break, continue,
+    ;; fallthrough, or return or a numeric literal
+    (otherwise
+     (save-excursion
+       (when (/= (skip-chars-backward "[:word:]_") 0)
+         (not (looking-at go-mode-non-terminating-keywords-regexp)))))))
+
 (defun go-mode-indentation ()
   "Compute the ideal indentation level of the current line.
 
@@ -335,22 +369,12 @@ indented one level."
         ;; Inside a multi-line string.  Don't mess with indentation.
         nil)
        (cs
-        ;; Inside a multi-line comment
+        ;; Inside a general comment
         (goto-char (car cs))
         (forward-char 1)
         (current-column))
-       ((not (go-mode-nesting))
-        ;; Top-level
-        (if (or (eolp)
-                (looking-at "\\<\\(import\\|package\\|const\\|var\\|type\\|func\\)\\>")
-                (looking-at "//\\|/\\*"))
-            0
-          ;; Continuation line
-          ;; XXX If you start typing a new continuation line, nothing
-          ;; will cause it to be indented.
-          tab-width))
        (t
-        ;; Neither top-level nor in a multi-line string or comment
+        ;; Not in a multi-line string or comment
         (let ((indent 0)
               (inside-indenting-paren nil))
           ;; Count every enclosing brace, plus parens that follow
@@ -383,12 +407,14 @@ indented one level."
           ;; Continuation lines are indented 1 level
           (forward-comment (- (buffer-size)))
           (when (case (char-before)
-                  ((?\{ ?\} ?\; ?:)
-                   ;; Not a continuation line
+                  ((nil ?\{ ?:)
+                   ;; At the beginning of a block or the statement
+                   ;; following a label.
                    nil)
                   ((?\()
-                   ;; Usually a continuation line, unless this paren
-                   ;; counted towards our indentation already
+                   ;; Usually a continuation line in an expression,
+                   ;; unless this paren is part of a factored
+                   ;; declaration.
                    (not inside-indenting-paren))
                   ((?,)
                    ;; Could be inside a literal.  We're a little
@@ -401,9 +427,12 @@ indented one level."
                      (and depth
                           (not (eq (char-after (caar depth)) ?\{)))))
                   (t
-                   ;; Anything else is always a continuation line
-                   t))
+                   ;; We're in the middle of a block.  Did the
+                   ;; previous line end with an implicit or explicit
+                   ;; semicolon?
+                   (not (go-mode-semicolon-p))))
             (incf indent tab-width))
+
           (max indent 0)))))))
 
 (defun go-mode-indent-line ()
@@ -436,8 +465,8 @@ functions, and some types.  It also provides indentation that is
   ;; Remove stale text properties
   (save-restriction
     (widen)
-    (remove-list-of-text-properties 1 (+ (buffer-size) 1)
-                                    '(go-mode-cs go-mode-nesting)))
+    (remove-text-properties 1 (point-max)
+                            '(go-mode-cs nil go-mode-nesting nil)))
 
   ;; Reset the syntax mark caches
   (setq go-mode-mark-cs-end      1
@@ -451,8 +480,8 @@ functions, and some types.  It also provides indentation that is
   (add-hook 'after-change-functions #'go-mode-delayed-electric-hook nil t)
 
   ;; Comments
-  (setq comment-start "// "
-        comment-end   "")
+  (set (make-local-variable 'comment-start) "// ")
+  (set (make-local-variable 'comment-end)   "")
 
   ;; Go style
   (setq indent-tabs-mode t))
@@ -469,10 +498,45 @@ Useful for development work."
   (require 'go-mode)
   (go-mode))
 
-(provide 'go-mode)
-
+;;;###autoload
 (defun gofmt ()
-  "Pipe the current buffer through the external tool `gofmt`."
+ "Pipe the current buffer through the external tool `gofmt`.
+Replace the current buffer on success; display errors on failure."
 
-  (interactive)
-  (shell-command-on-region 1 (+ (buffer-size) 1) "gofmt" t t shell-command-default-error-buffer))
+ (interactive)
+ (let ((srcbuf (current-buffer)))
+   (with-temp-buffer
+     (let ((outbuf (current-buffer))
+           (errbuf (get-buffer-create "*Gofmt Errors*")))
+       (with-current-buffer errbuf (erase-buffer))
+       (with-current-buffer srcbuf
+         (save-restriction
+           (let (deactivate-mark)
+             (widen)
+             (if (= 0 (shell-command-on-region (point-min) (point-max) "gofmt"
+                                               outbuf nil errbuf))
+                 ;; gofmt succeeded: replace the current buffer with outbuf,
+                 ;; restore the mark and point, and discard errbuf.
+                 (let ((old-mark (mark t)) (old-point (point)))
+                   (erase-buffer)
+                   (insert-buffer-substring outbuf)
+                   (goto-char (min old-point (point-max)))
+                   (if old-mark (set-mark (min old-mark (point-max))))
+                   (kill-buffer errbuf))
+
+               ;; gofmt failed: display the errors
+               (display-buffer errbuf)))))
+
+       ;; Collapse any window opened on outbuf if shell-command-on-region
+       ;; displayed it.
+       (delete-windows-on outbuf)))))
+
+;;;###autoload
+(defun gofmt-before-save ()
+ "Add this to .emacs to run gofmt on the current buffer when saving:
+ (add-hook 'before-save-hook #'gofmt-before-save)"
+
+ (interactive)
+ (when (eq major-mode 'go-mode) (gofmt)))
+
+(provide 'go-mode)
