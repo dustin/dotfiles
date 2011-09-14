@@ -1,376 +1,310 @@
-;;; d-mode.el --- D Programming Language mode for (X)Emacs
-;;;               Requires a cc-mode of version 5.30 or greater
+;;; d-mode.el --- D code editing commands for Emacs
 
-;; Author:     2007 William Baxter
-;; Maintainer: William Baxter
-;; Created:    March 2007
-;; Version:    2.0.0
-;; Keywords:   D programming language emacs cc-mode
+;;; Commentary:
 
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2 of the License, or
-;; (at your option) any later version.
+;; D-Mode: Mode for editing DTrace D language.
 ;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; You can add the following to your .emacs:
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
-
-;; Usage:
-;; Put these lines in your .emacs startup file.
-;;   (autoload 'd-mode "d-mode" "Major mode for editing D code." t)
-;;   (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+;; (autoload 'd-mode "d-mode" () t)
+;; (add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
 ;;
-;; cc-mode version 5.30 or greater is required.
-;; You can check your cc-mode with the command M-x c-version.
-;; You can get the latest version of cc-mode at http://cc-mode.sourceforge.net
+;; When loaded, runs all hooks from d-mode-hook
+;; You may try
 ;;
-;; Commentary:
-;;   This mode supports most of D's syntax, including nested /+ +/
-;;   comments and backquote `string literals`.
+;; (add-hook 'd-mode-hook 'imenu-add-menubar-index)
+;; (add-hook 'd-mode-hook 'font-lock-mode)
 ;;
-;;   This mode has been dubbed "2.0" because it is a complete rewrite
-;;   from scratch.  The previous d-mode was based on cc-mode 5.28 or
-;;   so.  This version is based on the cc-mode 5.30 derived mode
-;;   example by Martin Stjernholm, 2002.
+;; Alexander Kolbasov <akolb at sun dot com>
 ;;
+
 ;;
-;; TODO:
-;;   * "else static if" doesn't work properly.
-;;     (Incidentally "static else if" is fine, but unfortunately it's
-;;      not valid D syntax.)
+;; The D-mode inherits from C-mode.
+;; It supports imenu and syntax highlighting.
 ;;
-;;   * I tried making "with" "version" and "extern" be their own
-;;     c-other-block-decl-kwds.  Which is supposed to mean that you
-;;     can control the indentation on the block following them
-;;     individually.  It didn't seem to work right though.
+
+;; $Id: d-mode.el,v 1.3 2007/07/12 01:44:55 akolb Exp $
+
+;;; Code:
+
+(defvar d-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\e\C-a" 'd-beginning-of-function)
+    (define-key map "\e\C-e" 'd-end-of-function)
+    (define-key map "\e\C-h" 'd-mark-function)
+    map)
+  "Keymap used in D mode.")
+
+(defvar d-mode-syntax-table
+  (let ((st (make-syntax-table (standard-syntax-table))))
+    (modify-syntax-entry ?/ "$" st)
+    (modify-syntax-entry ?` "." st)
+    (modify-syntax-entry ?: "." st)
+    (modify-syntax-entry ?_ "w" st)
+    (modify-syntax-entry ?$ "/" st)
+    (modify-syntax-entry ?& "." st)
+    (modify-syntax-entry ?* "." st)
+    (modify-syntax-entry ?+ "." st)
+    (modify-syntax-entry ?- "." st)
+    (modify-syntax-entry ?< "." st)
+    (modify-syntax-entry ?= "." st)
+    (modify-syntax-entry ?> "." st)
+    (modify-syntax-entry ?\\ "\\" st)
+    (modify-syntax-entry ?/  ". 14" st)
+    (modify-syntax-entry ?*  ". 23"   st)
+    st)
+  "Syntax table in use in `D-mode' buffers.")
+
 ;;
-;; History:
-;;   * 2007 March 3 - Release of 2.0.0 version
+;; Show probes, pragmas and inlines in imenu
+;;
+(defvar d-imenu-generic-expression
+  '(
+    (nil "^\\s-*\\(\\sw+:.+\\)" 1 )
+    (nil "\\s-*\\(BEGIN\\|END\\)" 1 )
+    ("Pramgas" "^#pragma\\s-+D\\s-+\\(.+\\)" 1)
+    ("Inlines" "\\s-*inline\\s-+\\(.*\\);" 1)
+    )
+  "Imenu generic expression for D mode.  See `imenu-generic-expression'.")
 
-;;----------------------------------------------------------------------------
-;; Code:
+(defvar d-mode-hook nil
+  "Hooks to run when entering D mode.")
 
-(require 'cc-mode)
+;;
+;; Definition of various DTrace keywords for font-lock-mode
+;;
+(defconst d-font-lock-keywords
+  (eval-when-compile
+    (list
+     ;;
+     ;; Function names.
+     ;'("^\\(\\sw+\\):\\(\\sw+\\|:\\)?"
+     ;   (1 font-lock-keyword-face) (2 font-lock-function-name-face nil t))
+     ;;
+     ;; Variable names.
+     (cons (regexp-opt
+	    '(
+	      "egid" "euid" "gid" "pid" "pgid" "ppid" "projid" "sid"
+	      "taskid" "uid") 'words)
+	   'font-lock-variable-name-face)
 
-;; These are only required at compile time to get the sources for the
-;; language constants.  (The cc-fonts require and the font-lock
-;; related constants could additionally be put inside an
-;; (eval-after-load "font-lock" ...) but then some trickery is
-;; necessary to get them compiled.)
-;; Coment out 'when-compile part for debugging
-(eval-when-compile
-  (require 'cc-langs)
-  (require 'cc-fonts)
-)
-
-(eval-and-compile
-  ;; Make our mode known to the language constant system.  Use Java
-  ;; mode as the fallback for the constants we don't change here.
-  ;; This needs to be done also at compile time since the language
-  ;; constants are evaluated then.
-  (c-add-language 'd-mode 'java-mode))
-
-(c-lang-defconst c-identifier-ops
-  ;; For recognizing "~this", ".foo", and "foo.bar.baz" as identifiers
-  d '((prefix "~")(prefix ".")(left-assoc ".")))
-
-(c-lang-defconst c-after-id-concat-ops
-  ;; Also for handling ~this
-  d '("~"))
-
-(c-lang-defconst c-string-escaped-newlines
-  ;; Set to true to indicate the D handles backslash escaped newlines in strings
-  d t)
-
-(c-lang-defconst c-multiline-string-start-char
-  ;; Set to true to indicate that D doesn't mind raw embedded newlines in strings
-  d t)
-
-(c-lang-defconst c-opt-cpp-prefix
-  ;; Preprocssor directive recognizer.  D doesn't have cpp, but it has #line
-  d "\\s *#\\s *")
-
-(c-lang-defconst c-cpp-message-directives d nil)
-(c-lang-defconst c-cpp-include-directives d nil)
-(c-lang-defconst c-opt-cpp-macro-define d nil)
-(c-lang-defconst c-cpp-expr-directives d nil)
-(c-lang-defconst c-cpp-expr-functions d nil)
-
-(c-lang-defconst c-assignment-operators
-  ;; List of all assignment operators.
-  d  '("=" "*=" "/=" "%=" "+=" "-=" ">>=" "<<=" ">>>=" "&=" "^=" "|=" "~="))
-
-(c-lang-defconst c-other-op-syntax-tokens
-  "List of the tokens made up of characters in the punctuation or
-parenthesis syntax classes that have uses other than as expression
-operators."
-  d (append '("/+" "+/" "..." ".." "!" "*" "&")
-     (c-lang-const c-other-op-syntax-tokens)))
-
-(c-lang-defconst c-block-comment-starter d "/*")
-(c-lang-defconst c-block-comment-ender   d "*/")
-
-(c-lang-defconst c-comment-start-regexp  d "/[*+/]")
-(c-lang-defconst c-block-comment-start-regexp d "/[*+]")
-(c-lang-defconst c-literal-start-regexp
- ;; Regexp to match the start of comments and string literals.
- d "/[*+/]\\|\"\\|`")
-
-(c-lang-defconst c-doc-comment-start-regexp
- ;; doc comments for D use "///",  "/**" or doxygen's "/*!" "//!"
- d "/\\(\\*[*!]\\|/[/!]\\)")
-
-;;----------------------------------------------------------------------------
-
-;; Built-in basic types
-(c-lang-defconst c-primitive-type-kwds
-  d '("bit" "byte" "ubyte" "char" "delegate" "double" "float" "function"
-      "int" "long" "ubyte" "short" "uint" "ulong" "ushort" "cent" "ucent"
-      "real" "ireal" "ifloat" "creal" "cfloat" "cdouble"
-      "wchar" "dchar" "void"))
-
-;; Keywords that can prefix normal declarations of identifiers
-(c-lang-defconst c-modifier-kwds
-  d '("auto" "abstract" "const" "deprecated" "extern"
-      "final" "lazy" "private" "protected" "public"
-      "scope" "static" "synchronized" "volatile" "mixin"))
-
-(c-lang-defconst c-class-decl-kwds
-  ;; Keywords introducing declarations where the following block (if any)
-  ;; contains another declaration level that should be considered a class.
-  d '("class" "struct" "union" "interface" "template"))
-
-(c-lang-defconst c-brace-list-decl-kwds
-  d '("enum"))
-
-(c-lang-defconst c-type-modifier-kwds
-  d '("const" "lazy" "volatile")
-)
-(c-lang-defconst c-type-prefix-kwds
-  ;; Keywords where the following name - if any - is a type name, and
-  ;; where the keyword together with the symbol works as a type in
-  ;; declarations.  In this case, like "mixin foo!(x) bar;"
-  d    '("mixin" "align"))
-
-;;(c-lang-defconst c-other-block-decl-kwds
-;;  ;; Keywords where the following block (if any) contains another
-;;  ;; declaration level that should not be considered a class.
-;;  ;; Each of these has associated offsets e.g.
-;;  ;;   'with-open', 'with-close' and 'inwith'
-;;  ;; that can be customized individually
-;;  ;;   TODO: maybe also do this for 'static if' ?  in/out?
-;;  ;;   TODO: figure out how to make this work properly
-;;  d '("with" "version" "extern"))
-
-(c-lang-defconst c-typedef-decl-kwds
-  d (append (c-lang-const c-typedef-decl-kwds)
-     '("typedef" "alias")))
-
-(c-lang-defconst c-decl-hangon-kwds
-  d '("export"))
-
-(c-lang-defconst c-protection-kwds
-  ;; Access protection label keywords in classes.
-  d '("export" "private" "package" "protected" "public"))
-
-;;(c-lang-defconst c-postfix-decl-spec-kwds
-;;  ;Keywords introducing extra declaration specifiers in the region
-;;  ;between the header and the body (i.e. the "K&R-region") in
-;;  ;declarations.
-;;; This doesn't seem to have any effect.  They aren't exactly "K&R-regions".
-;;  d '("in" "out" "body"))
-
-(c-lang-defconst c-type-list-kwds
-  d '("import"))
-
-(c-lang-defconst c-ref-list-kwds
-  d '("module"))
-
-(c-lang-defconst c-colon-type-list-kwds
-  ;; Keywords that may be followed (not necessarily directly) by a colon
-  ;; and then a comma separated list of type identifiers.
-  d  '("class" "enum"))
-
-(c-lang-defconst c-paren-nontype-kwds
-  ;;Keywords that may be followed by a parenthesis expression that doesn't
-  ;; contain type identifiers.
-  d '("version" "extern"))
-
-(c-lang-defconst c-paren-type-kwds
-  ;; Keywords that may be followed by a parenthesis expression containing
-  ;; type identifiers separated by arbitrary tokens.
-  d  '("throw"))
-
-(c-lang-defconst c-block-stmt-1-kwds
-  ;; Statement keywords followed directly by a substatement.
-  ;; 'static' is there for the "else static if (...) {}" usage.
-  d '("do" "else" "finally" "try" "in" "out" "debug" "body"))
-
-(c-lang-defconst c-block-stmt-2-kwds
-  ;; Statement keywords followed by a paren sexp and then by a substatement.
-  d '("for" "if" "switch" "while" "catch" "synchronized" "scope"
-      "foreach" "foreach_reverse" "with"))
-
-(c-lang-defconst c-simple-stmt-kwds
-  ;; Statement keywords followed by an expression or nothing.
-  d '("break" "continue" "goto" "return" "throw"))
-
-(c-lang-defconst c-paren-stmt-kwds
-  ;; Statement keywords followed by a parenthesis expression that
-  ;; nevertheless contains a list separated with ';' and not ','."
-  d '("for" "foreach" "foreach_reverse"))
-
-(c-lang-defconst c-asm-stmt-kwds
-  ;; Statement keywords followed by an assembler expression.
-  d '("asm"))
-
-(c-lang-defconst c-label-kwds
-  ;; Keywords introducing colon terminated labels in blocks.
-  d '("case" "default"))
-
-(c-lang-defconst c-before-label-kwds
-  ;; Keywords that might be followed by a label identifier.
-  d    '("goto" "break" "continue"))
-
-(c-lang-defconst c-constant-kwds
-  ;; Keywords for constants.
-  d '("null" "true" "false"))
-
-(c-lang-defconst c-primary-expr-kwds
-  ;; Keywords besides constants and operators that start primary expressions.
-  d '("this" "super"))
-
-(c-lang-defconst c-inexpr-class-kwds
-  ;; Keywords that can start classes inside expressions.
-  d    nil)
-
-(c-lang-defconst c-inexpr-brace-list-kwds
-  ;; Keywords that can start brace list blocks inside expressions.
-  d    nil)
-
-(c-lang-defconst c-other-decl-kwds
-  d '("module" "import"))
-
-(c-lang-defconst c-other-kwds
-  ;; Keywords not accounted for by any other `*-kwds' language constant.
-  d '("assert"))
-
-
-(defcustom d-font-lock-extra-types nil
-  "*List of extra types (aside from the type keywords) to recognize in D mode.
-Each list item should be a regexp matching a single identifier.")
-
-(defconst d-font-lock-keywords-1 (c-lang-const c-matchers-1 d)
-  "Minimal highlighting for D mode.")
-
-(defconst d-font-lock-keywords-2 (c-lang-const c-matchers-2 d)
-  "Fast normal highlighting for D mode.")
-
-(defconst d-font-lock-keywords-3 (c-lang-const c-matchers-3 d)
-  "Accurate normal highlighting for D mode.")
-
-(defvar d-font-lock-keywords d-font-lock-keywords-3
+     ;;
+     ;; DTrace built-in variables
+     ;;
+     (cons (regexp-opt
+	    '(
+	      "NULL"
+	      "arg0" "arg1" "arg2" "arg3" "arg4" "arg5" "arg6" "arg7"
+	      "arg8" "arg9" 
+	      "args" 
+	      "caller" 
+	      "chip"
+	      "cpu"
+	      "curcpu"
+	      "curlwpsinfo" 
+	      "curpsinfo" 
+	      "curthread"
+	      "cwd" 
+	      "epid" 
+	      "errno" 
+	      "execname" 
+	      "gid"
+	      "id" 
+	      "ipl"
+	      "lgrp"
+	      "pid"
+	      "ppid"
+	      "probefunc"
+	      "probemod" 
+	      "probename" 
+	      "probeprov"
+	      "pset"
+	      "pwd" 
+	      "root"
+	      "self" 
+	      "stackdepth"
+	      "this"
+	      "tid"
+	      "timestamp"
+	      "uid"
+	      "uregs"
+	      "vtimestamp"
+	      "walltimestamp"
+	      ) 'words)
+	   'font-lock-constant-face)
+     ;;
+     ;; DTrace functions.
+     ;;
+     (list (regexp-opt
+	    '(
+	      "alloca"
+	      "avg"
+	      "basename"
+	      "bcopy"
+	      "cleanpath"
+	      "commit"
+	      "copyin" 
+	      "copyinstr" 
+	      "copyinto"
+	      "copyout" 
+	      "copyoutstr" 
+	      "count"
+	      "dirname"
+	      "discard"
+	      "exit"
+	      "jstack"
+	      "lquantize"
+	      "max"
+	      "min" 
+	      "msgdsize"
+	      "msgsize"
+	      "mutex_owned" 
+	      "mutex_owner" 
+	      "mutex_type_adaptive"
+	      "mutex_type_spin"
+	      "offsetof" 
+	      "printa"
+	      "printf"
+	      "progenyof"
+	      "quantize"
+	      "raise" 
+	      "rand"
+	      "rand" 
+	      "rw_iswriter" 
+	      "rw_read_held" 
+	      "rw_write_held"
+	      "speculate"
+	      "speculation"
+	      "stack"
+	      "stop"
+	      "stringof"
+	      "strjoin"
+	      "strlen"
+	      "sum" 
+	      "system"
+	      "trace"
+	      "tracemem" 
+	      "trunc"
+	      "ustack"
+	      ) 'words)
+	   1 'font-lock-builtin-face)
+     ;;
+     ;; Destructive actions
+     ;;
+     (list (regexp-opt
+	    '(
+	      "breakpoint"
+	      "chill"
+	      "panic"
+	      ) 'words)
+	   1 'font-lock-warning-face)
+     ;;
+     ;; DTrace providers
+     ;;
+     (regexp-opt
+      '(
+	"BEGIN"
+	"END"
+	"dtrace"
+	"dtrace"
+	"entry"
+	"fasttrap"
+	"fbt"
+	"fpuinfo"
+	"io"
+	"lockstat"
+	"mib"
+	"pid"
+	"plockstat"
+	"proc"
+	"profile"
+	"return"
+	"sched"
+	"sdt"
+	"syscall"
+	"sysinfo"
+	"tick"
+	"vm"
+	"vminfo"
+	"vtrace"
+	) 'words)))
   "Default expressions to highlight in D mode.")
 
-(defvar d-mode-syntax-table nil
-  "Syntax table used in d-mode buffers.")
-(or d-mode-syntax-table
-    (setq d-mode-syntax-table
-  (let ((table (funcall (c-lang-const c-make-mode-syntax-table d))))
-    ;; Make it recognize D `backquote strings`
-    (modify-syntax-entry ?` "\"" table)
-
-    ;; Make it recognize D's nested /+ +/ comments
-    (modify-syntax-entry ?+  ". 23n"   table)
-    table)))
-
-(defvar d-mode-abbrev-table nil
-  "Abbreviation table used in d-mode buffers.")
-(c-define-abbrev-table 'd-mode-abbrev-table
-  ;; Use the abbrevs table to trigger indentation actions
-  ;; on keywords that, if they occur first on a line, might alter the
-  ;; syntactic context.
-  ;; Syntax for abbrevs is:
-  ;; ( pattern replacement command initial-count)
-  '(("else" "else" c-electric-continued-statement 0)
-    ("while" "while" c-electric-continued-statement 0)
-    ("catch" "catch" c-electric-continued-statement 0)
-    ("finally" "finally" c-electric-continued-statement 0)))
-
-(defvar d-mode-map ()
-  "Keymap used in d-mode buffers.")
-(if d-mode-map
-    nil
-  (setq d-mode-map (c-make-inherited-keymap))
-  ;; Add bindings which are only useful for D
-  ;; (define-key d-mode-map "\C-c\C-e"  'd-cool-function)
-  )
-
-(c-lang-defconst c-mode-menu
-  ;; The definition for the mode menu.  The menu title is prepended to
-  ;; this before it's fed to `easy-menu-define'.
-  t `(["Comment Out Region"     comment-region
-       (c-fn-region-is-active-p)]
-      ["Uncomment Region"       (comment-region (region-beginning)
-      (region-end) '(4))
-       (c-fn-region-is-active-p)]
-      ["Indent Expression"      c-indent-exp
-       (memq (char-after) '(?\( ?\[ ?\{))]
-      ["Indent Line or Region"  c-indent-line-or-region t]
-      ["Fill Comment Paragraph" c-fill-paragraph t]
-      "----"
-      ["Backward Statement"     c-beginning-of-statement t]
-      ["Forward Statement"      c-end-of-statement t]
-      "----"
-      ("Toggle..."
-       ["Syntactic indentation" c-toggle-syntactic-indentation
- :style toggle :selected c-syntactic-indentation]
-       ["Electric mode"         c-toggle-electric-state
- :style toggle :selected c-electric-flag]
-       ["Auto newline"          c-toggle-auto-newline
- :style toggle :selected c-auto-newline]
-       ["Hungry delete"         c-toggle-hungry-state
- :style toggle :selected c-hungry-delete-key]
-       ["Subword mode"          c-subword-mode
- :style toggle :selected (and (boundp 'c-subword-mode)
-                                     c-subword-mode)])))
-
-(easy-menu-define d-menu d-mode-map "D Mode Commands"
-  (cons "D" (c-lang-const c-mode-menu d)))
-
-;;----------------------------------------------------------------------------
-;;;###autoload (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
-
 ;;;###autoload
-(defun d-mode ()
-  "Major mode for editing code written in the D Programming Language.
-See http://www.digitalmars.com/d for more information about the D language.
-The hook `c-mode-common-hook' is run with no args at mode
-initialization, then `d-mode-hook'.
+(define-derived-mode d-mode c-mode "D"
+  "Major mode for editing D code.
+This is much like C mode.  Its keymap inherits from C mode's and it has the same
+variables for customizing indentation.  It has its own abbrev table and its own
+syntax table.
+\\{d-mode-map}
 
-Key bindings:
-\\{d-mode-map}"
+Turning on D mode runs `d-mode-hook'."
+  (setq imenu-generic-expression d-imenu-generic-expression)
+  (setq font-lock-defaults '(d-font-lock-keywords nil nil ((?_ . "w")))))
+
+(defun d-beginning-of-function (&optional arg)
+  "Move backward to next beginning-of-function, or as far as possible.
+With argument, repeat that many times; negative args move forward.
+Returns new value of point in all cases."
+  (interactive "p")
+  (or arg (setq arg 1))
+  (if (< arg 0) (forward-char 1))
+  (and (/= arg 0)
+       (re-search-backward "^[a-z_]+:.*$"
+			   nil 'move arg)
+       (goto-char (1- (match-end 0))))
+  (beginning-of-line))
+
+;; note: this routine is adapted directly from emacs perl-mode.el.
+;; no bugs have been removed :-)
+(defun d-end-of-function (&optional arg)
+  "Move forward to next end-of-function.
+The end of a function is found by moving forward from the beginning of one.
+With argument, repeat that many times; negative args move backward."
+  (interactive "p")
+  (or arg (setq arg 1))
+  (let ((first t))
+    (while (and (> arg 0) (< (point) (point-max)))
+      (let ((pos (point)) npos)
+	(while (progn
+		(if (and first
+			 (progn
+			  (forward-char 1)
+			  (d-beginning-of-function 1)
+			  (not (bobp))))
+		    nil
+		  (or (bobp) (forward-char -1))
+		  (d-beginning-of-function -1))
+		(setq first nil)
+		(forward-list 1)
+		(skip-chars-forward " \t")
+		(if (looking-at "[#\n]")
+		    (forward-line 1))
+		(<= (point) pos))))
+      (setq arg (1- arg)))
+    (while (< arg 0)
+      (let ((pos (point)))
+	(d-beginning-of-function 1)
+	(forward-sexp 1)
+	(forward-line 1)
+	(if (>= (point) pos)
+	    (if (progn (d-beginning-of-function 2) (not (bobp)))
+		(progn
+		  (forward-list 1)
+		  (skip-chars-forward " \t")
+		  (if (looking-at "[#\n]")
+		      (forward-line 1)))
+	      (goto-char (point-min)))))
+      (setq arg (1+ arg)))))
+
+(defun d-mark-function ()
+  "Put mark at end of D function, point at beginning."
   (interactive)
-  (kill-all-local-variables)
-  (c-initialize-cc-mode t)
-  (set-syntax-table d-mode-syntax-table)
-  (setq major-mode 'd-mode
- mode-name "D"
- local-abbrev-table d-mode-abbrev-table
- abbrev-mode t)
-  (use-local-map d-mode-map)
-  (c-init-language-vars d-mode)
-  (c-common-init 'd-mode)
-  (easy-menu-add d-menu)
-  (c-run-mode-hooks 'c-mode-common-hook 'd-mode-hook)
-  (c-update-modeline))
+  (push-mark (point))
+  (d-end-of-function)
+  (push-mark (point))
+  (d-beginning-of-function)
+  (backward-paragraph))
 
 
 (provide 'd-mode)
