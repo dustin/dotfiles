@@ -69,8 +69,8 @@
 some syntax analysis.")
 
 (defvar go-mode-font-lock-keywords
-  (let ((builtins '("cap" "close" "closed" "len" "make" "new"
-                    "panic" "panicln" "print" "println"))
+  (let ((builtins '("append" "cap" "close" "complex" "copy" "delete" "imag" "len"
+                    "make" "new" "panic" "print" "println" "real" "recover"))
         (constants '("nil" "true" "false" "iota"))
         (type-name "\\s *\\(?:[*(]\\s *\\)*\\(?:\\w+\\s *\\.\\s *\\)?\\(\\w+\\)")
         )
@@ -88,7 +88,7 @@ some syntax analysis.")
       (,(concat "\\<type\\>\\s *\\w+\\s *" type-name) 1 font-lock-type-face)
       ;; Arrays/slices/map value type
       ;; XXX Wrong.  Marks 0 in expression "foo[0] * x"
-;;      (,(concat "]" type-name) 1 font-lock-type-face)
+      ;;      (,(concat "]" type-name) 1 font-lock-type-face)
       ;; Map key type
       (,(concat "\\<map\\s *\\[" type-name) 1 font-lock-type-face)
       ;; Channel value type
@@ -500,45 +500,92 @@ Useful for development work."
 
 ;;;###autoload
 (defun gofmt ()
- "Pipe the current buffer through the external tool `gofmt`.
+  "Pipe the current buffer through the external tool `gofmt`.
 Replace the current buffer on success; display errors on failure."
 
- (interactive)
- (let ((srcbuf (current-buffer)))
-   (with-temp-buffer
-     (let ((outbuf (current-buffer))
-           (errbuf (get-buffer-create "*Gofmt Errors*"))
-           (coding-system-for-read 'utf-8)    ;; use utf-8 with subprocesses
-           (coding-system-for-write 'utf-8))
-       (with-current-buffer errbuf (erase-buffer))
-       (with-current-buffer srcbuf
-         (save-restriction
-           (let (deactivate-mark)
-             (widen)
-             (if (= 0 (shell-command-on-region (point-min) (point-max) "gofmt"
-                                               outbuf nil errbuf))
-                 ;; gofmt succeeded: replace the current buffer with outbuf,
-                 ;; restore the mark and point, and discard errbuf.
-                 (let ((old-mark (mark t)) (old-point (point)))
-                   (erase-buffer)
-                   (insert-buffer-substring outbuf)
-                   (goto-char (min old-point (point-max)))
-                   (if old-mark (push-mark (min old-mark (point-max)) t))
-                   (kill-buffer errbuf))
+  (interactive)
+  (let ((currconf (current-window-configuration)))
+    (let ((srcbuf (current-buffer)))
+      (with-temp-buffer
+	(let ((outbuf (current-buffer))
+	      (errbuf (get-buffer-create "*Gofmt Errors*"))
+	      (coding-system-for-read 'utf-8)    ;; use utf-8 with subprocesses
+	      (coding-system-for-write 'utf-8))
+	  (with-current-buffer errbuf (erase-buffer))
+	  (with-current-buffer srcbuf
+	    (save-restriction
+	      (let (deactivate-mark)
+		(widen)
+		(if (= 0 (shell-command-on-region (point-min) (point-max) "gofmt"
+						  outbuf nil errbuf))
+		    ;; restore window config
+		    ;; gofmt succeeded: replace the current buffer with outbuf,
+		    ;; restore the mark and point, and discard errbuf.
+		    (let ((old-mark (mark t)) (old-point (point)))
+		      (set-window-configuration currconf)
+		      (erase-buffer)
+		      (insert-buffer-substring outbuf)
+		      (goto-char (min old-point (point-max)))
+		      (if old-mark (push-mark (min old-mark (point-max)) t))
+		      (kill-buffer errbuf))
 
-               ;; gofmt failed: display the errors
-               (display-buffer errbuf)))))
+		  ;; gofmt failed: display the errors
+		  (display-buffer errbuf)))))
 
-       ;; Collapse any window opened on outbuf if shell-command-on-region
-       ;; displayed it.
-       (delete-windows-on outbuf)))))
+	  ;; Collapse any window opened on outbuf if shell-command-on-region
+	  ;; displayed it.
+	  (delete-windows-on outbuf))))))
 
 ;;;###autoload
 (defun gofmt-before-save ()
- "Add this to .emacs to run gofmt on the current buffer when saving:
+  "Add this to .emacs to run gofmt on the current buffer when saving:
  (add-hook 'before-save-hook #'gofmt-before-save)"
 
- (interactive)
- (when (eq major-mode 'go-mode) (gofmt)))
+  (interactive)
+  (when (eq major-mode 'go-mode) (gofmt)))
+
+(defun godoc-read-query ()
+  "Read a godoc query from the minibuffer."
+  ;; Compute the default query as the symbol under the cursor.
+  ;; TODO: This does the wrong thing for e.g. multipart.NewReader (it only grabs
+  ;; half) but I see no way to disambiguate that from e.g. foobar.SomeMethod.
+  (let* ((bounds (bounds-of-thing-at-point 'symbol))
+         (symbol (if bounds
+                     (buffer-substring-no-properties (car bounds)
+                                                     (cdr bounds)))))
+    (read-string (if symbol
+                     (format "godoc (default %s): " symbol)
+                   "godoc: ")
+                 nil nil symbol)))
+
+(defun godoc-get-buffer (query)
+  "Get an empty buffer for a godoc query."
+  (let* ((buffer-name (concat "*godoc " query "*"))
+         (buffer (get-buffer buffer-name)))
+    ;; Kill the existing buffer if it already exists.
+    (when buffer (kill-buffer buffer))
+    (get-buffer-create buffer-name)))
+
+(defun godoc-buffer-sentinel (proc event)
+  "Sentinel function run when godoc command completes."
+  (with-current-buffer (process-buffer proc)
+    (cond ((string= event "finished\n")  ;; Successful exit.
+           (goto-char (point-min))
+           (display-buffer (current-buffer) 'not-this-window))
+          ((not (= (process-exit-status proc) 0))  ;; Error exit.
+           (let ((output (buffer-string)))
+             (kill-buffer (current-buffer))
+             (message (concat "godoc: " output)))))))
+
+;;;###autoload
+(defun godoc (query)
+  "Show go documentation for a query, much like M-x man."
+  (interactive (list (godoc-read-query)))
+  (unless (string= query "")
+    (set-process-sentinel
+     (start-process-shell-command "godoc" (godoc-get-buffer query)
+                                  (concat "godoc " query))
+     'godoc-buffer-sentinel)
+    nil))
 
 (provide 'go-mode)
