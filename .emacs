@@ -56,6 +56,8 @@
 
 (setq auto-mode-alist
       (cons '("\\.pde" . c++-mode) auto-mode-alist))
+(setq auto-mode-alist
+      (cons '("\\.ino" . c++-mode) auto-mode-alist))
 
 (setq auto-mode-alist
    (cons '("\\.rake" . ruby-mode) auto-mode-alist))
