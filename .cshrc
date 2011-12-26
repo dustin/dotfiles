@@ -66,7 +66,9 @@ if ($?prompt) then
 		endif
 	endif
 	# Find emacs
-	if ( -f /usr/local/bin/emacsclient ) then
+    if ( -f /Applications/Emacs.app/Contents/MacOS/bin/emacsclient ) then
+        setenv EMACSCLIENT /Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+    else if ( -f /usr/local/bin/emacsclient ) then
 	    setenv EMACSCLIENT /usr/local/bin/emacsclient
 	else
 	    setenv EMACSCLIENT emacsclient
