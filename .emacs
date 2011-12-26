@@ -443,7 +443,7 @@ functions, and some types.  It also provides indentation that is
 (autoload 'revbufs "revbufs" (interactive) "Buffer reverter.")
 
 (defun my-go-mode-hook ()
-  (add-hook 'before-save-hook #'gofmt-before-save)
+  (add-hook 'before-save-hook 'gofmt-before-save)
   (setq tab-width 8 indent-tabs-mode 1))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
