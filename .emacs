@@ -436,9 +436,11 @@ functions, and some types.  It also provides indentation that is
       (package-initialize))
   (file-error (message "Failed to load package stuff.")))
 
-(package-initialize)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(if (fboundp 'package-initialize)
+    (progn
+      (package-initialize)
+      (add-to-list 'package-archives
+                   '("marmalade" . "http://marmalade-repo.org/packages/"))))
 
 (autoload 'revbufs "revbufs" (interactive) "Buffer reverter.")
 
