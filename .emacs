@@ -483,6 +483,8 @@ functions, and some types.  It also provides indentation that is
    (intern (concatenate 'string (symbol-name mode) "-hook"))
    'my-general-programming-hooks))
 
+;; OK, trying out some fkey bindings...
+(define-key global-map [f5] 'recompile)
 
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
