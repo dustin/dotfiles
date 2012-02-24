@@ -373,8 +373,6 @@ functions, and some types.  It also provides indentation that is
      :body-bullet-list-prefix       ("* " "** " "*** " "**** " "***** ")
    ))
 
-(setq erc-autojoin-channels-alist
-      '(("freenode.net" "#github" "#memcached" "#buildbot" "#slumbrparty")))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
 
 (add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
