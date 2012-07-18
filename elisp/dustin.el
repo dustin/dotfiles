@@ -10,4 +10,10 @@
       word
     (concat word "s")))
 
+(defun humanize-size (n)
+  "Humanize a size in bytes."
+  (let ((prefixes ["B" "KiB" "MiB" "GiB" "TiB" "PiB" "EiB"])
+        (e (floor (/ (log n) (log 1024)))))
+    (format "%.2f%s" (/ (float n) (expt 1024 (floor e))) (elt prefixes e))))
+
 (provide 'dustin)
