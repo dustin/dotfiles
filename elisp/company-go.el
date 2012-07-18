@@ -14,7 +14,6 @@
   (require 'company))
 
 (defun company-go--invoke-autocomplete ()
-  (message "Autocompleting go")
   (let ((temp-buffer (generate-new-buffer "*gocode*")))
     (prog2
 	(call-process-region (point-min)
