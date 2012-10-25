@@ -217,7 +217,7 @@ nesting caches from the modified point on."
 	(remove-text-properties
 	 b (min go-mode-mark-string-end (point-max)) '(go-mode-comment nil))
 	(setq go-mode-mark-comment-end b)))
-    
+
     (when (< b go-mode-mark-nesting-end)
       (remove-text-properties b (min go-mode-mark-nesting-end (point-max)) '(go-mode-nesting nil))
       (setq go-mode-mark-nesting-end b))))
@@ -264,7 +264,7 @@ directly; use `go-mode-cs'."
 	    ;; Back up to the last known state.
 	    (let ((last-cs
 		   (and (> go-mode-mark-cs-end 1)
-			(get-text-property (1- go-mode-mark-cs-end) 
+			(get-text-property (1- go-mode-mark-cs-end)
 					   'go-mode-cs))))
 	      (if last-cs
 		  (car last-cs)
@@ -332,7 +332,7 @@ comment or string."
 	    ;; Back up to the last known state.
 	    (let ((last-comment
 		   (and (> go-mode-mark-comment-end 1)
-			(get-text-property (1- go-mode-mark-comment-end) 
+			(get-text-property (1- go-mode-mark-comment-end)
 					   'go-mode-comment))))
 	      (if last-comment
 		  (car last-comment)
@@ -381,7 +381,7 @@ directly; use `go-mode-in-string'."
 	    ;; Back up to the last known state.
 	    (let ((last-cs
 		   (and (> go-mode-mark-string-end 1)
-			(get-text-property (1- go-mode-mark-string-end) 
+			(get-text-property (1- go-mode-mark-string-end)
 					   'go-mode-string))))
 	      (if last-cs
 		  (car last-cs)
@@ -389,7 +389,7 @@ directly; use `go-mode-in-string'."
        (while (< pos end)
 	 (goto-char pos)
 	 (let ((cs-end			; end of the text property
-		(cond 
+		(cond
 		 ((looking-at "\"")
 		  (goto-char (1+ pos))
 		  (if (looking-at "[^\"\n\\\\]*\\(\\\\.[^\"\n\\\\]*\\)*\"")
@@ -777,50 +777,68 @@ Replace the current buffer on success; display errors on failure."
             (save-restriction
               (let (deactivate-mark)
                 (widen)
-                (if (= 0 (shell-command-on-region (point-min) (point-max) "gofmt -d"
-                                                  patchbuf nil errbuf))
-                    ; gofmt succeeded: apply patch hunks.
-                    (progn
-                      (kill-buffer errbuf)
-                      (gofmt-apply-patch filename srcbuf patchbuf)
-                      (set-window-configuration currconf))
+                ; If this is a new file, diff-mode can't apply a
+                ; patch to a non-exisiting file, so replace the buffer
+                ; completely with the output of 'gofmt'.
+                ; If the file exists, patch it to keep the 'undo' list happy.
+                (let* ((newfile (not (file-exists-p filename)))
+                      (flag (if newfile "" " -d")))
+                  (if (= 0 (shell-command-on-region (point-min) (point-max)
+                                                    (concat "gofmt" flag)
+                                                    patchbuf nil errbuf))
+                      ; gofmt succeeded: replace buffer or apply patch hunks.
+                      (let ((old-point (point))
+                            (old-mark (mark t)))
+                        (kill-buffer errbuf)
+                        (if newfile
+                            ; New file, replace it (diff-mode won't work)
+                            (gofmt-replace-buffer srcbuf patchbuf)
+                          ; Existing file, patch it
+                          (gofmt-apply-patch filename srcbuf patchbuf))
+                        (goto-char (min old-point (point-max)))
+                        ;; Restore the mark and point
+                        (if old-mark (push-mark (min old-mark (point-max)) t))
+                        (set-window-configuration currconf))
 
                   ;; gofmt failed: display the errors
-                  (gofmt-process-errors filename errbuf)))))
+                  (gofmt-process-errors filename errbuf))))))
 
           ;; Collapse any window opened on outbuf if shell-command-on-region
           ;; displayed it.
           (delete-windows-on patchbuf)))
       (kill-buffer patchbuf))))
 
+(defun gofmt-replace-buffer (srcbuf patchbuf)
+  (with-current-buffer srcbuf
+    (erase-buffer)
+    (insert-buffer-substring patchbuf)))
+
 (defconst gofmt-stdin-tag "<standard input>")
 
 (defun gofmt-apply-patch (filename srcbuf patchbuf)
   (require 'diff-mode)
-  ;; apply all the patch hunks and restore the mark and point
-  (let ((old-point (point))
-        (old-mark (mark t)))
-    (with-current-buffer patchbuf
-      (let ((filename (file-name-nondirectory filename))
-            (min (point-min)))
-        (replace-string gofmt-stdin-tag  filename nil min (point-max))
-        (replace-regexp "^--- /tmp/gofmt[0-9]*" (concat "--- /tmp/" filename)
-                        nil min (point-max)))
-      (condition-case nil
-          (while t
-            (diff-hunk-next)
-            (diff-apply-hunk))
-        ;; When there's no more hunks, diff-hunk-next signals an error, ignore it
-        (error nil)))
-    (goto-char (min old-point (point-max)))
-    (if old-mark (push-mark (min old-mark (point-max)) t))))
+  ;; apply all the patch hunks
+  (with-current-buffer patchbuf
+    (goto-char (point-min))
+    ;; The .* is for TMPDIR, but to avoid dealing with TMPDIR
+    ;; having a trailing / or not, it's easier to just search for .*
+    ;; especially as we're only replacing the first instance.
+    (if (re-search-forward "^--- \\(.*/gofmt[0-9]*\\)" nil t)
+      (replace-match filename nil nil nil 1))
+    (condition-case nil
+        (while t
+          (diff-hunk-next)
+          (diff-apply-hunk))
+      ;; When there's no more hunks, diff-hunk-next signals an error, ignore it
+      (error nil))))
 
 (defun gofmt-process-errors (filename errbuf)
   ;; Convert the gofmt stderr to something understood by the compilation mode.
   (with-current-buffer errbuf
-    (beginning-of-buffer)
+    (goto-char (point-min))
     (insert "gofmt errors:\n")
-    (replace-string gofmt-stdin-tag (file-name-nondirectory filename) nil (point-min) (point-max))
+    (if (search-forward gofmt-stdin-tag nil t)
+      (replace-match (file-name-nondirectory filename) nil t))
     (display-buffer errbuf)
     (compilation-mode)))
 
