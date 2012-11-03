@@ -163,14 +163,16 @@ functions, and some types.  It also provides indentation that is
 ;;                                   (nnimap-address "imap.west.spy.net")
 ;;                                   (nnimap-stream ssl)))
 
-(setq gnus-select-method '(nntp "news.giganews.com"))
+(setq gnus-select-method '(nntp "news.gmane.org"))
 
 (setq user-mail-address "dustin@spy.net")
 
 (setq gnus-posting-styles
       '((".*"
          (name "Dustin Sallings")
-         ("X-URL" "http://bleu.west.spy.net/~dustin/"))
+         (signature "dustin"))
+        ("gmane.*"
+         (address "dsallings@gmail.com"))
         ("work"
          (address user-mail-address))
         ("spy.net"
