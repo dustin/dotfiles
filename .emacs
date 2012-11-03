@@ -173,6 +173,8 @@ functions, and some types.  It also provides indentation that is
          (signature "dustin"))
         ("gmane.*"
          (address "dsallings@gmail.com"))
+        ("gmane.comp.db.couchdb.*"
+         (address "dustin@spy.net"))
         ("work"
          (address user-mail-address))
         ("spy.net"
