@@ -167,6 +167,8 @@ functions, and some types.  It also provides indentation that is
 
 (setq user-mail-address "dustin@spy.net")
 
+(setq gnus-agent t)
+
 (setq gnus-posting-styles
       '((".*"
          (name "Dustin Sallings")
