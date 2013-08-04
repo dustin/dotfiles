@@ -476,6 +476,13 @@ functions, and some types.  It also provides indentation that is
 
 (add-hook 'find-file-hook 'dustin-maybe-visiting-gitignore-hook)
 
+; http://www.ogre.com/node/447
+(defun git-grep (search)
+  "git-grep the current git repo"
+  (interactive (list (completing-read "Search for: " nil nil nil (current-word))))
+  (grep-find (concat "git --no-pager grep -n "
+                     search " `git rev-parse --show-toplevel`")))
+
 (defun my-general-programming-hooks ()
   ; Stupid trailing whitespace.
   (setq show-trailing-whitespace t)
