@@ -5,7 +5,9 @@
 ;; license that can be found in the LICENSE file.
 
 (require 'cl)
+(require 'etags)
 (require 'ffap)
+(require 'ring)
 (require 'url)
 
 ;; XEmacs compatibility guidelines
@@ -42,6 +44,19 @@
       'kill-whole-line
     'kill-entire-line))
 
+;; Delete the current line without putting it in the kill-ring.
+(defun go--delete-whole-line (&optional arg)
+  ;; Emacs uses both kill-region and kill-new, Xemacs only uses
+  ;; kill-region. In both cases we turn them into operations that do
+  ;; not modify the kill ring. This solution does depend on the
+  ;; implementation of kill-line, but it's the only viable solution
+  ;; that does not require to write kill-line from scratch.
+  (flet ((kill-region (beg end)
+                      (delete-region beg end))
+         (kill-new (s) ()))
+    (go--kill-whole-line arg)))
+
+
 ;; XEmacs unfortunately does not offer position-bytes. We can fall
 ;; back to just using (point), but it will be incorrect as soon as
 ;; multibyte characters are being used.
@@ -72,12 +87,29 @@
       (concat "\\<" s "\\>")
     (concat "\\_<" s "\\_>")))
 
+;; Move up one level of parentheses.
+(defun go-goto-opening-parenthesis (&optional legacy-unused)
+  ;; The old implementation of go-goto-opening-parenthesis had an
+  ;; optional argument to speed up the function. It didn't change the
+  ;; function's outcome.
+
+  ;; Silently fail if there's no matching opening parenthesis.
+  (condition-case nil
+      (backward-up-list)
+    (scan-error nil)))
+
+
 (defconst go-dangling-operators-regexp "[^-]-\\|[^+]\\+\\|[/*&><.=|^]")
 (defconst go-identifier-regexp "[[:word:][:multibyte:]]+")
 (defconst go-label-regexp go-identifier-regexp)
 (defconst go-type-regexp "[[:word:][:multibyte:]*]+")
 (defconst go-func-regexp (concat (go--regexp-enclose-in-symbol "func") "\\s *\\(" go-identifier-regexp "\\)"))
-(defconst go-func-meth-regexp (concat (go--regexp-enclose-in-symbol "func") "\\s *\\(?:(\\s *" go-identifier-regexp "\\s +" go-type-regexp "\\s *)\\s *\\)?\\(" go-identifier-regexp "\\)("))
+(defconst go-func-meth-regexp (concat
+                               (go--regexp-enclose-in-symbol "func") "\\s *\\(?:(\\s *"
+                               "\\(" go-identifier-regexp "\\s +\\)?" go-type-regexp
+                               "\\s *)\\s *\\)?\\("
+                               go-identifier-regexp
+                               "\\)("))
 (defconst go-builtins
   '("append" "cap"   "close"   "complex" "copy"
     "delete" "imag"  "len"     "make"    "new"
@@ -159,6 +191,7 @@
      ;; TODO do we actually need this one or isn't it just a function call?
      (,(concat "\\.\\s *(" go-type-name-regexp) 1 font-lock-type-face) ;; Type conversion
      (,(concat (go--regexp-enclose-in-symbol "func") "[[:space:]]+(" go-identifier-regexp "[[:space:]]+" go-type-name-regexp ")") 1 font-lock-type-face) ;; Method receiver
+     (,(concat (go--regexp-enclose-in-symbol "func") "[[:space:]]+(" go-type-name-regexp ")") 1 font-lock-type-face) ;; Method receiver without variable name
      ;; Like the original go-mode this also marks compound literal
      ;; fields. There, it was marked as to fix, but I grew quite
      ;; accustomed to it, so it'll stay for now.
@@ -174,6 +207,7 @@
     (define-key m "=" 'go-mode-insert-and-indent)
     (define-key m (kbd "C-c C-a") 'go-import-add)
     (define-key m (kbd "C-c C-j") 'godef-jump)
+    (define-key m (kbd "C-x 4 C-c C-j") 'godef-jump-other-window)
     (define-key m (kbd "C-c C-d") 'godef-describe)
     m)
   "Keymap used by Go mode to implement electric keys.")
@@ -267,18 +301,6 @@ curly brace we are checking. If they match, we return non-nil."
             (if (and (= (go-paren-level) start-nesting) (= old-point (point)))
                 t))))))
 
-(defun go-goto-opening-parenthesis (&optional char)
-  (let ((start-nesting (go-paren-level)))
-    (while (and (not (bobp))
-                (>= (go-paren-level) start-nesting))
-      (if (zerop (skip-chars-backward
-                  (if char
-                      (case char (?\] "^[") (?\} "^{") (?\) "^("))
-                    "^[{(")))
-          (if (go-in-string-or-comment-p)
-              (go-goto-beginning-of-string-or-comment)
-            (backward-char))))))
-
 (defun go--indentation-for-opening-parenthesis ()
   "Return the semantic indentation for the current opening parenthesis.
 
@@ -303,7 +325,7 @@ current line will be returned."
        ((go-in-string-p)
         (current-indentation))
        ((looking-at "[])}]")
-        (go-goto-opening-parenthesis (char-after))
+        (go-goto-opening-parenthesis)
         (if (go-previous-line-has-dangling-op-p)
             (- (current-indentation) tab-width)
           (go--indentation-for-opening-parenthesis)))
@@ -518,7 +540,7 @@ buffer."
                 (goto-char (point-min))
                 (forward-line (- from line-offset 1))
                 (incf line-offset len)
-                (go--kill-whole-line len)))
+                (go--delete-whole-line len)))
              (t
               (error "invalid rcs patch or internal error in go--apply-rcs-patch")))))))))
 
@@ -847,23 +869,25 @@ will be commented, otherwise they will be removed completely."
           (beginning-of-line)
           (if arg
               (comment-region (line-beginning-position) (line-end-position))
-            (go--kill-whole-line)))
+            (go--delete-whole-line)))
         (message "Removed %d imports" (length lines)))
       (if flymake-state (flymake-mode-on)))))
 
-(defun godef--find-file-line-column (specifier)
+(defun godef--find-file-line-column (specifier other-window)
   "Given a file name in the format of `filename:line:column',
 visit FILENAME and go to line LINE and column COLUMN."
-  (let* ((components (split-string specifier ":"))
-         (line (string-to-number (nth 1 components)))
-         (column (string-to-number (nth 2 components))))
-    (with-current-buffer (find-file (car components))
-      (goto-char (point-min))
-      (forward-line (1- line))
-      (beginning-of-line)
-      (forward-char (1- column))
-      (if (buffer-modified-p)
-          (message "Buffer is modified, file position might not have been correct")))))
+  (if (not (string-match "\\(.+\\):\\([0-9]+\\):\\([0-9]+\\)" specifier))
+      (error "Unexpected godef output: %s" specifier)
+    (let ((filename (match-string 1 specifier))
+          (line (string-to-number (match-string 2 specifier)))
+          (column (string-to-number (match-string 3 specifier))))
+      (with-current-buffer (funcall (if other-window 'find-file-other-window 'find-file) filename)
+        (goto-char (point-min))
+        (forward-line (1- line))
+        (beginning-of-line)
+        (forward-char (1- column))
+        (if (buffer-modified-p)
+            (message "Buffer is modified, file position might not have been correct"))))))
 
 (defun godef--call (point)
   "Call godef, acquiring definition position and expression
@@ -889,7 +913,7 @@ description at POINT."
           (message "%s" description)))
     (file-error (message "Could not run godef binary"))))
 
-(defun godef-jump (point)
+(defun godef-jump (point &optional other-window)
   "Jump to the definition of the expression at POINT."
   (interactive "d")
   (condition-case nil
@@ -903,7 +927,12 @@ description at POINT."
           (message "%s" file))
          (t
           (push-mark)
-          (godef--find-file-line-column file))))
+          (ring-insert find-tag-marker-ring (point-marker))
+          (godef--find-file-line-column file other-window))))
     (file-error (message "Could not run godef binary"))))
+
+(defun godef-jump-other-window (point)
+  (interactive "d")
+  (godef-jump point t))
 
 (provide 'go-mode)
