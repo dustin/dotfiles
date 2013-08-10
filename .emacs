@@ -196,11 +196,8 @@ functions, and some types.  It also provides indentation that is
 (dustin-libs-and-paths
  '(
    ("muse/lisp")
-   ("coffee" coffee-mode)
    ("remember/" remember)
-   ("planner/" planner)
-   ("growl" growl)
-   ("slime")))
+   ("planner/" planner)))
 
 (autoload 'slime "slime")
 
