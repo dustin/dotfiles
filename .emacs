@@ -201,7 +201,6 @@ functions, and some types.  It also provides indentation that is
    ("coffee" coffee-mode)
    ("remember/" remember)
    ("planner/" planner)
-   ("magit" magit)
    ("growl" growl)
    ("slime")))
 
