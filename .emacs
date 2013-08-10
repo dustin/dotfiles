@@ -83,8 +83,6 @@
 
 ; caml modes
 
-(add-to-list 'load-path "~/elisp/caml")
-
 (setq auto-mode-alist
           (cons '("\\.ml[iyl]?$" .  caml-mode) auto-mode-alist))
 
