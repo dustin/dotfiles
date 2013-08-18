@@ -497,6 +497,8 @@ functions, and some types.  It also provides indentation that is
 ;; OK, trying out some fkey bindings...
 (define-key global-map [f5] 'recompile)
 
+(global-set-key "\M-\C-y" 'kill-ring-search)
+
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
     (load
