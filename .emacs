@@ -20,10 +20,6 @@
 
 (add-to-list 'exec-path "/opt/local/bin")
 
-;; ; I want html to use nxml mode
-;; (setq auto-mode-alist
-;;           (cons '("\\.html$" .  nxml-mode) auto-mode-alist))
-
 (autoload 'cheat "cheat" "Cheater." t)
 
 (autoload 'django-html-mode "django-html-mode.el"
@@ -204,14 +200,6 @@ functions, and some types.  It also provides indentation that is
 (global-set-key (kbd "C-c m") 'magit-status)
 
 (server-start)
-
-;; Do I want this to be like textmate?
-; (global-set-key "\M-t" 'find-tag)
-
-;; I haven't really figured out what I want to use for colors
-; (set-background-color "black")
-; (set-foreground-color "white")
-; (set-cursor-color "white")
 
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file 'noerror)
