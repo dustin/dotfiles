@@ -438,7 +438,7 @@ functions, and some types.  It also provides indentation that is
     (progn
       (package-initialize)
       (add-to-list 'package-archives
-                   '("marmalade" . "http://marmalade-repo.org/packages/"))))
+                   '("melpa" . "http://melpa.milkbox.net/packages/") t)))
 
 (autoload 'revbufs "revbufs" (interactive) "Buffer reverter.")
 
