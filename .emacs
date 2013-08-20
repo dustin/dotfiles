@@ -70,10 +70,6 @@
 (autoload 'feature-mode "feature-mode" "Mode for editing cucumber files" t)
 (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 
-(autoload 'cflow-mode "cflow-mode")
-(setq auto-mode-alist (append auto-mode-alist
-                              '(("\\.cflow$" . cflow-mode))))
-
 (setq auto-mode-alist
    (cons '("\\.app" . erlang-mode) auto-mode-alist))
 
@@ -114,22 +110,6 @@ functions, and some types.  It also provides indentation that is
   "Major mode for editing Haskell scripts." t)
 (autoload 'literate-haskell-mode "haskell-mode"
   "Major mode for editing literate Haskell scripts." t)
-
-;; Javascript
-(autoload 'js2-mode "js2" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-
-
-
-(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
-(add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
-
-;; D
-(autoload 'd-mode "d-mode" "Major mode for editing D code." t)
-(add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
-
-(setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
-(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
 ; http://www.emacswiki.org/emacs/DynamicAbbreviations
 ; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
