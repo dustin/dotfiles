@@ -8,23 +8,6 @@ if ( -f $completecache ) then
 	source $completecache
 endif
 
-# TLA completions
-if(! $?tlacommands) then
-	set tlacommands=()
-endif
-set tlapath=`which tla`
-if ( $? == 0 ) then
-	if ( -f $completecache && { test $tlapath -ot $completecache } ) then
-		:
-	else
-		echo "updating tla"
-		set updatecache=1
-		set tlacommands=( \
-			`tla help | grep -v alias | sed -n 's,:.*,,p' | sort -u ` )
-	endif
-	complete tla 'p/1/$tlacommands/'
-endif
-
 # darcs completions
 if(! $?darcscommands) then
 	set darcscommands=()
@@ -108,7 +91,6 @@ if ($updatecache == 1) then
 	echo "Updating the completion cache."
 	rm -f $completecache
 	touch $completecache
-	echo "set tlacommands=($tlacommands)" >> $completecache
 	echo "set darcscommands=($darcscommands)" >> $completecache
 	echo "set hgcommands=($hgcommands)" >> $completecache
 	echo "set gitcommands=($gitcommands)" >> $completecache
