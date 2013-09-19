@@ -99,7 +99,4 @@ if ($updatecache == 1) then
 	echo "set svncommands=($svncommands)" >> $completecache
 endif
 
-# Smarteiffel completions
-complete se 'p/1/(compile pretty finder clean short)/'
-
 # vim: syntax=csh
