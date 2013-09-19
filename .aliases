@@ -17,14 +17,7 @@ endsw
 
 alias ls ls -AF
 alias ll ls -l
-alias up cd ..
-alias uns 'unset autologout'
 alias cpan '/usr/local/bin/perl -MCPAN -e shell'
-
-alias propcvs cvs -d ":ext:propaganda.spy.net:/home/dustin/CVS"
-alias homecvs cvs -d ":ext:bleu.west.spy.net:/usr/src2/CVS"
-
-alias rawplay 'sfplay -i byteorder little integer 16 2 chan 2 rate 44100 end'
 
 # Use the vim detected in the .cshrc
 alias vi $VEEEYE
@@ -33,12 +26,7 @@ alias vim $VEEEYE
 # alias bbs tisca bbs=bbs.digitech.org
 # alias bbs ssh -v bbs@bbs.digitech.org
 # alias bbs ssh -v bbs@bbs.minot.com
-alias bbs ssh -v bbs@hipster.org
-
-# Kerb stuff
-alias kinit /usr/local/bin/kinit -pf
-alias rlogin /usr/local/bin/rlogin -x -f
-alias rcp /usr/local/bin/rcp -x
+# alias bbs ssh -v bbs@hipster.org
 
 alias pine "pine -p '{mail.west.spy.net}INBOX.pine.remote_pinerc'"
 
@@ -46,16 +34,7 @@ if ( -r /usr/local/bin/ctags ) then
 	alias ctags /usr/local/bin/ctags
 endif
 
-# If I do this in .antrc,I can't undo it later.
-alias ant ant -logger org.apache.tools.ant.listener.AnsiColorLogger
-
-alias ircfreenet epic $FNIRCSERVER
-alias ircefnet epic $EFIRCSERVER
-
 alias ec $EMACSCLIENT -n
-
-# make-log and edit command for tla
-alias tlog 'vi `tla make-log`'
 
 if ( -r ~/".aliases.$arch" ) then
     source ~/".aliases.$arch"
