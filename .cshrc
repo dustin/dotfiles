@@ -28,11 +28,6 @@ foreach d (/usr/pkg/bin /usr/local/bin /usr/pkg/sbin \
 	endif
 end
 
-# Bring in the fink
-if ( -r /sw/bin/init.csh ) then
-	source /sw/bin/init.csh
-endif
-
 # Stuff that only applies when I login
 if ($?prompt) then
 	set savehist=(500 merge)
@@ -56,15 +51,7 @@ if ($?prompt) then
 	# Default editor is vi
 	setenv EDITOR vi
 	setenv VEEEYE vi
-	# Find vim
-	if (-d $HOME/MyApps/Vim.app) then
-		setenv VEEEYE $HOME/MyApps/Vim.app/Contents/MacOS/Vim
-	else
-		which vim >& /dev/null
-		if ( $? == 0 ) then
-			setenv VEEEYE vim
-		endif
-	endif
+
 	# Find emacs
     if ( -f /Applications/Emacs.app/Contents/MacOS/bin/emacsclient ) then
         setenv EMACSCLIENT /Applications/Emacs.app/Contents/MacOS/bin/emacsclient
@@ -77,21 +64,6 @@ if ($?prompt) then
 	setenv ALTERNATE_EDITOR $VEEEYE
 	setenv EDITOR $EMACSCLIENT
 	setenv VISUAL $EDITOR
-	setenv NNTPSERVER news
-	setenv CVS_RSH ssh
-
-	# Tell perforce to use my merge command
-	setenv P4MERGE p4merge
-
-	setenv IRCNICK CiscoKid
-	setenv IRCNAME "Dustin Sallings"
-	setenv EFIRCSERVER \
-		"efnet.ipv6.xs4all.nl irc.homelien.no irc.efnet.nl \
-		irc-efnet.svc.us.xo.net irc.easynews.com irc.prison.net"
-	setenv FNIRCSERVER \
-		"irc.ipv6.freenode.net irc.us.freenode.net irc.freenode.net"
-
-	setenv DN uid=dustin,ou=agents,dc=spy,dc=net
 
 	set filec
 	set history=1000
@@ -99,11 +71,6 @@ if ($?prompt) then
 
 	bindkey -k up history-search-backward
 	bindkey -k down history-search-forward
-
-	setenv RUNTIMEPATH \
-		/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar
-
-	setenv SmartEiffel $HOME/lib/SmartEiffel/sys/system.se
 
 	# Aliases are pulled in separately
     if ( -r ~/.aliases ) then
