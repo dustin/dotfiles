@@ -127,10 +127,6 @@ functions, and some types.  It also provides indentation that is
 (setq display-time-24hr-format t)
 (display-time-mode t)
 
-; If there's a battery mode, display it.
-(if (fboundp 'display-battery-mode)
-    (display-battery-mode t))
-
 ; Look.  I can read email *sigh*
 (setq imap-ssl-program "openssl s_client -tls1 -connect %s:%p")
 ;; (setq gnus-select-method '(nnimap "spy.net"
