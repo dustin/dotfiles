@@ -414,6 +414,7 @@ functions, and some types.  It also provides indentation that is
   (setq tab-width 8 indent-tabs-mode 1)
   (local-set-key (kbd "M-.") 'godef-jump))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
+(add-hook 'go-mode-hook 'go-eldoc-setup)
 
 (require 'color-theme)
 (eval-after-load "color-theme"
