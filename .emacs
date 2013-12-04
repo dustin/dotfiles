@@ -20,8 +20,6 @@
 
 (add-to-list 'exec-path "/opt/local/bin")
 
-(autoload 'cheat "cheat" "Cheater." t)
-
 (autoload 'django-html-mode "django-html-mode.el"
    "Major mode for editing django template files" t)
 
