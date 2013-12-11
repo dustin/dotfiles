@@ -30,8 +30,8 @@
                 graphviz-dot-mode haml-mode htmlize
                 imenu-anywhere impatient-mode js2-mode json-mode
                 kill-ring-search lua-mode magit markdown-mode
-                oauth popup pov-mode sass-mode simple-httpd slime
-                slime-clj yaml-mode zen-and-art-theme zen-mode))
+                oauth org popup pov-mode sass-mode simple-httpd
+                slime yaml-mode zen-and-art-theme))
             (all-installed
              (loop for p in wanted-packages
                    when (not (package-installed-p p)) do (return nil)
