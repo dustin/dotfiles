@@ -5,6 +5,43 @@
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'meta)
 
+(condition-case nil
+    (when
+        (load
+         (expand-file-name "~/.emacs.d/elpa/package.el"))
+      (package-initialize))
+  (file-error (message "Failed to load package stuff.")))
+
+(require 'cl)
+
+(if (fboundp 'package-initialize)
+    (progn
+      (package-initialize)
+      (add-to-list 'package-archives
+                   '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+      (let* ((wanted-packages
+            `(all auctex calfw calfw-gcal company dockerfile-mode
+                  dot-mode ess go-autocomplete auto-complete go-eldoc
+                  go-mode imenu-anywhere js2-mode json-mode
+                  kill-ring-search lua-mode magit git-rebase-mode
+                  git-commit-mode markdown-mode popup pov-mode
+                  sass-mode haml-mode yaml-mode))
+            (all-installed
+             (loop for p in wanted-packages
+                   when (not (package-installed-p p)) do (return nil)
+                   finally (return t))))
+
+        (unless all-installed
+          ;; check for new packages (package versions)
+          (message "%s" "Emacs Prelude is now refreshing its package database...")
+          (package-refresh-contents)
+          (message "%s" " done.")
+          ;; install the missing packages
+          (dolist (p wanted-packages)
+            (when (not (package-installed-p p))
+              (package-install p)))))))
+
 (add-hook 'text-mode-hook
   (lambda()
     (auto-fill-mode)))
@@ -151,8 +188,6 @@ functions, and some types.  It also provides indentation that is
          (address user-mail-address))))
 
 (setq inhibit-startup-message t)
-
-(require 'cl)
 
 (defun dustin-libs-and-paths (l)
   "Load some libs and require something from them."
@@ -383,24 +418,6 @@ functions, and some types.  It also provides indentation that is
     (delete-trailing-whitespace)))
 
 (add-hook 'dustin-periodic-task-hooks 'dustin-cleanup-rnc-crap)
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(condition-case nil
-    (when
-        (load
-         (expand-file-name "~/.emacs.d/elpa/package.el"))
-      (package-initialize))
-  (file-error (message "Failed to load package stuff.")))
-
-(if (fboundp 'package-initialize)
-    (progn
-      (package-initialize)
-      (add-to-list 'package-archives
-                   '("melpa" . "http://melpa.milkbox.net/packages/") t)))
 
 (autoload 'revbufs "revbufs" (interactive) "Buffer reverter.")
 
