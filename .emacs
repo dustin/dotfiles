@@ -20,6 +20,7 @@
       (add-to-list 'package-archives
                    '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
+      ;; See package-activated-list for what's installed now
       (let* ((wanted-packages
             `(all auctex calfw calfw-gcal company dockerfile-mode
                   dot-mode ess go-autocomplete auto-complete go-eldoc
