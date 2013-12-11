@@ -22,12 +22,16 @@
 
       ;; See package-activated-list for what's installed now
       (let* ((wanted-packages
-            `(all auctex calfw calfw-gcal company dockerfile-mode
-                  dot-mode ess go-autocomplete auto-complete go-eldoc
-                  go-mode imenu-anywhere js2-mode json-mode
-                  kill-ring-search lua-mode magit git-rebase-mode
-                  git-commit-mode markdown-mode popup pov-mode
-                  sass-mode haml-mode yaml-mode))
+
+              `(all auctex auto-complete calfw calfw-gcal caml
+                company csv-mode dockerfile-mode dot-mode ess
+                git-commit-mode git-rebase-mode gitconfig-mode
+                gitignore-mode go-autocomplete go-eldoc go-mode
+                graphviz-dot-mode haml-mode htmlize
+                imenu-anywhere impatient-mode js2-mode json-mode
+                kill-ring-search lua-mode magit markdown-mode
+                oauth popup pov-mode sass-mode simple-httpd slime
+                slime-clj yaml-mode zen-and-art-theme zen-mode))
             (all-installed
              (loop for p in wanted-packages
                    when (not (package-installed-p p)) do (return nil)
