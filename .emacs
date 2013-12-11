@@ -57,61 +57,24 @@
 
 (add-to-list 'exec-path "/opt/local/bin")
 
-(autoload 'django-html-mode "django-html-mode.el"
-   "Major mode for editing django template files" t)
-
 (add-to-list 'load-path "~/elisp")
-(autoload 'markdown-mode "markdown-mode.el"
-   "Major mode for editing Markdown files" t)
-(setq auto-mode-alist
-   (cons '("\\.markdown" . markdown-mode) auto-mode-alist))
-(setq auto-mode-alist
-   (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
-(autoload 'graphviz-dot-mode "graphviz-dot-mode.el"
-  "Major mode for graphviz")
 (add-to-list 'auto-mode-alist '("\\.dot\\'" . graphviz-dot-mode))
 
-(autoload 'wikipedia-mode
-  "wikipedia-mode.el"
-  "Major mode for editing documents in Wikipedia markup." t)
-(setq auto-mode-alist
-      (cons '("\\.wiki\\'" . wikipedia-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.tac" . python-mode))
 
-(autoload 'protobuf-mode "protobuf-mode.el" "Probuffer mode.")
-(setq auto-mode-alist
-      (cons '("\\.proto\\'" . protobuf-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.pde" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.ino" . c++-mode))
 
-(setq auto-mode-alist
-   (cons '("\\.tac" . python-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.rake" . ruby-mode))
 
-(setq auto-mode-alist
-      (cons '("\\.pde" . c++-mode) auto-mode-alist))
-(setq auto-mode-alist
-      (cons '("\\.ino" . c++-mode) auto-mode-alist))
-
-(setq auto-mode-alist
-   (cons '("\\.rake" . ruby-mode) auto-mode-alist))
-
-(autoload 'haml-mode "haml-mode")
-(add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
-
-(autoload 'sass-mode "sass-mode")
 (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
 
-(autoload 'yaml-mode "yaml-mode")
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-
-(autoload 'feature-mode "feature-mode" "Mode for editing cucumber files" t)
-(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
-
-(setq auto-mode-alist
-   (cons '("\\.app" . erlang-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.app" . erlang-mode))
 
 ; caml modes
 
-(setq auto-mode-alist
-          (cons '("\\.ml[iyl]?$" .  caml-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.ml[iyl]?$" . caml-mode))
 
 (autoload 'caml-mode "ocaml" (interactive)
   "Major mode for editing Caml code." t)
@@ -130,8 +93,6 @@ functions, and some types.  It also provides indentation that is
 \(almost) identical to gofmt.
 
 \(fn)" t nil)
-
-(add-to-list (quote auto-mode-alist) (cons "\\.go$" (function go-mode)))
 
 ; haskell mode
 (add-to-list 'load-path "~/elisp/haskell-mode")
