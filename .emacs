@@ -85,10 +85,7 @@
   "Major mode for editing Caml code." t)
 (autoload 'camldebug "camldebug" (interactive) "Debug caml mode")
 
-(autoload 'twitter-get-friends-timeline "twitter" nil t)
-(autoload 'twitter-status-edit "twitter" nil t)
-(global-set-key "\C-xt" 'twitter-get-friends-timeline)
-(add-hook 'twitter-status-edit-mode-hook 'longlines-mode)
+(global-set-key "\C-xt" 'twit)
 
 (autoload (quote go-mode) "go-mode" "\
 Major mode for editing Go source text.
