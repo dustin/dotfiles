@@ -29,7 +29,7 @@
                 gitignore-mode go-autocomplete go-eldoc go-mode
                 graphviz-dot-mode haml-mode htmlize
                 imenu-anywhere impatient-mode js2-mode json-mode
-                kill-ring-search lua-mode magit markdown-mode
+                kill-ring-search lua-mode magit markdown-mode muse
                 oauth org popup pov-mode sass-mode simple-httpd
                 slime yaml-mode zen-and-art-theme))
             (all-installed
@@ -160,12 +160,6 @@ functions, and some types.  It also provides indentation that is
         (if (cadar l)
             (require (cadar l)))
         (dustin-libs-and-paths (cdr l)))))
-
-(dustin-libs-and-paths
- '(
-   ("muse/lisp")
-   ("remember/" remember)
-   ("planner/" planner)))
 
 (autoload 'slime "slime")
 
