@@ -23,7 +23,7 @@
       ;; See package-activated-list for what's installed now
       (let* ((wanted-packages
               `(all auctex auto-complete calfw calfw-gcal caml
-               color-theme company company-go csv-mode
+               color-theme company csv-mode
                dockerfile-mode dot-mode ess fuzzy git-commit-mode
                git-rebase-mode gitconfig-mode gitignore-mode
                go-autocomplete go-eldoc go-mode graphviz-dot-mode
