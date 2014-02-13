@@ -232,11 +232,7 @@ functions, and some types.  It also provides indentation that is
 
 (defun my-growl-erc-hook (match-type nick message)
   "Basic growl notification when someone says my nick in an irc channel."
-  (and (eq match-type 'current-nick)
-       (growl (concat "Your nick was mentioned on: "
-                      (buffer-name (current-buffer))
-                      "\n"
-                      message))))
+)
 
 (add-hook 'erc-text-matched-hook 'my-growl-erc-hook)
 
@@ -334,6 +330,30 @@ functions, and some types.  It also provides indentation that is
 (define-key global-map [f5] 'recompile)
 
 (global-set-key "\M-\C-y" 'kill-ring-search)
+
+;; My JSON tools.
+(defun format-json ()
+  "Clean up JSON in the current buffer."
+  (interactive)
+  (save-excursion
+    (shell-command-on-region (point-min) (point-max)
+                             "python -mjson.tool" 'nil t)
+    (delete-trailing-whitespace)))
+
+
+(defun format-json-region ()
+  "Clean up JSON in a selected region"
+  (interactive)
+    (save-excursion
+    (shell-command-on-region (region-beginning) (region-end)
+                             "python -mjson.tool" 'nil t)
+    (delete-trailing-whitespace)))
+
+(defun format-json-setup-save-hook ()
+  "Automatically clean up JSON before saving."
+  (interactive)
+  (message "Set up format-json hook for this buffer.")
+  (add-hook 'before-save-hook 'format-json nil t))
 
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
