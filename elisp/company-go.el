@@ -18,7 +18,7 @@
     (prog2
 	(call-process-region (point-min)
 			     (point-max)
-			     "/Users/dustin/go/bin/gocode"
+			     "~/go/bin/gocode"
 			     nil
 			     temp-buffer
 			     nil
