@@ -355,12 +355,16 @@ functions, and some types.  It also provides indentation that is
   (message "Set up format-json hook for this buffer.")
   (add-hook 'before-save-hook 'format-json nil t))
 
-;; From http://ergoemacs.org/emacs/elisp_insert_random_number_string.html
+;; https://code.google.com/p/ergoemacs/source/browse/packages/xah-insert-random-id.el
 (random t)
-(defun insert-random-number ()
-  "Insert a random number between 0 and 999999"
-  (interactive)
-  (insert (number-to-string (random 999999))))
+(defun insert-random-number (φcount)
+  "Insert φcount of random digits.
+φcount default to 5"
+  (interactive "P")
+  (let (myCharset (possibleCharsCount 10))
+    (setq myCharset "1234567890")
+    (dotimes (ii (if (numberp φcount) (abs φcount) 5))
+      (insert (elt myCharset (random possibleCharsCount))))))
 
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
