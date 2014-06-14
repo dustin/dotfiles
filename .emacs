@@ -30,7 +30,7 @@
                haml-mode haskell-mode htmlize imenu-anywhere
                impatient-mode js2-mode json-mode kill-ring-search
                lua-mode magit markdown-mode muse oauth popup
-               pov-mode sass-mode simple-httpd slime
+               pov-mode sass-mode simple-httpd
                twittering-mode xcscope yaml-mode yasnippet
                zen-and-art-theme))
             (all-installed
@@ -354,6 +354,13 @@ functions, and some types.  It also provides indentation that is
   (interactive)
   (message "Set up format-json hook for this buffer.")
   (add-hook 'before-save-hook 'format-json nil t))
+
+;; From http://ergoemacs.org/emacs/elisp_insert_random_number_string.html
+(random t)
+(defun insert-random-number ()
+  "Insert a random number between 0 and 999999"
+  (interactive)
+  (insert (number-to-string (random 999999))))
 
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
