@@ -5,30 +5,12 @@
 # Let's grab the architecture for machine dependant aliases
 set arch=`uname -m`
 
-# cwdcmd, what to do when I change directories
-
-switch ($TERM)
-    case "iris*"
-	alias cwdcmd 'printf "\033P1.y${USER}@${mch}:${PWD}\033\\"'
-        alias periodic 'printf "\033P1.y${USER}@${mch}:${PWD}    `/usr/local/bin/getquote.txt`@`date`\033\\"'
-
-    breaksw
-endsw
-
 alias ls ls -AF
 alias ll ls -l
-alias cpan '/usr/local/bin/perl -MCPAN -e shell'
 
 # Use the vim detected in the .cshrc
 alias vi $VEEEYE
 alias vim $VEEEYE
-
-# alias bbs tisca bbs=bbs.digitech.org
-# alias bbs ssh -v bbs@bbs.digitech.org
-# alias bbs ssh -v bbs@bbs.minot.com
-# alias bbs ssh -v bbs@hipster.org
-
-alias pine "pine -p '{mail.west.spy.net}INBOX.pine.remote_pinerc'"
 
 if ( -r /usr/local/bin/ctags ) then
 	alias ctags /usr/local/bin/ctags
