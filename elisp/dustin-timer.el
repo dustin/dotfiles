@@ -47,11 +47,30 @@ This runs dustin-periodic-task-hooks after doing its normal thing."
                                       (clean-buffer-list)
                                       (run-hooks 'dustin-periodic-task-hooks))))))
 
+(defun dustin-filter (condp lst)
+  (delq nil
+        (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+
 (defun dustin-schedule-periodic (period)
   "Schedule the timer to run on the given period."
   (if dustin-periodic-timer
       (cancel-timer dustin-periodic-timer))
   (setq dustin-periodic-timer
         (run-at-time period period 'dustin-periodic-task)))
+
+(defun dustin-cleanup-dir (dirname oldest)
+  "Remove any old files from a directory.  oldest is the maximum file age (in seconds) to keep."
+  (let ((filenames
+         (mapcar (lambda (x) (car x))
+                 (dustin-filter (lambda (x)
+                                  (and (not (or (string-equal (car x) ".")
+                                                (string-equal (car x) "..")))
+                                       (not (nth 0 (cdr x))) ;; is a directory
+                                       (> (float-time (time-subtract (current-time) (nth 5 (cdr x))))
+                                          oldest)))
+                                (directory-files-and-attributes dirname)))))
+    (dolist (fn (mapcar (lambda (x) (mapconcat 'identity (list dirname x) "/")) filenames))
+      (message "Deleting %s" fn)
+      (delete-file fn t))))
 
 (provide 'dustin-timer)
