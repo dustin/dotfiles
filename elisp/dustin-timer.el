@@ -60,17 +60,21 @@ This runs dustin-periodic-task-hooks after doing its normal thing."
 
 (defun dustin-cleanup-dir (dirname oldest)
   "Remove any old files from a directory.  oldest is the maximum file age (in seconds) to keep."
-  (let ((filenames
-         (mapcar (lambda (x) (car x))
-                 (dustin-filter (lambda (x)
-                                  (and (not (or (string-equal (car x) ".")
-                                                (string-equal (car x) "..")))
-                                       (not (nth 0 (cdr x))) ;; is a directory
-                                       (> (float-time (time-subtract (current-time) (nth 5 (cdr x))))
-                                          oldest)))
-                                (directory-files-and-attributes dirname)))))
-    (dolist (fn (mapcar (lambda (x) (mapconcat 'identity (list dirname x) "/")) filenames))
-      (message "Deleting %s" fn)
-      (delete-file fn t))))
+  (let ((files
+         (dustin-filter (lambda (x)
+                          (and (not (or (string-equal (car x) ".")
+                                        (string-equal (car x) "..")))
+                               (> (float-time (time-subtract (current-time) (nth 5 (cdr x))))
+                                  oldest)))
+                        (directory-files-and-attributes dirname))))
+    (dolist (fi files)
+      (let ((fn (mapconcat 'identity (list dirname (car fi)) "/")))
+        (if (cadr fi)
+            (progn
+              (message "Deleting directory %s" fn)
+              (delete-directory fn t t))
+          (progn
+            (message "Deleting file %s" fn)
+            (delete-file fn t)))))))
 
 (provide 'dustin-timer)
