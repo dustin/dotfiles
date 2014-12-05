@@ -69,12 +69,7 @@ This runs dustin-periodic-task-hooks after doing its normal thing."
                         (directory-files-and-attributes dirname))))
     (dolist (fi files)
       (let ((fn (mapconcat 'identity (list dirname (car fi)) "/")))
-        (if (cadr fi)
-            (progn
-              (message "Deleting directory %s" fn)
-              (delete-directory fn t t))
-          (progn
-            (message "Deleting file %s" fn)
-            (delete-file fn t)))))))
+        (message "Deleting %s" fn)
+        (move-file-to-trash fn)))))
 
 (provide 'dustin-timer)
