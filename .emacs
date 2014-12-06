@@ -356,15 +356,19 @@ functions, and some types.  It also provides indentation that is
   (add-hook 'before-save-hook 'format-json nil t))
 
 ;; https://code.google.com/p/ergoemacs/source/browse/packages/xah-insert-random-id.el
-(random t)
+
+(defun random-selection (alphabet n)
+  "Get a random selection of n characters from the given alphabet."
+  (concat (let ((rv nil) (alen (length alphabet)))
+    (dotimes (i n rv)
+      (setq rv (cons (elt alphabet (random alen)) rv))))))
+
 (defun insert-random-number (φcount)
   "Insert φcount of random digits.
 φcount default to 5"
   (interactive "P")
-  (let (myCharset (possibleCharsCount 10))
-    (setq myCharset "1234567890")
-    (dotimes (ii (if (numberp φcount) (abs φcount) 5))
-      (insert (elt myCharset (random possibleCharsCount))))))
+  (insert (random-selection "1234567890"
+                            (if (numberp φcount) (abs φcount) 5))))
 
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
