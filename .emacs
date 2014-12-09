@@ -370,8 +370,9 @@ functions, and some types.  It also provides indentation that is
   (insert (random-selection "1234567890"
                             (if (numberp φcount) (abs φcount) 5))))
 
-(if (file-exists-p "~/.Trash")
-    (setq trash-directory "~/.Trash"))
+(setq trash-directory
+      (loop for p in '("~/.Trash" "~/.trash" "~/trash")
+            when (file-exists-p p) do (return p)))
 
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
