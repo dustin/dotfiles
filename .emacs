@@ -332,22 +332,22 @@ functions, and some types.  It also provides indentation that is
 (global-set-key "\M-\C-y" 'kill-ring-search)
 
 ;; My JSON tools.
+(defun format-json-on-point (start end)
+  "Clean up the JSON between two points"
+  (save-excursion
+    (shell-command-on-region start end "python -mjson.tool" 'nil t)))
+
 (defun format-json ()
   "Clean up JSON in the current buffer."
   (interactive)
-  (save-excursion
-    (shell-command-on-region (point-min) (point-max)
-                             "python -mjson.tool" 'nil t)
-    (delete-trailing-whitespace)))
-
+  (format-json-on-point (point-min) (point-max))
+  (delete-trailing-whitespace))
 
 (defun format-json-region ()
   "Clean up JSON in a selected region"
   (interactive)
-    (save-excursion
-    (shell-command-on-region (region-beginning) (region-end)
-                             "python -mjson.tool" 'nil t)
-    (delete-trailing-whitespace)))
+  (format-json-on-point (region-beginning) (region-end))
+  (delete-trailing-whitespace))
 
 (defun format-json-setup-save-hook ()
   "Automatically clean up JSON before saving."
