@@ -31,7 +31,7 @@
                impatient-mode js2-mode json-mode kill-ring-search
                lua-mode magit markdown-mode muse oauth popup
                pov-mode sass-mode simple-httpd
-               twittering-mode xcscope yaml-mode yasnippet
+               xcscope yaml-mode yasnippet
                zen-and-art-theme))
             (all-installed
              (loop for p in wanted-packages
@@ -85,8 +85,6 @@
 (autoload 'caml-mode "ocaml" (interactive)
   "Major mode for editing Caml code." t)
 (autoload 'camldebug "camldebug" (interactive) "Debug caml mode")
-
-(global-set-key "\C-xt" 'twit)
 
 (autoload (quote go-mode) "go-mode" "\
 Major mode for editing Go source text.
