@@ -260,7 +260,6 @@ functions, and some types.  It also provides indentation that is
   (save-excursion
     ; Probably best to just let the buffer set it itself
     ; (setq tab-width 4)
-    (untabify (point-min) (point-max))
     (indent-region (point-min) (point-max))
     (delete-trailing-whitespace)))
 
