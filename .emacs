@@ -258,8 +258,6 @@ functions, and some types.  It also provides indentation that is
   "Reformat a file using tab expansion, buffer marking, etc..."
   (interactive)
   (save-excursion
-    ; Probably best to just let the buffer set it itself
-    ; (setq tab-width 4)
     (indent-region (point-min) (point-max))
     (delete-trailing-whitespace)))
 
