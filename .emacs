@@ -124,12 +124,6 @@ functions, and some types.  It also provides indentation that is
 (setq display-time-24hr-format t)
 (display-time-mode t)
 
-; Look.  I can read email *sigh*
-(setq imap-ssl-program "openssl s_client -tls1 -connect %s:%p")
-;; (setq gnus-select-method '(nnimap "spy.net"
-;;                                   (nnimap-address "imap.west.spy.net")
-;;                                   (nnimap-stream ssl)))
-
 (setq gnus-select-method '(nntp "news.gmane.org"))
 
 (setq user-mail-address "dustin@spy.net")
