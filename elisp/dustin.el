@@ -37,4 +37,11 @@
                (mapconcat (lambda (x) x) (reverse out-words) ", ")))))
     (funcall f duration '() (reverse timer-duration-words))))
 
+(defun unixtime (n &optional fmt)
+  "Format a epoch timestamp."
+  (let ((fmt (if fmt fmt "%Y-%m-%d %H:%M:%S")))
+    (if (> n (expt 2 31))
+        (unixtime (/ n 10) fmt)
+      (format-time-string fmt (seconds-to-time n)))))
+
 (provide 'dustin)
