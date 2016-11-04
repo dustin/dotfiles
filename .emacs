@@ -24,8 +24,7 @@
       (let* ((wanted-packages
               `(all auctex auto-complete calfw calfw-gcal caml
                color-theme company csv-mode
-               dockerfile-mode dot-mode ess fuzzy git-commit-mode
-               git-rebase-mode gitconfig-mode gitignore-mode
+               dockerfile-mode dot-mode ess fuzzy
                go-autocomplete go-eldoc go-mode graphviz-dot-mode
                haml-mode haskell-mode htmlize imenu-anywhere
                impatient-mode js2-mode json-mode kill-ring-search
