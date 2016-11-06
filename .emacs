@@ -221,12 +221,6 @@ functions, and some types.  It also provides indentation that is
 
 (add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
 
-(defun my-growl-erc-hook (match-type nick message)
-  "Basic growl notification when someone says my nick in an irc channel."
-)
-
-(add-hook 'erc-text-matched-hook 'my-growl-erc-hook)
-
 ; tramp is neat
 (setq tramp-default-method "ssh")
 (setq tramp-auto-save-directory "~/tmp/tramp/")
