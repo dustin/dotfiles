@@ -1,0 +1,118 @@
+NoGrabServer
+RestartPreviousState
+DecorateTransients
+TitleFont "-*-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
+ResizeFont "-*-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
+MenuFont "-*-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
+IconFont "-*-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
+IconManagerFont "-*-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
+BorderWidth 1
+ButtonIndent 1
+NoHighlight
+AutoRelativeResize
+DefaultBackground
+FramePadding 0
+#ForceIcons
+NoRaiseOnMove
+OpaqueMove
+Zoom 500
+RandomPlacement
+SqueezeTitle
+TitlePadding 2
+
+Color
+{
+    BorderColor "purple"
+    DefaultBackground "black"
+    DefaultForeground "gray85"
+    TitleBackground "black"
+    TitleForeground "gray85"
+    MenuBackground "black"
+    MenuForeground "gray85"
+    MenuTitleBackground "gray65"
+    MenuTitleForeground "black"
+    IconBackground "black"
+    IconForeground "white"
+    IconBorderColor "black"
+    IconManagerBackground "black"
+    IconManagerForeground "gray85"
+    PointerForeground "black"
+    PointerBackground "white"
+}
+
+MoveDelta 1
+Function "move-or-lower" { f.move f.deltastop f.lower }
+Function "move-or-raise" { f.move f.deltastop f.raise }
+Function "move-or-iconify" { f.move f.deltastop f.iconify }
+
+Button1 = : root : f.menu "window"
+Button2 = : root : f.delete
+Button3 = : root : f.menu "window"
+
+Button1 = m : window|icon : f.function "move-or-lower"
+Button2 = m : window|icon : f.iconify
+Button3 = m : window|icon : f.function "move-or-raise"
+
+Button1 = : title : f.function "move-or-raise"
+Button2 = : title : f.raiselower
+Button3 = : title : f.iconify
+
+Button1 = : icon : f.function "move-or-iconify"
+#Button2 = : icon : f.destroy
+Button3 = : icon : f.iconify
+
+Button1 = : iconmgr : f.iconify
+Button2 = : iconmgr : f.destroy
+Button3 = : iconmgr : f.iconify
+
+
+"x" = :all : ! "xterm &"
+
+LeftTitleButton	 "/usr/include/X11/bitmaps/xm_noenter16" = f.delete
+
+menu "window"
+{
+    "X Windows"      f.title
+    "Kill Window"    f.destroy
+    "Delete Window"  f.delete
+    ""               f.nop
+    "Maximize"       f.fullzoom
+    "Minimize"       f.iconify
+    "Move"           f.move
+    ""               f.nop
+    "Focus"          f.focus
+    "Unfocus"        f.unfocus
+    "Show Iconmgr"   f.showiconmgr
+    "Hide Iconmgr"   f.hideiconmgr
+    ""               f.nop
+    "Redraw"         f.refresh
+    "Restart"        f.restart
+    "Quit"           f.menu "quit"
+}
+
+menu "quit"
+{
+    "Really Quit?"     f.title
+    "No"               f.nop
+    "Yes"              f.quit
+}
+
+Icons
+{
+    "XTerm"   "/usr/include/X11/bitmaps/Term"
+}
+
+Cursors
+{
+    Frame     "left_ptr"
+    Title     "left_ptr"
+    Icon      "left_ptr"
+    IconMgr   "left_ptr"
+    Move      "fleur"
+    Resize    "fleur"
+    Menu      "hand1"
+    Button    "hand2"
+    Wait      "clock"
+    Select    "dot"
+    Destroy   "pirate"
+}
