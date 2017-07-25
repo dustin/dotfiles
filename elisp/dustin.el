@@ -70,4 +70,18 @@
         (unixtime (/ n 10) fmt)
       (format-time-string fmt (seconds-to-time n)))))
 
+;; Some RF junk
+(defun mW-to-dBm (mw)
+  "Convert mW to dBm"
+  (* 10 (log10 mw)))
+
+(defun dBm-to-mW (dBm)
+  "Convert dBm to mW"
+  (expt 10 (/ (float dBm) 10.0)))
+
+(defun dBm-to-W (dBm)
+  "Convert dBm to Watts"
+  (/ (float (dBm-to-mW dBm)) 1000))
+
+
 (provide 'dustin)
