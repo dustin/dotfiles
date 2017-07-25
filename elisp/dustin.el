@@ -14,6 +14,32 @@
   (delq nil
         (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
 
+(defun humanize-SI (n unit &optional fmt)
+  "Humanize an SI amount for the given unit."
+  (let* ((prefixes '((-24 . "y") ;; yocto
+                     (-21 . "z") ;; zepto
+                     (-18 . "a") ;; atto
+                     (-15 . "f") ;; femto
+                     (-12 . "p") ;; pico
+                     (-9  . "n") ;; nano
+                     (-6  . "µ") ;; micro
+                     (-3  . "m") ;; milli
+                     (0   . "")
+                     (3   . "k") ;; kilo
+                     (6   . "M") ;; mega
+                     (9   . "G") ;; giga
+                     (12  . "T") ;; tera
+                     (15  . "P") ;; peta
+                     (18  . "E") ;; exa
+                     (21  . "Z") ;; zetta
+                     (24  . "Y")) ;; yotta
+                   )
+         (mag (abs n))
+         (e (* 3 (floor (/ (log10 mag) 3))))
+         (value (/ (float mag) (expt 10 e))))
+    (format (if (stringp fmt) fmt "%.2f %s%s") value (cdr (assoc e prefixes)) unit)))
+
+
 (defun humanize-size (n)
   "Humanize a size in bytes."
   (let ((prefixes ["B" "KiB" "MiB" "GiB" "TiB" "PiB" "EiB"])
