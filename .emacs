@@ -373,6 +373,9 @@ functions, and some types.  It also provides indentation that is
       (loop for p in '("~/.Trash" "~/.trash" "~/trash")
             when (file-exists-p p) do (return p)))
 
+;; Giving ibuffer a go
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
     (load
