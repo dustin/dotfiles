@@ -381,6 +381,11 @@ functions, and some types.  It also provides indentation that is
 
 ;; Giving ibuffer a go
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(setq ibuffer-expert t)
+(add-hook 'ibuffer-mode-hook
+      '(lambda ()
+         (ibuffer-auto-mode 1)))
+
 
 ;; My local stuff.
 (if (file-readable-p "~/.emacs.local")
