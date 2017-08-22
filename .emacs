@@ -262,6 +262,12 @@ functions, and some types.  It also provides indentation that is
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 (add-hook 'go-mode-hook 'go-eldoc-setup)
 
+(defun my-haskell-mode-hook ()
+  (if (not (string-match "go" compile-command))
+      (set (make-local-variable 'compile-command)
+           "stack test --test-arguments --plain")))
+(add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+
 (require 'color-theme)
 (eval-after-load "color-theme"
   '(progn
