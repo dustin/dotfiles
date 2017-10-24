@@ -23,7 +23,7 @@
       ;; See package-activated-list for what's installed now
       (let* ((wanted-packages
               `(all auctex auto-complete caml
-               color-theme company csv-mode
+               color-theme company csv-mode expand-region
                dockerfile-mode dot-mode ess fuzzy
                go-autocomplete go-eldoc go-mode graphviz-dot-mode
                haml-mode haskell-mode htmlize imenu-anywhere
@@ -378,6 +378,9 @@ functions, and some types.  It also provides indentation that is
 (setq trash-directory
       (loop for p in '("~/.Trash" "~/.trash" "~/trash")
             when (file-exists-p p) do (return p)))
+
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; Giving ibuffer a go
 (global-set-key (kbd "C-x C-b") 'ibuffer)
