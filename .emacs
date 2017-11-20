@@ -265,7 +265,7 @@ functions, and some types.  It also provides indentation that is
 (defun my-haskell-mode-hook ()
   (if (not (string-match "go" compile-command))
       (set (make-local-variable 'compile-command)
-           "stack test --test-arguments --plain")))
+           "stack test")))
 (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
 
 (require 'color-theme)
