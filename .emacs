@@ -206,6 +206,7 @@ functions, and some types.  It also provides indentation that is
 
 (safe-wrap (load (expand-file-name "~/elisp/org-exports.el")))
 
+(setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/todo.org"))
 (define-key global-map "\C-cc" 'org-capture)
 
