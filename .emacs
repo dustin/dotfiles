@@ -206,6 +206,15 @@ functions, and some types.  It also provides indentation that is
 
 (safe-wrap (load (expand-file-name "~/elisp/org-exports.el")))
 
+(setq org-default-notes-file (concat org-directory "/todo.org"))
+(define-key global-map "\C-cc" 'org-capture)
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "todo.org" "Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("j" "Journal" entry (file+olp+datetree "journal.org")
+         "* %?\nEntered on %U\n  %i\n  %a")))
+
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
 
 (add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
