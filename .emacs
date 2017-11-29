@@ -193,17 +193,6 @@ functions, and some types.  It also provides indentation that is
 (setq org-refile-use-outline-path t)
 (setq org-refile-targets '((nil . (:maxlevel . 3))))
 
-(if (fboundp 'org-remember-insinuate)
-    (org-remember-insinuate)
-  (progn
-    (setq remember-annotation-functions '(org-remember-annotation))
-    (setq remember-handler-functions '(org-remember-handler))
-    (add-hook 'remember-mode-hook 'org-remember-apply-template)))
-
-(setq org-directory "~/org")
-(setq org-default-notes-file (concat org-directory "/todo.org"))
-(define-key global-map "\C-cr" 'org-remember)
-
 (defmacro safe-wrap (fn &rest clean-up)
   `(unwind-protect
        (let (retval)
