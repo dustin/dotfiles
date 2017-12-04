@@ -193,6 +193,8 @@ functions, and some types.  It also provides indentation that is
 (setq org-refile-use-outline-path t)
 (setq org-refile-targets '((nil . (:maxlevel . 3))))
 
+(setq org-agenda-todo-ignore-scheduled t)
+
 (defmacro safe-wrap (fn &rest clean-up)
   `(unwind-protect
        (let (retval)
