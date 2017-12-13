@@ -96,10 +96,9 @@ functions, and some types.  It also provides indentation that is
 
 ; haskell mode
 (add-to-list 'load-path "~/elisp/haskell-mode")
-(add-to-list 'auto-mode-alist
-             '(("\\.[hg]s$"  . haskell-mode)
-               ("\\.hi$"     . haskell-mode)
-               ("\\.l[hg]s$" . literate-haskell-mode)))
+(add-to-list 'auto-mode-alist '("\\.[hg]s$"  . haskell-mode))
+(add-to-list 'auto-mode-alist '("\\.hi$"     . haskell-mode))
+(add-to-list 'auto-mode-alist '("\\.l[hg]s$" . literate-haskell-mode))
 
 (autoload 'haskell-mode "haskell-mode"
   "Major mode for editing Haskell scripts." t)
