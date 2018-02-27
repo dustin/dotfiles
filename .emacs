@@ -23,7 +23,7 @@
       ;; See package-activated-list for what's installed now
       (let* ((wanted-packages
               `(all auctex auto-complete caml
-               color-theme company csv-mode expand-region
+               company csv-mode expand-region
                dockerfile-mode dot-mode ess fuzzy
                go-autocomplete go-eldoc go-mode graphviz-dot-mode
                haml-mode haskell-mode htmlize imenu-anywhere
@@ -268,11 +268,7 @@ functions, and some types.  It also provides indentation that is
            "stack test")))
 (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
 
-(require 'color-theme)
-(eval-after-load "color-theme"
-  '(progn
-     (color-theme-initialize)
-     (color-theme-taming-mr-arneson)))
+(load-theme 'zen-and-art)
 
 ;; Keep .gitignore files sorted.
 (defun dustin-sort-lines-hook ()
