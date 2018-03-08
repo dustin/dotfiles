@@ -191,6 +191,19 @@ functions, and some types.  It also provides indentation that is
 (setq org-refile-use-outline-path t)
 (setq org-refile-targets '((nil . (:maxlevel . 3))))
 
+(setq org-agenda-custom-commands
+      '(("s" "Short List"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-skip-function
+                       '(org-agenda-skip-entry-if 'scheduled))))
+          (todo "INPROGRESS" ((org-agenda-overriding-header "In Progress")))
+          (todo "WAITING" ((org-agenda-overriding-header "Waiting")))
+          (todo "TODO|INPROGRESS" ((org-agenda-overriding-header "Next Up")
+                                   (org-agenda-max-entries 5)))))
+        ("o" "All Agenda"
+         ((agenda "" ((org-agenda-span 1)))
+          (todo "")))))
+
 (setq org-agenda-todo-ignore-scheduled 'future)
 (setq org-agenda-tags-todo-honor-ignore-options t)
 
