@@ -30,8 +30,7 @@
                impatient-mode js2-mode json-mode kill-ring-search
                lua-mode magit markdown-mode muse oauth popup
                pov-mode sass-mode simple-httpd
-               xcscope yaml-mode yasnippet
-               zen-and-art-theme))
+               xcscope yaml-mode yasnippet))
             (all-installed
              (loop for p in wanted-packages
                    when (not (package-installed-p p)) do (return nil)
@@ -281,7 +280,7 @@ functions, and some types.  It also provides indentation that is
            "stack test")))
 (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
 
-(load-theme 'zen-and-art)
+(load-theme 'tango-dark)
 
 ;; Keep .gitignore files sorted.
 (defun dustin-sort-lines-hook ()
