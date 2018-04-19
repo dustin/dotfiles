@@ -226,7 +226,7 @@ functions, and some types.  It also provides indentation that is
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "todo.org" "Tasks")
          "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "journal.org")
+        ("j" "Journal" entry (file+datetree "journal/journal.org")
          "* %?\nEntered on %U\n  %i\n  %a")))
 
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
