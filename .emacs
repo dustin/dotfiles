@@ -198,7 +198,11 @@ functions, and some types.  It also provides indentation that is
           (todo "INPROGRESS" ((org-agenda-overriding-header "In Progress")))
           (todo "WAITING" ((org-agenda-overriding-header "Waiting")))
           (todo "TODO" ((org-agenda-overriding-header "Next Up")
-                        (org-agenda-max-entries 5)))))
+                        (org-agenda-skip-function
+                         '(org-agenda-skip-entry-if 'regexp ":bug:"))
+                        (org-agenda-max-entries 5)))
+          (tags-todo "bug" ((org-agenda-overriding-header "Bugs")
+                            (org-agenda-max-entries 10)))))
         ("o" "All Agenda"
          ((agenda "" ((org-agenda-span 1)))
           (todo "")))))
