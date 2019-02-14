@@ -24,12 +24,12 @@
       (let* ((wanted-packages
               `(all auctex auto-complete caml auto-minor-mode
                company csv-mode expand-region
-               dockerfile-mode dot-mode ess fuzzy
-               go-autocomplete go-eldoc go-mode graphviz-dot-mode
+               dockerfile-mode dot-mode fuzzy
+               go-autocomplete go-eldoc go-mode
                haml-mode haskell-mode htmlize imenu-anywhere
                impatient-mode js2-mode json-mode kill-ring-search
-               lua-mode magit markdown-mode muse oauth popup
-               pov-mode sass-mode simple-httpd
+               magit markdown-mode muse oauth popup
+               pov-mode sass-mode
                xcscope yaml-mode yasnippet))
             (all-installed
              (loop for p in wanted-packages
