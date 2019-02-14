@@ -193,8 +193,7 @@ functions, and some types.  It also provides indentation that is
 (setq org-agenda-custom-commands
       '(("s" "Short List"
          ((agenda "" ((org-agenda-span 1)
-                      (org-agenda-skip-function
-                       '(org-agenda-skip-entry-if 'scheduled))))
+                      (org-agenda-skip-function)))
           (todo "INPROGRESS" ((org-agenda-overriding-header "In Progress")))
           (todo "WAITING" ((org-agenda-overriding-header "Waiting")))
           (todo "TODO" ((org-agenda-overriding-header "Next Up")
