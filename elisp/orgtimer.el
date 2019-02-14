@@ -12,6 +12,7 @@ and 'down' the next heading after orgtimer-interval."
 
   (interactive)
   (chronos-add-timer orgtimer-duration (concat "up " (nth 4 (org-heading-components))) nil)
+  ;; (org-set-property "STARTED" (format-time-string "%Y-%m-%d %H:%M:%S"))
   (org-todo "INPROGRESS")
   (outline-next-visible-heading 1)
   (chronos-add-timer orgtimer-interval (concat "down " (nth 4 (org-heading-components))) nil))
@@ -27,6 +28,7 @@ and 'down' the next heading after orgtimer-interval."
   :lighter " orgtmr"
   :keymap orgtimer-mode-keymap
   (make-variable-buffer-local 'orgtimer-duration)
-  (make-variable-buffer-local 'orgtimer-interval))
+  (make-variable-buffer-local 'orgtimer-interval)
+  (chronos-initialize))
 
 (provide 'orgtimer)
