@@ -70,6 +70,8 @@
 (add-to-list 'auto-mode-alist '("\\.pde" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ino" . c++-mode))
 
+(add-to-list 'auto-mode-alist '("\\.rkt" . scheme-mode))
+
 (add-to-list 'auto-mode-alist '("\\.rake" . ruby-mode))
 
 (add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
