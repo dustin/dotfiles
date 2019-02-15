@@ -11,15 +11,25 @@
 and 'down' the next heading after orgtimer-interval."
 
   (interactive)
-  (chronos-add-timer orgtimer-duration (concat "up " (nth 4 (org-heading-components))) nil)
-  ;; (org-set-property "STARTED" (format-time-string "%Y-%m-%d %H:%M:%S"))
+  (let ((iname (nth 4 (org-heading-components))))
+    (chronos-add-timer orgtimer-duration (concat "up " iname) nil)
+    ;; (org-set-property "STARTED" (format-time-string "%Y-%m-%d %H:%M:%S"))
+    (run-hook-with-args 'orgtimer-timeme-hooks iname))
   (org-todo "INPROGRESS")
   (outline-next-visible-heading 1)
   (chronos-add-timer orgtimer-interval (concat "down " (nth 4 (org-heading-components))) nil))
 
+(defun orgtimer-complete ()
+  "Finish him!"
+  (interactive)
+  (let ((iname (nth 4 (org-heading-components))))
+    (run-hook-with-args 'orgtimer-complete-hooks iname))
+  (org-todo "DONE"))
+
 (defvar orgtimer-mode-keymap
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c t") 'orgtimer-timeme)
+    (define-key map (kbd "C-c d") 'orgtimer-complete)
     map)
   "Key mapping for orgtimer mode.")
 
