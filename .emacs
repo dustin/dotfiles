@@ -5,20 +5,19 @@
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'meta)
 
-(condition-case nil
-    (when
-        (load
-         (expand-file-name "~/.emacs.d/elpa/package.el"))
-      (package-initialize))
-  (file-error (message "Failed to load package stuff.")))
+;; (condition-case nil
+;;     (when
+;;         (load
+;;          (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;       (package-initialize))
+;;   (file-error (message "Failed to load package stuff.")))
 
 (require 'cl)
 
 (if (fboundp 'package-initialize)
     (progn
       (package-initialize)
-      (add-to-list 'package-archives
-                   '("melpa" . "http://melpa.milkbox.net/packages/") t)
+      (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
       ;; See package-activated-list for what's installed now
       (let* ((wanted-packages
