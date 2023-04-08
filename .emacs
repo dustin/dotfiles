@@ -22,7 +22,7 @@
       ;; See package-activated-list for what's installed now
       (let* ((wanted-packages
               `(all auctex auto-complete caml auto-minor-mode
-               company csv-mode expand-region
+               company csv-mode expand-region use-package
                dockerfile-mode dot-mode fuzzy
                go-autocomplete go-eldoc go-mode
                haml-mode haskell-mode htmlize imenu-anywhere
@@ -154,8 +154,6 @@ functions, and some types.  It also provides indentation that is
 (autoload 'slime "slime")
 
 (global-set-key (kbd "C-c m") 'magit-status)
-
-(server-start)
 
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file 'noerror)
@@ -412,3 +410,5 @@ functions, and some types.  It also provides indentation that is
 (if (file-readable-p "~/.emacs.local")
     (load
      (expand-file-name "~/.emacs.local")))
+
+(server-start)
