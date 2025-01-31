@@ -4,22 +4,14 @@
   # Common packages
   home.packages = with pkgs; [
     sqlite-interactive
-    # mosquitto
     mosh
-    # aws2
     ffmpeg
     mtr
     p7zip
     rclone
-    darcs
-    # dhall
-    # go
     jq
-    # lorri
-    # ncdu
     asciinema
     exiftool
-    # youtube-dl
     gnupg
     watch
     libiconv
@@ -32,7 +24,6 @@
     kitty # terminal graphics?  why not
     bat # show files.  Not really much to do with concatenation
     lsd # ls
-    delta # diff viewer
     dust # disk usage some thing
     duf # df thing
     fzf # fuzzy finder

@@ -10,6 +10,8 @@
   };
 
   home.packages = with pkgs; [
+    haskellPackages.net-mqtt # my mqtt-watch command
+    darcs
   ];
 
   programs.zsh.initExtra = ''

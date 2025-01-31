@@ -8,6 +8,7 @@
 
   home.packages = with pkgs; [
     calibre
+    haskellPackages.net-mqtt # my mqtt-watch command
   ];
 
   systemd.user = {
