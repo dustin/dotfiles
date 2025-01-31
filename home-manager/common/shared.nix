@@ -31,7 +31,6 @@
     btop # bee top
     kitty # terminal graphics?  why not
     bat # show files.  Not really much to do with concatenation
-    eza # ls
     lsd # ls
     delta # diff viewer
     dust # disk usage some thing
@@ -46,9 +45,15 @@
     xz
   ];
 
-  home.username      = lib.mkDefault "dustin";
-  home.homeDirectory = lib.mkDefault "/home/dustin";
-  home.stateVersion = "24.11";
+  home = {
+    username      = lib.mkDefault "dustin";
+    homeDirectory = lib.mkDefault "/home/dustin";
+    stateVersion = "24.11";
+
+    file = {
+      ".config/bat/config".text = "--style=plain";
+    };
+  };
 
   programs = {
     home-manager.enable = true;
