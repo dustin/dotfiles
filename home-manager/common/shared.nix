@@ -3,47 +3,47 @@
 {
   # Common packages
   home.packages = with pkgs; [
-		sqlite-interactive
-		# mosquitto
-		mosh
-		# aws2
-		ffmpeg
-		mtr
-		p7zip
-		rclone
-		darcs
-		# dhall
-		# go
-		jq
-		# lorri
-		# ncdu
-		asciinema
-		exiftool
-		# youtube-dl
-		gnupg
-		watch
-		libiconv
-		cacert
-		magic-wormhole-rs # moving stuff
-		age # encryption
-		minisign # signing stuff
-		jujutsu # jj git thing
-		btop # bee top
-		kitty # terminal graphics?  why not
-		bat # show files.  Not really much to do with concatenation
-		eza # ls
-		lsd # ls
-		delta # diff viewer
-		dust # disk usage some thing
-		duf # df thing
-		fzf # fuzzy finder
-		fd # find
-		ripgrep # rg
-		bottom # btm top thing
-		gping # graphical ping
-		procs # ps
-		xsv # csv thingy
-		xz
+    sqlite-interactive
+    # mosquitto
+    mosh
+    # aws2
+    ffmpeg
+    mtr
+    p7zip
+    rclone
+    darcs
+    # dhall
+    # go
+    jq
+    # lorri
+    # ncdu
+    asciinema
+    exiftool
+    # youtube-dl
+    gnupg
+    watch
+    libiconv
+    cacert
+    magic-wormhole-rs # moving stuff
+    age # encryption
+    minisign # signing stuff
+    jujutsu # jj git thing
+    btop # bee top
+    kitty # terminal graphics?  why not
+    bat # show files.  Not really much to do with concatenation
+    eza # ls
+    lsd # ls
+    delta # diff viewer
+    dust # disk usage some thing
+    duf # df thing
+    fzf # fuzzy finder
+    fd # find
+    ripgrep # rg
+    bottom # btm top thing
+    gping # graphical ping
+    procs # ps
+    xsv # csv thingy
+    xz
   ];
 
   home.username      = lib.mkDefault "dustin";
