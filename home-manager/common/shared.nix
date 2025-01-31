@@ -53,6 +53,8 @@
   programs = {
     home-manager.enable = true;
 
+    git.enable = true;
+
     direnv = {
       enable = true;
       enableZshIntegration = true;
