@@ -1,5 +1,15 @@
 { config, pkgs, lib, ... }:
 
+let
+  # Choose the destination path for your config file depending on the platform.
+  jjConfig =
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      # On macOS, put it in "~/Library/Application Support/jj/config.toml"
+      "Library/Application Support/jj/config.toml"
+    else
+      # On Linux, use the XDG standard location, e.g. "~/.config/jj/config.toml"
+      ".config/jj/config.toml";
+in
 {
   # Common packages
   home.packages = with pkgs; [
@@ -43,6 +53,20 @@
 
     file = {
       ".config/bat/config".text = "--style=plain";
+	  "${jjConfig}".text = ''
+[user]
+name = "Dustin Sallings"
+email = "dustin@spy.net"
+
+[ui]
+default-command = "log"
+editor = "vi"
+
+[aliases]
+here = ["b", "m", "--to", "@-"]
+l = ["log"]
+push = ["git", "push"]
+'';
     };
   };
 
