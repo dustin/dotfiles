@@ -101,6 +101,14 @@ fetch = ["git", "fetch"]
          select-word-style bash
          setopt no_share_history
          unsetopt share_history
+
+	# Source the Nix environment.
+    if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+        . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+    elif [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+        . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+    fi
+
       '';
       shellAliases = {
         ls = "lsd";
