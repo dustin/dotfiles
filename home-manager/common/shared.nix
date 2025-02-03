@@ -42,7 +42,7 @@ in
     bottom # btm top thing
     gping # graphical ping
     procs # ps
-    xsv # csv thingy
+    xan # csv editor based on xsv
     xz
     delta # diff viewer
   ];
