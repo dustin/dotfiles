@@ -64,7 +64,7 @@ editor = "vi"
 
 [aliases]
 here = ["b", "m", "--to", "@-"]
-l = ["log"]
+l = ["log", "-r", "::", "--limit", "10"]
 push = ["git", "push"]
 '';
     };
