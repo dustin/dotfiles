@@ -18,23 +18,6 @@ in
 
   systemd.user = {
     services = {
-      outfluxer = {
-        Install = { WantedBy = ["default.target"]; };
-
-        Unit = {
-          Description = "outfluxer";
-          After = "network.target";
-        };
-
-        Service = {
-          ExecStart = ''/home/dustin/.local/bin/outfluxer --conf /home/dustin/outfluxer.dhall --mqtt-uri mqtt://localhost/#outfluxer
---period 300'';
-          Restart = ''always'';
-          StartLimitInterval = 0;
-          RestartSec = 60;
-        };
-      };
-
       babysitter = {
         Install = { WantedBy = ["default.target"]; };
 
