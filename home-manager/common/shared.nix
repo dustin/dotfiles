@@ -44,6 +44,7 @@ in
     procs # ps
     xsv # csv thingy
     xz
+    delta # diff viewer
   ];
 
   home = {
@@ -61,11 +62,14 @@ email = "dustin@spy.net"
 [ui]
 default-command = "log"
 editor = "vi"
+pager = "delta"
 
 [aliases]
 here = ["b", "m", "--to", "@-"]
 l = ["log", "-r", "::", "--limit", "10"]
 push = ["git", "push"]
+clone = ["git", "clone", "--colocate"]
+fetch = ["git", "fetch"]
 '';
     };
   };
