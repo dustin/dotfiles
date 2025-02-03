@@ -9,6 +9,7 @@ let
     else
       # On Linux, use the XDG standard location, e.g. "~/.config/jj/config.toml"
       ".config/jj/config.toml";
+  csvThing = if pkgs ? xan then pkgs.xan else pkgs.xsv;
 in
 {
   # Common packages
@@ -42,7 +43,7 @@ in
     bottom # btm top thing
     gping # graphical ping
     procs # ps
-    xan # csv editor based on xsv
+    csvThing # either xan or xsv
     xz
     delta # diff viewer
   ];
