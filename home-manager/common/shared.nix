@@ -61,7 +61,7 @@ name = "Dustin Sallings"
 email = "dustin@spy.net"
 
 [ui]
-default-command = "log"
+default-command = "status"
 editor = "vi"
 pager = "delta"
 
