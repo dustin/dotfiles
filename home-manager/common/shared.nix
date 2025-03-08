@@ -89,6 +89,7 @@ fetch = ["git", "fetch"]
       enable = true;
       clock24 = true;
       historyLimit = 50000;
+      terminal = "screen-256color";
       extraConfig = ''
         set -g status-right '#(echo $USER) @ #h %a %Y-%m-%d %H:%M'
         setw -g allow-rename on
