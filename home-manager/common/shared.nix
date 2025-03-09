@@ -32,7 +32,7 @@ in
     minisign # signing stuff
     jujutsu # jj git thing
     btop # bee top
-    kitty # terminal graphics?  why not
+    # kitty # terminal graphics?  why not
     bat # show files.  Not really much to do with concatenation
     lsd # ls
     dust # disk usage some thing
