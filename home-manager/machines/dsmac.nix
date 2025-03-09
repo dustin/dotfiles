@@ -1,32 +1,25 @@
-{ config, pkgs, lib, ... }:
+# machines/dsmac.nix
+{ config, pkgs, lib, hostname, ... }:
 
 {
   imports = [
-    ./common/shared.nix
+    ../common/shared.nix
   ];
-  
+
   home = {
-    username = "dustin";
     homeDirectory = "/Users/dustin";
-    stateVersion = "23.11";
   };
-  
-  # Common configuration...
+
   home.packages = with pkgs; [
-    haskellPackages.net-mqtt
+    haskellPackages.net-mqtt # my mqtt-watch command
     darcs
   ];
-  
-  # You can still use conditionals based on hostname if needed
+
   programs.zsh.initExtra = lib.mkMerge [
     ''
-      PATH=$PATH:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
-      export EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+    PATH=$PATH:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
+    # export NIX_SSL_CERT_FILE=/Users/dustin/stuff/cert.pem
+    export EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
     ''
-    (lib.mkIf (config.networking.hostName == "laptop") ''
-      # Some laptop-specific zsh config
-    '')
   ];
-  
-  programs.home-manager.enable = true;
 }
