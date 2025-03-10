@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hostname, ... }:
 
 let
   # Choose the destination path for your config file depending on the platform.
@@ -115,6 +115,10 @@ fetch = ["git", "fetch"]
       shellAliases = {
         ls = "lsd";
         ll = "lsd -Al --date=relative";
+        "hm-switch" = ''
+          home-manager switch --flake 'github:dustin/dotfiles?dir=home-manager#dustin@${hostname}'
+        '';
+
       };
     };
   };
