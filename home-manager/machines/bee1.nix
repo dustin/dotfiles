@@ -18,21 +18,6 @@ in
 
   systemd.user = {
     services = {
-      babysitter = {
-        Install = { WantedBy = ["default.target"]; };
-
-        Unit = {
-          Description = "babysitter";
-          After = "network.target";
-        };
-
-        Service = {
-          ExecStart = ''/home/dustin/.local/bin/babysitter --conf /home/dustin/babysitter.conf --delay 300'';
-          Restart = ''always'';
-          StartLimitInterval = 0;
-          RestartSec = 60;
-        };
-      };
 
       rtl433 = {
         Install = { WantedBy = ["default.target"]; };
