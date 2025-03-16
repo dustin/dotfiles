@@ -83,27 +83,6 @@ e/bin/git'';
           RestartSec = 60;
         };
       };
-      immich = {
-        Install = { WantedBy = ["default.target"]; };
-
-        Unit = {
-          Description = "immich photo service";
-          After = "network.target";
-        };
-
-        Service = {
-          WorkingDirectory = "/home/dustin/stuff/immich-app";
-          ExecStartPre = [
-        ''-${mypkgs.docker}/bin/docker compose down''
-            ''-${mypkgs.docker}/bin/docker compose pull''];
-          ExecStart = ''${mypkgs.docker}/bin/docker compose up'';
-          ExecStop = ''${mypkgs.docker}/bin/docker compose down'';
-          Restart = ''always'';
-          StartLimitInterval = 0;
-          RestartSec = 60;
-          TimeoutStartSec = 900;
-        };
-      };
 
       papertrails = {
         Install = { WantedBy = ["default.target"]; };
