@@ -13,6 +13,7 @@
   home.packages = with pkgs; [
     haskellPackages.net-mqtt # my mqtt-watch command
     darcs
+	pgcli
   ];
 
   programs.zsh.initExtra = lib.mkMerge [
