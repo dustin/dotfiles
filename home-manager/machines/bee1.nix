@@ -14,6 +14,7 @@ in
 
   home.packages = with pkgs; [
     haskellPackages.net-mqtt # my mqtt-watch command
+    pgcli
   ];
 
   systemd.user = {
