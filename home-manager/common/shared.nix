@@ -116,7 +116,7 @@ fetch = ["git", "fetch"]
         ls = "lsd";
         ll = "lsd -Al --date=relative";
         "hm-switch" = ''
-          home-manager switch --flake 'github:dustin/dotfiles?dir=home-manager#dustin@${hostname}'
+          home-manager switch --refresh --flake 'github:dustin/dotfiles?dir=home-manager#dustin@${hostname}'
         '';
 
       };
