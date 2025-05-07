@@ -98,7 +98,7 @@ fetch = ["git", "fetch"]
 
     zsh = {
       enable = true;
-      initExtra = ''
+      initContent = ''
          autoload -Uz select-word-style
          select-word-style bash
          setopt no_share_history
