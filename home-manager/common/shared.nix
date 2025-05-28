@@ -2,13 +2,7 @@
 
 let
   # Choose the destination path for your config file depending on the platform.
-  jjConfig =
-    if pkgs.stdenv.hostPlatform.isDarwin then
-      # On macOS, put it in "~/Library/Application Support/jj/config.toml"
-      "Library/Application Support/jj/config.toml"
-    else
-      # On Linux, use the XDG standard location, e.g. "~/.config/jj/config.toml"
-      ".config/jj/config.toml";
+  jjConfig = ".config/jj/config.toml";
   csvThing = if pkgs ? xan then pkgs.xan else pkgs.xsv;
 in
 {
