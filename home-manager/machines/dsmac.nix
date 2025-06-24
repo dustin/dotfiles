@@ -16,7 +16,7 @@
 	pgcli
   ];
 
-  programs.zsh.initExtra = lib.mkMerge [
+  programs.zsh.initContent = lib.mkMerge [
     ''
     PATH=$PATH:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
     # export NIX_SSL_CERT_FILE=/Users/dustin/stuff/cert.pem

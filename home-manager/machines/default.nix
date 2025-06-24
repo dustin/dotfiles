@@ -8,6 +8,6 @@
   home.packages = with pkgs; [
   ];
 
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
   '';
 }
