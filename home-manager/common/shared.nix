@@ -40,6 +40,7 @@ in
     csvThing # either xan or xsv
     xz
     delta # diff viewer
+    zoxide # directory history manager - z cmd
   ];
 
   home = {
@@ -119,7 +120,7 @@ fetch = ["git", "fetch"]
 
     zsh.oh-my-zsh = {
       enable = true;
-      plugins = [ "fzf" ];
+      plugins = [ "fzf" "zoxide" ];
     };    
   };
 }
