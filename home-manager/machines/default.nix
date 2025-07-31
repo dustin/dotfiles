@@ -8,6 +8,7 @@
   home.packages = with pkgs; [
   ];
 
-  programs.zsh.initContent = ''
-  '';
-}
+  progarms.zsh.oh-my-zsh = {
+    enable = true;
+    plugins = [ "fzf" ];
+  };
