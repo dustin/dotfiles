@@ -115,5 +115,11 @@ fetch = ["git", "fetch"]
 
       };
     };
+
+
+    zsh.oh-my-zsh = {
+      enable = true;
+      plugins = [ "fzf" ];
+    };    
   };
 }
