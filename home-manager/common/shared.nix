@@ -56,7 +56,7 @@ name = "Dustin Sallings"
 email = "dustin@spy.net"
 
 [ui]
-default-command = "status"
+default-command = "l"
 editor = "vi"
 pager = "delta"
 
@@ -66,6 +66,16 @@ l = ["log", "-r", "::", "--limit", "10"]
 push = ["git", "push"]
 clone = ["git", "clone", "--colocate"]
 fetch = ["git", "fetch"]
+
+[templates]
+log = ''''
+builtin_log_compact
+++ if(
+    !description && !empty,
+    diff.summary(),
+)
+''''
+
 '';
     };
   };
