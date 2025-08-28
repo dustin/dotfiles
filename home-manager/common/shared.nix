@@ -74,6 +74,19 @@ builtin_log_compact
     !description && !empty,
     diff.summary(),
 )
+++ if(
+    conflict,
+    self.files(
+        "all()"
+    ).filter(
+        |file| file.conflict()
+    ).map(
+        |file| label(
+            "conflict",
+            concat("conflict ", file.path())
+        )
+    ).join("\n")
+)
 ''''
 
 '';
