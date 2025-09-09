@@ -41,6 +41,7 @@ in
     xz
     delta # diff viewer
     zoxide # directory history manager - z cmd
+    pueue # at like thing
   ];
 
   home = {
@@ -66,6 +67,7 @@ l = ["log", "-r", "::", "--limit", "10"]
 push = ["git", "push"]
 clone = ["git", "clone", "--colocate"]
 fetch = ["git", "fetch"]
+glog = ["log", "-r", "::@"]
 
 [templates]
 log = ''''

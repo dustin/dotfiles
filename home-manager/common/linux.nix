@@ -2,7 +2,23 @@
 
 {
     systemd.user = {
-    services = {
+      services = {
+        pueue = {
+          Install = { Wantedby = ["default.target"]; };
+
+          Unit = {
+            Description = "pueue (batch/at thing)";
+            After = "network.target";
+          };
+
+          Service = {
+            ExecStart = "${pkgs.pueue}/bin/pueued";
+            Restart = "always";
+            StartLimitInterval = 0;
+            RestartSec = 60;
+          };
+        };
+
       nixchanup = {
         Install = { WantedBy = ["default.target"]; };
         Unit = {
