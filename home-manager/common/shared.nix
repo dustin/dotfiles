@@ -135,6 +135,7 @@ builtin_log_compact
       shellAliases = {
         ls = "lsd";
         ll = "lsd -Al --date=relative";
+	    pu = "pueue";
         "hm-switch" = ''
           home-manager switch --refresh --flake 'github:dustin/dotfiles?dir=home-manager#dustin@${hostname}'
         '';
