@@ -68,6 +68,16 @@ push = ["git", "push"]
 clone = ["git", "clone", "--colocate"]
 fetch = ["git", "fetch"]
 glog = ["log", "-r", "::@"]
+mylog = ["log", "-Tbiglog", "-r", 'author("dustin") & ::@']
+
+[template-aliases]
+biglog = ''''
+concat(
+  committer.timestamp(), " ",
+  commit_id.short(), " ",
+  author.email(), "\n",
+  description)
+''''
 
 [templates]
 log = ''''
