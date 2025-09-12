@@ -9,6 +9,7 @@ in
   # Common packages
   home.packages = with pkgs; [
     sqlite-interactive
+    duckdb
     mosh
     ffmpeg
     mtr
@@ -76,7 +77,17 @@ concat(
   committer.timestamp(), " ",
   commit_id.short(), " ",
   author.email(), "\n",
-  description)
+  description, "\n",
+  diff.summary())
+''''
+
+difflog = ''''
+concat(
+  committer.timestamp(), " ",
+  commit_id.short(), " ",
+  author.email(), "\n",
+  description, "\n",
+  diff.git())
 ''''
 
 [templates]
