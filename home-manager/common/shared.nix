@@ -22,7 +22,7 @@ in
     watch
     libiconv
     cacert
-    magic-wormhole-rs # moving stuff
+    croc # moving stuff
     age # encryption
     minisign # signing stuff
     jujutsu # jj git thing
