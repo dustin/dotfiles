@@ -58,7 +58,7 @@ name = "Dustin Sallings"
 email = "dustin@spy.net"
 
 [ui]
-default-command = "l"
+default-command = "mylog"
 editor = "vi"
 pager = "delta"
 
@@ -69,7 +69,12 @@ push = ["git", "push"]
 clone = ["git", "clone", "--colocate"]
 fetch = ["git", "fetch"]
 glog = ["log", "-r", "::@"]
-mylog = ["log", "-Tbiglog", "-r", 'author("dustin") & ::@']
+mylog = ["log", "-r", 'alias_l()']
+
+[revset-aliases]
+'alias_l()' = 'latest(::@, 10) | (ancestors(immutable_heads().., 2) & remote_bookmarks().. & mine()) | heads(trunk()) | bookmarks()'
+'alias_ll()' = 'alias_l() | ::@'
+
 
 [template-aliases]
 biglog = ''''
