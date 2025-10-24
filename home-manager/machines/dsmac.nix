@@ -1,5 +1,5 @@
 # machines/dsmac.nix
-{ config, pkgs, lib, hostname, ... }:
+{ config, pkgs-old, pkgs, lib, hostname, ... }:
 
 {
   imports = [
@@ -11,7 +11,7 @@
   };
 
   home.packages = with pkgs; [
-    haskellPackages.net-mqtt # my mqtt-watch command
+    pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
     darcs
 	  # pgcli
   ];

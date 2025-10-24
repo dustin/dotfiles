@@ -2,6 +2,7 @@
   description = "Dustin's Home Manager configuration";
 
   inputs = {
+    nixpkgs-old.url = "github:NixOS/nixpkgs/c53baa6685261e5253a1c355a1b322f82674a824";
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -9,7 +10,7 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, ... }: 
+  outputs = { nixpkgs, nixpkgs-old, home-manager, ... }: 
     let
       username = "dustin";
       
@@ -29,12 +30,13 @@
           let 
             system = systems.${hostname};
             pkgs = nixpkgs.legacyPackages.${system};
+            pkgs-old = nixpkgs-old.legacyPackages.${system};
           in {
             name = "${username}@${hostname}";
             value = home-manager.lib.homeManagerConfiguration {
               inherit pkgs;
               
-              extraSpecialArgs = { inherit hostname; };
+              extraSpecialArgs = { inherit hostname pkgs-old; };
               
               modules = [
                 ./machines/${hostname}.nix
