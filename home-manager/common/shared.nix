@@ -72,7 +72,7 @@ glog = ["log", "-r", "::@"]
 mylog = ["log", "-r", 'alias_l()']
 
 [revset-aliases]
-'alias_l()' = 'latest(::@, 10) | (ancestors(immutable_heads().., 2) & remote_bookmarks().. & mine()) | heads(trunk()) | bookmarks()'
+'alias_l()' = 'ancestors(present(@), 10) | (ancestors(immutable_heads().., 2) & mine()) | present(trunk()) | bookmarks()'
 'alias_ll()' = 'alias_l() | ::@'
 
 
