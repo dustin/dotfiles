@@ -7,7 +7,7 @@
   ];
 
   home.packages = with pkgs; [
-    haskellPackages.net-mqtt # my mqtt-watch command
+    # haskellPackages.net-mqtt # my mqtt-watch command
 
     symbola
     unifont
@@ -21,7 +21,9 @@
     dmenu
     xmobar
     brightnessctl
-    vscode
+    zed-editor
+    pamixer
+    ghostty
   ];
 
   services = {
@@ -58,14 +60,6 @@
         foreground = "white";
         background = "black";
       };
-    };
-    vscode = {
-      enable = true;
-      extensions = with pkgs.vscode-extensions; [
-        # dracula-theme.theme-dracula
-        # vscodevim.vim
-        # yzhang.markdown-all-in-one
-      ];
     };
   };
 }
