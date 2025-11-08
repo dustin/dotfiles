@@ -43,6 +43,7 @@ in
     delta # diff viewer
     zoxide # directory history manager - z cmd
     pueue # at like thing
+    rdfind # duplicate file handler
   ];
 
   home = {
