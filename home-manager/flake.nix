@@ -17,6 +17,7 @@
       # Define your systems with their architectures
       systems = {
         dsmac = "aarch64-darwin";
+        dsstudio = "aarch64-darwin";
         aws = "x86_64-linux";
         bee1 = "x86_64-linux";
         bee2 = "x86_64-linux";
