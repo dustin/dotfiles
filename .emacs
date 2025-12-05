@@ -33,7 +33,7 @@
                haml-mode haskell-mode htmlize imenu-anywhere
                impatient-mode js2-mode json-mode kill-ring-search
                magit markdown-mode muse oauth popup
-               pov-mode sass-mode
+               pov-mode sass-mode nix-mode
                xcscope yaml-mode yasnippet))
             (all-installed
              (loop for p in wanted-packages
