@@ -37,7 +37,33 @@
       WorkingDirectory = config.home.homeDirectory;
     };
   };
-  
+
+  launchd.agents.duckupdate = {
+    enable = true;
+    config = {
+      Label = "net.spy.duckupdate";
+
+      ProgramArguments = [
+        "${config.home.homeDirectory}/stuff/duck/update-all.sh"
+      ];
+
+      RunAtLoad = false;
+      StartInterval = 86400;
+      KeepAlive = false;
+
+      StandardOutPath  = "${config.xdg.stateHome}/duckupdate/stdout.log";
+      StandardErrorPath = "${config.xdg.stateHome}/duckupdate/stderr.log";
+
+      EnvironmentVariables = {
+        PATH = lib.makeBinPath [ pkgs.pueue pkgs.duckdb ];
+        HOME = config.home.homeDirectory;
+        LANG = "en_US.UTF-8";
+      };
+
+      WorkingDirectory = "${config.home.homeDirectory}/stuff/duck";
+    };
+  };
+
   programs.zsh.initContent = lib.mkMerge [
     ''
     PATH=$PATH:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
