@@ -1,4 +1,4 @@
-{ systemd, config, pkgs, ... }:
+{ systemd, config, pkgs-old, pkgs, ... }:
 
 let mypkgs = {
    # docker = "/nix/store/c479jrs5i9nx16hrgysncdcc3jhcn4qd-docker-20.10.23";
@@ -13,7 +13,7 @@ in
   ];
 
   home.packages = with pkgs; [
-    haskellPackages.net-mqtt # my mqtt-watch command
+    pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
     pgcli
   ];
 

@@ -1,4 +1,4 @@
-{ systemd, config, pkgs, ... }:
+{ systemd, config, pkgs, pkgs-old, ... }:
 
 {
   imports = [
@@ -8,7 +8,7 @@
 
   home.packages = with pkgs; [
     static-web-server
-    haskellPackages.net-mqtt # my mqtt-watch command
+    pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
   ];
 
   systemd.user = {
