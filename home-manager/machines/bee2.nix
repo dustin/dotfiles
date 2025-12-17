@@ -13,20 +13,6 @@
 
   systemd.user = {
     services = {
-      static-web-server = {
-        Install = { WantedBy = ["default.target"]; };
-        Unit = {
-          Description = "static web server";
-          After = "network.target";
-        };
-        Service = {
-          ExecStart = ''${pkgs.static-web-server}/bin/static-web-server --ignore-hidden-files -w /home/dustin/stuff/sws.toml'';
-          Restart = "always";
-          StartLimitInterval = 0;
-          RestartSec = 60;
-          TimeoutStartSec = 300;
-        };
-      };
 
       nuttomqtt = {
         Install = { WantedBy = ["default.target"]; };
