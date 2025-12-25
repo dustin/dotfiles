@@ -70,7 +70,7 @@
       Label = "net.spy.buoyupdate";
 
       ProgramArguments = [
-        "${config.home.homeDirectory}/stuff/duck/update-buoys.sh"
+        "${config.home.homeDirectory}/stuff/duck/scripts/update-buoys.sh"
       ];
 
       RunAtLoad = false;
