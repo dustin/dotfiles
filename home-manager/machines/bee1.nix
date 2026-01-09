@@ -15,6 +15,8 @@ in
   home.packages = with pkgs; [
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
     pgcli
+	rtl-sdr-librtlsdr
+	libusb1
   ];
 
   systemd.user = {
