@@ -64,8 +64,7 @@ in
         };
 
         Service = {
-          ExecStart = ''/home/dustin/.local/bin/gitmirror -dir /mnt/dustin/stuff/gitmirror -proto https -git /home/dustin/.nix-profil
-e/bin/git'';
+          ExecStart = ''/home/dustin/.local/bin/gitmirror -dir /mnt/dustin/stuff/gitmirror -proto https -git /home/dustin/.nix-profile/bin/git'';
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;
