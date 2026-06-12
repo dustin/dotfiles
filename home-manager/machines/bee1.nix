@@ -15,7 +15,8 @@ in
   home.packages = with pkgs; [
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
     pgcli
-	rtl-sdr-librtlsdr
+	# rtl-sdr-librtlsdr
+	rtl-sdr
 	libusb1
   ];
 
@@ -31,8 +32,8 @@ in
         };
 
         Service = {
-          # ExecStart = ''${pkgs.rtl_433}/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,devices=rtl_433[/id]'';
-          ExecStart = ''/home/dustin/.local/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,events=rtl_433[/model][/id]'';
+          ExecStart = ''${pkgs.rtl_433}/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,devices=rtl_433[/id]'';
+          # ExecStart = ''/home/dustin/.local/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,events=rtl_433[/model][/id]'';
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;
