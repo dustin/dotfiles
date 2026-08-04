@@ -22,16 +22,16 @@
         thinky = "x86_64-linux";
       };
 
-      # Bump duckdb past what's in nixpkgs (1.5.2 -> 1.5.4)
+      # Bump duckdb past what's in nixpkgs
       duckdbOverlay = final: prev: {
         duckdb = prev.duckdb.overrideAttrs (old: {
-          version = "1.5.4";
+          version = "1.5.5";
 
           src = final.fetchFromGitHub {
             owner = "duckdb";
             repo = "duckdb";
-            tag = "v1.5.4";
-            hash = "sha256-6xpKZKfH5/nwE2nU5kcpgITKFm3ilb1PYf9QEk+bKoM=";
+            tag = "v1.5.5";
+            hash = "sha256-vFXrMcWF5KDYYRjWZb6iJdhGnCAb6SMlSgzlcr+FQ8Y=";
           };
 
           cmakeFlags =
@@ -40,7 +40,7 @@
               old.cmakeFlags)
             ++ [
               (final.lib.cmakeFeature "OVERRIDE_GIT_DESCRIBE"
-                "v1.5.4-0-g08e34c447bae34eaee3723cac61f2878b6bdf787")
+                "v1.5.5-0-gd8cdaa33fda8df955cc76ef58a280f68f4cd43fa")
             ];
 
           # doInstallCheck = false; # uncomment if the test suite chokes
