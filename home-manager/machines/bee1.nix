@@ -10,7 +10,18 @@ in
   imports = [
     ../common/shared.nix
     ../common/linux.nix
+    ../common/zfstos3.nix
   ];
+
+  zfstos3 = {
+    datasets = [
+      "zpool/var/lib/postgresql"
+      "zpool/data/immich/postgres"
+      "zpool/data/immich"
+      "zpool/var/lib/influxdb"
+    ];
+    ageRecipient = "age12jkyjgdd9uwrf39a4ma7yzmsgsggckz526pcs0p28j87xh88zqmqxn5z4x";
+  };
 
   home.packages = with pkgs; [
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
