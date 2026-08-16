@@ -29,7 +29,6 @@
         };
       };
       s3bak = {
-        Install = { WantedBy = ["default.target"]; };
         Unit = {
           Description = "periodic s3 backup";
           After = "network.target";
@@ -41,8 +40,6 @@
         };
       };
       teslauth = {
-        Install = { WantedBy = ["default.target"]; };
-
         Unit = {
           Description = "tesladb";
           After = "network.target";
