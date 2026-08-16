@@ -1,11 +1,6 @@
 { systemd, config, pkgs, pkgs-old, ... }:
 
 {
-  imports = [
-    ../common/shared.nix
-    ../common/linux.nix
-  ];
-
   home.packages = with pkgs; [
     static-web-server
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command

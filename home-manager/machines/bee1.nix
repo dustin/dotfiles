@@ -1,15 +1,12 @@
 { systemd, config, pkgs-old, pkgs, ... }:
 
 let mypkgs = {
-   # docker = "/nix/store/c479jrs5i9nx16hrgysncdcc3jhcn4qd-docker-20.10.23";
    docker = "${pkgs.docker}";
   };
 in
 
 {
   imports = [
-    ../common/shared.nix
-    ../common/linux.nix
     ../common/zfstos3.nix
   ];
 
@@ -44,7 +41,6 @@ in
 
         Service = {
           ExecStart = ''${pkgs.rtl_433}/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,devices=rtl_433[/id]'';
-          # ExecStart = ''/home/dustin/.local/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,events=rtl_433[/model][/id]'';
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;

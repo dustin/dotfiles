@@ -1,4 +1,4 @@
-{ systemd, config, pkgs, lib, ... }:
+{ systemd, config, lib, pkgs, ... }:
 
 {
   launchd.agents.pueue = {

@@ -2,11 +2,6 @@
 { config, pkgs-old, pkgs, lib, hostname, ... }:
 
 {
-  imports = [
-    ../common/shared.nix
-    ../common/darwin.nix
-  ];
-
   home = {
     homeDirectory = "/Users/dustin";
   };

@@ -8,8 +8,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, nixpkgs-old, home-manager, ... }: 
+  outputs = { nixpkgs, nixpkgs-old, home-manager, ... }:
     let
+      lib = nixpkgs.lib;
       username = "dustin";
 
       systems = {
@@ -21,6 +22,21 @@
         pied = "aarch64-linux";
         thinky = "x86_64-linux";
       };
+
+      machineFiles = builtins.attrNames (
+        lib.filterAttrs (name: type: type == "regular" && name != "default.nix")
+          (builtins.readDir ./machines)
+      );
+      machineHosts = map (f: lib.removeSuffix ".nix" f) machineFiles;
+      registeredHosts = builtins.attrNames systems;
+      missingFromSystems = lib.subtractLists registeredHosts machineHosts;
+      missingFile = lib.subtractLists machineHosts registeredHosts;
+      _consistencyCheck =
+        if missingFromSystems != [ ] then
+          throw "machines/*.nix exist with no `systems` entry in flake.nix: ${toString missingFromSystems}"
+        else if missingFile != [ ] then
+          throw "`systems` entries in flake.nix have no matching machines/*.nix file: ${toString missingFile}"
+        else true;
 
       # Bump duckdb past what's in nixpkgs
       duckdbOverlay = final: prev: {
@@ -47,20 +63,23 @@
         });
       };
 
-      homeConfigurations = builtins.listToAttrs (
-        builtins.map (hostname: 
-          let 
+      homeConfigurations = assert _consistencyCheck; builtins.listToAttrs (
+        builtins.map (hostname:
+          let
             system = systems.${hostname};
+            isDarwin = lib.hasSuffix "-darwin" system;
             pkgs = (nixpkgs.legacyPackages.${system}).extend duckdbOverlay;
             pkgs-old = nixpkgs-old.legacyPackages.${system};
           in {
             name = "${username}@${hostname}";
             value = home-manager.lib.homeManagerConfiguration {
               inherit pkgs;
-              
+
               extraSpecialArgs = { inherit hostname pkgs-old; };
-              
+
               modules = [
+                ./common/shared.nix
+                (if isDarwin then ./common/darwin.nix else ./common/linux.nix)
                 ./machines/${hostname}.nix
                 {
                   nixpkgs.config.allowUnfree = true;

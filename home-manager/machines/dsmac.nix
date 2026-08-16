@@ -1,12 +1,7 @@
 # machines/dsmac.nix
-{ config, pkgs-old, pkgs, lib, hostname, ... }:
+{ config, pkgs-old, pkgs, hostname, ... }:
 
 {
-  imports = [
-    ../common/shared.nix
-    ../common/darwin.nix
-  ];
-
   home = {
     homeDirectory = "/Users/dustin";
   };

@@ -1,11 +1,6 @@
 { systemd, config, pkgs, ... }:
 
 {
-  imports = [
-    ../common/shared.nix
-    ../common/linux.nix
-  ];
-
   home.packages = with pkgs; [
     # haskellPackages.net-mqtt # my mqtt-watch command
 
