@@ -84,7 +84,6 @@ in
       };
 
       papertrails = {
-        Install = { WantedBy = ["default.target"]; };
         Unit = {
           Description = "Aggregate and persist logs";
           After = "network.target";
