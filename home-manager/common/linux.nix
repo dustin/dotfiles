@@ -20,7 +20,6 @@
         };
 
       nixchanup = {
-        Install = { WantedBy = ["default.target"]; };
         Unit = {
           Description = "Update nixpkg channels";
           After = "network.target";
@@ -32,7 +31,6 @@
       };
 
       home-manager-cleanup = {
-        Install = { WantedBy = ["default.target"]; };
         Unit = {
           Description = "Remove old home-manager generations";
           After = "network.target";
