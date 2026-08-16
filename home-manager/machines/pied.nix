@@ -65,14 +65,6 @@
            Unit = "s3bak.service";
          };
       };
-      home-manager-cleanup = {
-        Install = { WantedBy = [ "timers.target" ]; };
-        Timer = {
-          OnCalendar = "daily";
-          RandomizedDelaySec = "900";
-          Unit = "home-manager-cleanup.service";
-        };
-      };
       teslauth = {
         Install = { WantedBy = [ "timers.target" ]; };
         Timer = {

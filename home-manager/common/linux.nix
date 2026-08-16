@@ -4,7 +4,7 @@
     systemd.user = {
       services = {
         pueue = {
-          Install = { Wantedby = ["default.target"]; };
+          Install = { WantedBy = ["default.target"]; };
 
           Unit = {
             Description = "pueue (batch/at thing)";
