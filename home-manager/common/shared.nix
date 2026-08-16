@@ -143,21 +143,21 @@ builtin_log_compact
       '';
     };
 
+
     zsh = {
       enable = true;
+      envExtra = ''
+        if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+            . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+        elif [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+            . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        fi
+      '';
       initContent = ''
          autoload -Uz select-word-style
          select-word-style bash
          setopt no_share_history
          unsetopt share_history
-
-	# Source the Nix environment.
-    if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-        . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-    elif [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-        . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-    fi
-
       '';
       shellAliases = {
         ls = "lsd";
@@ -174,6 +174,6 @@ builtin_log_compact
     zsh.oh-my-zsh = {
       enable = true;
       plugins = [ "fzf" "zoxide" ];
-    };    
+    };
   };
 }
