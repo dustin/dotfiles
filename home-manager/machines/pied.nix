@@ -25,7 +25,7 @@
           Restart = "always";
           StartLimitInterval = 0;
           RestartSec = 60;
-            TimeoutStartSec = 300;
+          TimeoutStartSec = 600;
         };
       };
       s3bak = {
