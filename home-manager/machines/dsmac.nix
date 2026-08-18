@@ -1,5 +1,5 @@
 # machines/dsmac.nix
-{ config, pkgs-old, pkgs, hostname, ... }:
+{ config, pkgs-old, pkgs, lib, hostname, ... }:
 
 {
   home = {
