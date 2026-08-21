@@ -13,6 +13,7 @@
         Unit = {
           Description = "calibre-server";
           After = "network.target";
+          Requires = [ "mnt-books.mount" ];
         };
         Service = {
           ExecStartPre = ''-${pkgs.rsync}/bin/rsync -vaS --delete /mnt/books/calibre/ /home/dustin/stuff/calibre/'';
