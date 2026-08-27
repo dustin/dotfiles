@@ -22,4 +22,22 @@
         WorkingDirectory = config.home.homeDirectory;
       };
     };
+
+  launchd.agents.nixgc = {
+    enable = true;
+    config = {
+      Label = "net.spy.nixgc";
+
+      ProgramArguments = [
+        "${pkgs.nix}/bin/nix-collect-garbage" "--delete-older-than" "30d"
+      ];
+
+      RunAtLoad = false;
+      StartInterval = 86400;
+      KeepAlive = false;
+
+      StandardOutPath  = "${config.xdg.stateHome}/nixgc/stdout.log";
+      StandardErrorPath = "${config.xdg.stateHome}/nixgc/stderr.log";
+    };
+  };
 }
