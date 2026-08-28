@@ -1,10 +1,5 @@
 { systemd, config, pkgs-old, pkgs, ... }:
 
-let mypkgs = {
-   docker = "${pkgs.docker}";
-  };
-in
-
 {
   imports = [
     ../common/zfstos3.nix
