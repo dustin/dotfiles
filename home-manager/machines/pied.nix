@@ -43,12 +43,15 @@
 
         Service = {
           Type = "oneshot";
-          ExecStart = ''${pkgs.podman}/bin/podman run --rm \
-            -e TZ=Pacific/Honolulu \
-            --user 1000:100 \
-            -v /home/dustin/stuff/tesladb:/data \
-            --entrypoint teslauth \
-            dustin/tesladb -r --dbpath=tesla.db'';
+          ExecStart = ''
+            ${pkgs.podman}/bin/podman run --rm \
+              -e TZ=Pacific/Honolulu \
+              --user 1000:100 \
+              --userns=keep-id:uid=1000,gid=100 \
+              -v /home/dustin/stuff/tesladb:/data \
+              --entrypoint teslauth \
+              dustin/tesladb -r --dbpath=tesla.db
+          '';
         };
       };
     };
