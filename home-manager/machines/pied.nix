@@ -43,7 +43,7 @@
 
         Service = {
           Type = "oneshot";
-          ExecStart = ''${pkgs.docker}/bin/docker run --rm \
+          ExecStart = ''${pkgs.podman}/bin/podman run --rm \
             -e TZ=Pacific/Honolulu \
             --user 1000:100 \
             -v /home/dustin/stuff/tesladb:/data \
