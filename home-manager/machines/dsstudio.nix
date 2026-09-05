@@ -66,7 +66,7 @@
 
   programs.zsh.initContent = lib.mkMerge [
     ''
-    PATH=$PATH:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
+    export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH"
     # export NIX_SSL_CERT_FILE=/Users/dustin/stuff/cert.pem
     export EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
     ''
