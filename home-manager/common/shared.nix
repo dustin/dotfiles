@@ -44,6 +44,7 @@ in
     zoxide # directory history manager - z cmd
     pueue # at like thing
     rdfind # duplicate file handler
+    sops # secret manager
   ];
 
   home = {
