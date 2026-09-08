@@ -1,6 +1,10 @@
 { systemd, config, pkgs, pkgs-old, ... }:
 
 {
+  my.secrets = {
+    enable = true;
+  };
+
   home.packages = with pkgs; [
     calibre
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command

@@ -5,4 +5,8 @@
     awscli2
   ];
 
+  my.secrets = {
+    enable = true;
+  };
+
 }

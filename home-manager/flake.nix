@@ -7,8 +7,12 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
-  outputs = { nixpkgs, nixpkgs-old, home-manager, ... }:
+  outputs = { nixpkgs, nixpkgs-old, home-manager, sops-nix, ... }:
     let
       lib = nixpkgs.lib;
       username = "dustin";
@@ -20,7 +24,6 @@
         bee1 = "x86_64-linux";
         bee2 = "x86_64-linux";
         pied = "aarch64-linux";
-        thinky = "x86_64-linux";
       };
 
       machineFiles = builtins.attrNames (
@@ -78,8 +81,10 @@
               extraSpecialArgs = { inherit hostname pkgs-old; };
 
               modules = [
+                sops-nix.homeManagerModules.sops
                 ./modules/headroom.nix
                 ./common/shared.nix
+                ./common/secrets.nix
                 (if isDarwin then ./common/darwin.nix else ./common/linux.nix)
                 ./machines/${hostname}.nix
                 {

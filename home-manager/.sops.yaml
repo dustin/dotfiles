@@ -1,0 +1,10 @@
+creation_rules:
+  - path_regex: secrets/.*\.sops\.yaml$
+    key_groups:
+      - age:
+          - age1fgehy439lr05wwjqqju7zpx4s74m5deyr633mp9lawpcw4mvk95qkf9jey   # dsstudio
+          - age13pxcuqwr8fsthf3njt4y788e7356yqk88lllx57vatyf0dyjhvgst5tlfs   # dsmac
+          - age1k8lgsjwwllmf5743u33qj7mxq9pywdsrwtcumft39ujxa9uexdhskvek9f   # aws1
+          - age1f3fgp6zwa47ayxuk5dgxv797uh3puz3u0784utg70tl4cy2ylf8q3zfx37   # pied
+          - age17l4lq89zpdyzlg37ktjtauyq60wnwuw0nj74rax67k9caldck9js63lleu   # bee1
+          - age16hf2jhj8g8lqmn76ax4janxjdgpmkzjjmrred349cyfl3hchxassjzppnc   # bee2

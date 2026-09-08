@@ -1,6 +1,17 @@
-{ systemd, config, pkgs, pkgs-old, ... }:
+{
+  config,
+  systemd,
+  pkgs,
+  pkgs-old,
+  ...
+}:
 
 {
+  my.secrets = {
+    enable = true;
+    nut-password.enable = true;
+  };
+
   home.packages = with pkgs; [
     static-web-server
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
@@ -18,7 +29,7 @@
         };
 
         Service = {
-          ExecStart = ''/home/dustin/.local/bin/nut-to-mqtt -mqtt_clientid="" -mqtt_endpoint=tcp://mqtt:1883/ -nut_username=upsmon -nut_password=somepassword'';
+          ExecStart = "${config.home.homeDirectory}/.nix-profile/bin/nut-to-mqtt-wrapped";
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;

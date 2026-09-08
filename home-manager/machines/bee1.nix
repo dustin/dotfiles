@@ -5,6 +5,11 @@
     ../common/zfstos3.nix
   ];
 
+  my.secrets = {
+    enable = true;
+    nut-password.enable = true;
+  };
+
   zfstos3 = {
     datasets = [
       "zpool/var/lib/postgresql"
@@ -12,7 +17,7 @@
       "zpool/data/immich"
       "zpool/var/lib/influxdb"
     ];
-    ageRecipient = "age12jkyjgdd9uwrf39a4ma7yzmsgsggckz526pcs0p28j87xh88zqmqxn5z4x";
+    ageRecipient = "age17l4lq89zpdyzlg37ktjtauyq60wnwuw0nj74rax67k9caldck9js63lleu";
   };
 
   home.packages = with pkgs; [
@@ -51,7 +56,7 @@
         };
 
         Service = {
-          ExecStart = ''/home/dustin/.local/bin/nut-to-mqtt -mqtt_clientid="" -mqtt_endpoint=tcp://mqtt:1883/ -nut_username=upsmon -nut_password=somepassword'';
+          ExecStart = "${config.home.homeDirectory}/.nix-profile/bin/nut-to-mqtt-wrapped";
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;
