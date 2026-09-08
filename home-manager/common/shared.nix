@@ -142,6 +142,22 @@ builtin_log_compact
       '';
     };
 
+    atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      flags = [ "--disable-up-arrow" ];
+      settings = {
+        style = "compact";
+        enter_accept = false;
+        inline_height = 12;
+        filter_mode = "global";
+        search = {
+          filters = [ "global" "directory" ];
+        };
+        show_help = true;
+      };
+    };
+
 
     zsh = {
       enable = true;
@@ -172,7 +188,7 @@ builtin_log_compact
 
     zsh.oh-my-zsh = {
       enable = true;
-      plugins = [ "fzf" "zoxide" ];
+      plugins = [ "zoxide" ];
     };
   };
 }
