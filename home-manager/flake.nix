@@ -78,6 +78,7 @@
               extraSpecialArgs = { inherit hostname pkgs-old; };
 
               modules = [
+                ./modules/headroom.nix
                 ./common/shared.nix
                 (if isDarwin then ./common/darwin.nix else ./common/linux.nix)
                 ./machines/${hostname}.nix

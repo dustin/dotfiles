@@ -1,6 +1,18 @@
 { systemd, config, lib, pkgs, ... }:
 
 {
+  programs.headroom = {
+    enable = true;
+    proxy = {
+      enable = true;
+      targetApiUrl = "http://localhost:11434/v1";
+      apiKey = "ollama";
+      mode = "token";
+      disableKompress = true;
+      port = 8787;
+    };
+  };
+
   launchd.agents.pueue = {
       enable = true;
       config = {
