@@ -3,7 +3,6 @@
 let
   # Choose the destination path for your config file depending on the platform.
   jjConfig = ".config/jj/config.toml";
-  csvThing = if pkgs ? xan then pkgs.xan else pkgs.xsv;
 in
 {
   # Common packages
@@ -38,7 +37,6 @@ in
     bottom # btm top thing
     gping # graphical ping
     procs # ps
-    csvThing # either xan or xsv
     xz
     delta # diff viewer
     zoxide # directory history manager - z cmd
