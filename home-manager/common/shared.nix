@@ -156,12 +156,28 @@ builtin_log_compact
         search = {
           filters = [ "host" "directory" "global" ];
         };
+        keys = {
+          scroll_exits = false;
+        };
         tmux = {
           enabled = true;
           width = "80%";
           height = "60%";
         };
         show_help = true;
+        show_tabs = false;
+        history_filter = [
+          "^cd$"
+          "^cd "
+          "^ls$"
+          "^ll$"
+          "^pwd$"
+          "^clear$"
+          "^exit$"
+          "^z$"
+          "^z "
+          "^w$"
+        ];
       };
     };
 
