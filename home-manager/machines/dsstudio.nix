@@ -59,7 +59,7 @@
       StandardErrorPath = "${config.xdg.stateHome}/buoyupdate/stderr.log";
 
       EnvironmentVariables = {
-        PATH = lib.makeBinPath [ pkgs.duckdb ];
+        PATH = lib.makeBinPath [ pkgs.duckdb pkgs.rclone ];
         HOME = config.home.homeDirectory;
         LANG = "en_US.UTF-8";
       };
