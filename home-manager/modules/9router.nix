@@ -3,58 +3,64 @@
 let
   cfg = config.services.ninerouter;
 
-  ninerouter = pkgs.writeShellScriptBin "9router" ''
-    set -e
+  ninerouter = pkgs.writeShellApplication {
+    name = "9router";
+    runtimeInputs = [ cfg.package pkgs.git pkgs.coreutils pkgs.cacert ];
+    text = ''
+      set -e
 
-    export PORT="${toString cfg.port}"
-    export HOSTNAME="${cfg.host}"
-    export DATA_DIR="${cfg.dataDir}"
-    export NEXT_PUBLIC_BASE_URL="${cfg.nextPublicBaseUrl}"
-    export BASE_URL="${cfg.baseUrl}"
-    export REQUIRE_API_KEY="${if cfg.requireApiKey then "true" else "false"}"
-    export INITIAL_PASSWORD="${cfg.initialPassword}"
-    export HOME="${config.home.homeDirectory}"
+      export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+      export NIX_SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+      export PORT="${toString cfg.port}"
+      export HOSTNAME="${cfg.host}"
+      export DATA_DIR="${cfg.dataDir}"
+      export NEXT_PUBLIC_BASE_URL="${cfg.nextPublicBaseUrl}"
+      export BASE_URL="${cfg.baseUrl}"
+      export REQUIRE_API_KEY="${if cfg.requireApiKey then "true" else "false"}"
+      export INITIAL_PASSWORD="${cfg.initialPassword}"
+      export HOME="${config.home.homeDirectory}"
 
-    SRC_DIR="${cfg.sourceDir}"
-    LOG_FILE="${config.xdg.stateHome}/9router/update.log"
-    mkdir -p "$(dirname "$LOG_FILE")"
+      SRC_DIR="${cfg.sourceDir}"
+      LOG_FILE="${config.xdg.stateHome}/9router/update.log"
+      mkdir -p "$(dirname "$LOG_FILE")"
 
-    echo "=== 9router startup $(date) ===" >> "$LOG_FILE"
+      echo "=== 9router startup $(date) ===" >> "$LOG_FILE"
 
-    NEEDS_BUILD=0
+      NEEDS_BUILD=0
 
-    if [ ! -d "$SRC_DIR/.git" ]; then
-      echo "Cloning ${cfg.sourceRepo} into $SRC_DIR" >> "$LOG_FILE"
-      mkdir -p "$(dirname "$SRC_DIR")"
-      ${pkgs.git}/bin/git clone --depth 1 "${cfg.sourceRepo}" "$SRC_DIR" >> "$LOG_FILE" 2>&1
-      NEEDS_BUILD=1
-    ${lib.optionalString cfg.autoUpdate ''
-    else
-      OLD_REV="$(${pkgs.git}/bin/git -C "$SRC_DIR" rev-parse HEAD)"
-      echo "Pulling latest changes" >> "$LOG_FILE"
-      ${pkgs.git}/bin/git -C "$SRC_DIR" pull --ff-only >> "$LOG_FILE" 2>&1 || echo "git pull failed, continuing with existing checkout" >> "$LOG_FILE"
-      NEW_REV="$(${pkgs.git}/bin/git -C "$SRC_DIR" rev-parse HEAD)"
-      if [ "$OLD_REV" != "$NEW_REV" ]; then
+      if [ ! -d "$SRC_DIR/.git" ]; then
+        echo "Cloning ${cfg.sourceRepo} into $SRC_DIR" >> "$LOG_FILE"
+        mkdir -p "$(dirname "$SRC_DIR")"
+        git clone --depth 1 "${cfg.sourceRepo}" "$SRC_DIR" >> "$LOG_FILE" 2>&1
         NEEDS_BUILD=1
+      ${lib.optionalString cfg.autoUpdate ''
+      else
+        OLD_REV="$(git -C "$SRC_DIR" rev-parse HEAD)"
+        echo "Pulling latest changes" >> "$LOG_FILE"
+        git -C "$SRC_DIR" pull --ff-only >> "$LOG_FILE" 2>&1 || echo "git pull failed, continuing with existing checkout" >> "$LOG_FILE"
+        NEW_REV="$(git -C "$SRC_DIR" rev-parse HEAD)"
+        if [ "$OLD_REV" != "$NEW_REV" ]; then
+          NEEDS_BUILD=1
+        fi
+      ''}
       fi
-    ''}
-    fi
 
-    if [ ! -d "$SRC_DIR/node_modules" ] || [ "$NEEDS_BUILD" = "1" ]; then
-      echo "Running npm install" >> "$LOG_FILE"
-      (cd "$SRC_DIR" && "${cfg.package}/bin/npm" install >> "$LOG_FILE" 2>&1)
-    fi
+      if [ ! -d "$SRC_DIR/node_modules" ] || [ "$NEEDS_BUILD" = "1" ]; then
+        echo "Running npm install" >> "$LOG_FILE"
+        (cd "$SRC_DIR" && npm install >> "$LOG_FILE" 2>&1)
+      fi
 
-    if [ ! -d "$SRC_DIR/.next" ] || [ "$NEEDS_BUILD" = "1" ]; then
-      echo "Running npm run build" >> "$LOG_FILE"
-      (cd "$SRC_DIR" && "${cfg.package}/bin/npm" run build >> "$LOG_FILE" 2>&1)
-    fi
+      if [ ! -d "$SRC_DIR/.next" ] || [ "$NEEDS_BUILD" = "1" ]; then
+        echo "Running npm run build" >> "$LOG_FILE"
+        (cd "$SRC_DIR" && npm run build >> "$LOG_FILE" 2>&1)
+      fi
 
-    cd "$SRC_DIR"
-    exec ${cfg.package}/bin/node "$SRC_DIR/custom-server.js" \
-      --port ${toString cfg.port} \
-      --hostname ${cfg.host}
-  '';
+      cd "$SRC_DIR"
+      exec node "$SRC_DIR/custom-server.js" \
+        --port ${toString cfg.port} \
+        --hostname ${cfg.host}
+    '';
+  };
 in
 {
   options.services.ninerouter = {
@@ -150,6 +156,8 @@ in
           EnvironmentVariables = {
             PATH = lib.makeBinPath [ cfg.package ];
             HOME = config.home.homeDirectory;
+            SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+            NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
           } // cfg.extraEnv;
           StandardOutPath = "${config.xdg.stateHome}/9router/stdout.log";
           StandardErrorPath = "${config.xdg.stateHome}/9router/stderr.log";
@@ -168,6 +176,8 @@ in
           Environment = lib.mapAttrsToList (k: v: "${k}=${v}") ({
             PATH = lib.makeBinPath [ cfg.package ];
             HOME = config.home.homeDirectory;
+            SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+            NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
           } // cfg.extraEnv);
         };
         Install.WantedBy = [ "default.target" ];
