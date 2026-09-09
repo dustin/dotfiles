@@ -150,11 +150,11 @@ builtin_log_compact
         style = "compact";
         enter_accept = false;
         inline_height = 12;
-        filter_mode = "global";
+        filter_mode = "host";
         sync_address = "http://bee2:8888";
         sync_frequency = "5m";
         search = {
-          filters = [ "global" "directory" ];
+          filters = [ "host" "directory" "global" ];
         };
         show_help = true;
       };
