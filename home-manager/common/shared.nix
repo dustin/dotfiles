@@ -152,7 +152,7 @@ builtin_log_compact
       settings = {
         style = "compact";
         enter_accept = false;
-        inline_height = 12;
+        inline_height = 30;
         filter_mode = "host";
         auto_sync = true;
         sync_address = "http://bee2:8888";
