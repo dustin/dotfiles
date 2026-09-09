@@ -211,11 +211,13 @@
         ls = "lsd";
         ll = "lsd -Al --date=relative";
         watch = "viddy";
-	    pu = "pueue";
+        pu = "pueue";
         "hm-switch" = ''
           home-manager switch --refresh --flake 'github:dustin/dotfiles?dir=home-manager#dustin@${hostname}'
         '';
-
+        "hm-switch-local" = ''
+          home-manager switch --flake '${config.home.homeDirectory}/prog/dotfiles?dir=home-manager#dustin@${hostname}'
+        '';
       };
     };
 

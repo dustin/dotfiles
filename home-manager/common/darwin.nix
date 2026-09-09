@@ -1,6 +1,11 @@
 { systemd, config, lib, pkgs, ... }:
 
 {
+  programs.zsh.initContent = lib.mkBefore ''
+    export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH"
+    export EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+  '';
+
   programs.headroom = {
     enable = true;
     proxy = {
