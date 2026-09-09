@@ -137,6 +137,7 @@ builtin_log_compact
       historyLimit = 50000;
       terminal = "screen-256color";
       extraConfig = ''
+        set-environment -gu ATUIN_TMUX_POPUP
         set -g status-right '#(echo $USER) @ #h %a %Y-%m-%d %H:%M'
         setw -g allow-rename on
       '';
