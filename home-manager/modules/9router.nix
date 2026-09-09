@@ -15,8 +15,43 @@ let
     export INITIAL_PASSWORD="${cfg.initialPassword}"
     export HOME="${config.home.homeDirectory}"
 
-    cd "${cfg.sourceDir}"
-    exec ${cfg.package}/bin/node "${cfg.sourceDir}/custom-server.js" \
+    SRC_DIR="${cfg.sourceDir}"
+    LOG_FILE="${config.xdg.stateHome}/9router/update.log"
+    mkdir -p "$(dirname "$LOG_FILE")"
+
+    echo "=== 9router startup $(date) ===" >> "$LOG_FILE"
+
+    NEEDS_BUILD=0
+
+    if [ ! -d "$SRC_DIR/.git" ]; then
+      echo "Cloning ${cfg.sourceRepo} into $SRC_DIR" >> "$LOG_FILE"
+      mkdir -p "$(dirname "$SRC_DIR")"
+      ${pkgs.git}/bin/git clone --depth 1 "${cfg.sourceRepo}" "$SRC_DIR" >> "$LOG_FILE" 2>&1
+      NEEDS_BUILD=1
+    ${lib.optionalString cfg.autoUpdate ''
+    else
+      OLD_REV="$(${pkgs.git}/bin/git -C "$SRC_DIR" rev-parse HEAD)"
+      echo "Pulling latest changes" >> "$LOG_FILE"
+      ${pkgs.git}/bin/git -C "$SRC_DIR" pull --ff-only >> "$LOG_FILE" 2>&1 || echo "git pull failed, continuing with existing checkout" >> "$LOG_FILE"
+      NEW_REV="$(${pkgs.git}/bin/git -C "$SRC_DIR" rev-parse HEAD)"
+      if [ "$OLD_REV" != "$NEW_REV" ]; then
+        NEEDS_BUILD=1
+      fi
+    ''}
+    fi
+
+    if [ ! -d "$SRC_DIR/node_modules" ] || [ "$NEEDS_BUILD" = "1" ]; then
+      echo "Running npm install" >> "$LOG_FILE"
+      (cd "$SRC_DIR" && "${cfg.package}/bin/npm" install >> "$LOG_FILE" 2>&1)
+    fi
+
+    if [ ! -d "$SRC_DIR/.next" ] || [ "$NEEDS_BUILD" = "1" ]; then
+      echo "Running npm run build" >> "$LOG_FILE"
+      (cd "$SRC_DIR" && "${cfg.package}/bin/npm" run build >> "$LOG_FILE" 2>&1)
+    fi
+
+    cd "$SRC_DIR"
+    exec ${cfg.package}/bin/node "$SRC_DIR/custom-server.js" \
       --port ${toString cfg.port} \
       --hostname ${cfg.host}
   '';
@@ -35,6 +70,18 @@ in
       type = lib.types.str;
       default = "${config.home.homeDirectory}/.local/share/9router";
       description = "Path to the built 9router source tree.";
+    };
+
+    sourceRepo = lib.mkOption {
+      type = lib.types.str;
+      default = "https://github.com/decolua/9router.git";
+      description = "Git repository to clone 9router from when sourceDir isn't already set up.";
+    };
+
+    autoUpdate = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Pull the latest 9router source (and rebuild if it changed) every time the service starts.";
     };
 
     port = lib.mkOption {
@@ -128,6 +175,9 @@ in
     })
 
     {
+      # Actual clone/update/build happens in the launcher script on every
+      # service start (see `ninerouter` above); activation just ensures
+      # the directories it needs already exist.
       home.activation.ninerouter-setup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         $DRY_RUN_CMD mkdir -p "${config.xdg.stateHome}/9router" "${cfg.dataDir}"
       '';
