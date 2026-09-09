@@ -156,6 +156,11 @@ builtin_log_compact
         search = {
           filters = [ "host" "directory" "global" ];
         };
+        tmux = {
+          enabled = true;
+          width = "80%";
+          height = "60%";
+        };
         show_help = true;
       };
     };
