@@ -7,8 +7,9 @@
 
   my.secrets = {
     enable = true;
-    nut-password.enable = true;
   };
+
+  services.nutToMqtt.enable = true;
 
   zfstos3 = {
     datasets = [
@@ -41,22 +42,6 @@
 
         Service = {
           ExecStart = ''${pkgs.rtl_433}/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,devices=rtl_433[/id]'';
-          Restart = ''always'';
-          StartLimitInterval = 0;
-          RestartSec = 60;
-        };
-      };
-
-      nuttomqtt = {
-        Install = { WantedBy = ["default.target"]; };
-
-        Unit = {
-          Description = "nut to mqtt";
-          After = "network.target";
-        };
-
-        Service = {
-          ExecStart = "${config.home.homeDirectory}/.nix-profile/bin/nut-to-mqtt-wrapped";
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;
