@@ -151,6 +151,7 @@ builtin_log_compact
         enter_accept = false;
         inline_height = 12;
         filter_mode = "host";
+        auto_sync = true;
         sync_address = "http://bee2:8888";
         sync_frequency = "5m";
         search = {

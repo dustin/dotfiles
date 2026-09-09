@@ -3,6 +3,22 @@
 {
     systemd.user = {
       services = {
+        atuin-daemon = {
+          Install = { WantedBy = ["default.target"]; };
+
+          Unit = {
+            Description = "Atuin background sync daemon";
+            After = "network.target";
+          };
+
+          Service = {
+            ExecStart = "${config.programs.atuin.package}/bin/atuin daemon start";
+            Restart = "always";
+            StartLimitInterval = 0;
+            RestartSec = 60;
+          };
+        };
+
         pueue = {
           Install = { WantedBy = ["default.target"]; };
 

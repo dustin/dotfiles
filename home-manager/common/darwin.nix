@@ -13,6 +13,26 @@
     };
   };
 
+  home.file = {
+    ".local/state/atuin-daemon/.keep".text = "";
+  };
+
+  launchd.agents.atuin-daemon = {
+    enable = true;
+    config = {
+      Label = "net.spy.atuin-daemon";
+      ProgramArguments = [
+        "${config.programs.atuin.package}/bin/atuin"
+        "daemon"
+        "start"
+      ];
+      RunAtLoad = true;
+      KeepAlive = true;
+      StandardOutPath = "${config.xdg.stateHome}/atuin-daemon/stdout.log";
+      StandardErrorPath = "${config.xdg.stateHome}/atuin-daemon/stderr.log";
+    };
+  };
+
   launchd.agents.pueue = {
       enable = true;
       config = {
