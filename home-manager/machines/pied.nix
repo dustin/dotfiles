@@ -34,7 +34,11 @@
           After = "network.target";
         };
         Service = {
-          Environment = "RCLONE=${pkgs.rclone}/bin/rclone";
+          Environment = [
+            "RCLONE=${pkgs.rclone}/bin/rclone"
+            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            "NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+          ];
           ExecStart = "${config.home.homeDirectory}/.local/bin/s3bak";
           Type = "oneshot";
         };

@@ -72,10 +72,14 @@
         };
 
         Service = {
-          ExecStart = ''${config.home.homeDirectory}/.local/bin/gitmirror -dir /mnt/dustin/stuff/gitmirror -proto https -git ${config.home.homeDirectory}/.nix-profile/bin/git'';
+          ExecStart = ''${config.home.homeDirectory}/.local/bin/gitmirror -dir /mnt/dustin/stuff/gitmirror -proto https -git ${pkgs.git}/bin/git'';
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;
+          Environment = [
+            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            "NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+          ];
         };
       };
 
@@ -87,7 +91,11 @@
         Service = {
           Type = "oneshot";
           WorkingDirectory = "${config.home.homeDirectory}/prog/papertrails";
-          Environment = "PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:${pkgs.p7zip}/bin";
+          Environment = [
+            "PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:${pkgs.p7zip}/bin"
+            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            "NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+          ];
           ExecStart = "${config.home.homeDirectory}/.local/bin/papertrails --bucket=logarchive.west.spy.net";
         };
       };

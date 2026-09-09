@@ -74,6 +74,8 @@ in
             HEADROOM_DISABLE_KOMPRESS = if cfg.proxy.disableKompress then "1" else "0";
             UV_TOOL_DIR = "${config.home.homeDirectory}/.local/share/headroom";
             UV_TOOL_BIN_DIR = "${config.home.homeDirectory}/.local/share/headroom/bin";
+            SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+            NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
           };
           KeepAlive = true;
           RunAtLoad = true;

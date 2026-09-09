@@ -38,6 +38,8 @@
         PATH = lib.makeBinPath [ pkgs.pueue pkgs.duckdb ];
         HOME = config.home.homeDirectory;
         LANG = "en_US.UTF-8";
+        SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
       };
 
       WorkingDirectory = "${config.home.homeDirectory}/stuff/duck";
@@ -64,6 +66,8 @@
         PATH = lib.makeBinPath [ pkgs.duckdb pkgs.rclone ];
         HOME = config.home.homeDirectory;
         LANG = "en_US.UTF-8";
+        SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
       };
 
       WorkingDirectory = "${config.home.homeDirectory}/stuff/duck";

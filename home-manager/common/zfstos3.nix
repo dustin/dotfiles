@@ -7,9 +7,9 @@ with lib;
 let
   cfg = config.zfstos3;
 
-  zfsToS3 = pkgs.writeShellApplication {
+  zfsSendToS3 = pkgs.writeShellApplication {
     name = "zfs-send-to-s3";
-    runtimeInputs = [ pkgs.zfs ];
+    runtimeInputs = [ pkgs.zfs pkgs.rclone pkgs.age pkgs.cacert ];
     text = builtins.readFile ./zfs-send-to-s3.sh;
   };
 
@@ -72,6 +72,8 @@ in
             "AGE_RECIPIENT=${cfg.ageRecipient}"
             "PREFIX=${cfg.prefix}"
             "BUCKET=${cfg.bucket}"
+            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            "NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
           ];
           ExecStart = execStart;
         };
@@ -91,6 +93,8 @@ in
             "PREFIX=${cfg.prefix}"
             "BUCKET=${cfg.bucket}"
             "FORCE_FULL=1"
+            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            "NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
           ];
           ExecStart = execStart;
         };
