@@ -16,12 +16,13 @@ in
     rclone
     jq
     asciinema
-    exiftool
+    # exiftool
     gnupg
-    watch
+    # watch
+    viddy # watch replacement that looks a lot better
     libiconv
     cacert
-    croc # moving stuff
+    # croc # moving stuff
     age # encryption
     minisign # signing stuff
     jujutsu # jj git thing
@@ -34,11 +35,11 @@ in
     fzf # fuzzy finder
     fd # find
     ripgrep # rg
-    bottom # btm top thing
+    # bottom # btm top thing
     gping # graphical ping
     procs # ps
     xz
-    delta # diff viewer
+    diff-so-fancy # diff viewer
     zoxide # directory history manager - z cmd
     pueue # at like thing
     rdfind # duplicate file handler
@@ -52,6 +53,7 @@ in
 
     file = {
       ".config/bat/config".text = "--style=plain";
+      ".config/fd/config".text = "--hidden\n--no-ignore\n";
 	  "${jjConfig}".text = ''
 [user]
 name = "Dustin Sallings"
@@ -60,7 +62,7 @@ email = "dustin@spy.net"
 [ui]
 default-command = "mylog"
 editor = "vi"
-pager = "delta"
+pager = "diff-so-fancy"
 
 [aliases]
 here = ["b", "m", "--to", "@-"]
@@ -166,6 +168,9 @@ builtin_log_compact
           width = "80%";
           height = "60%";
         };
+        dotfiles = {
+          enabled = true;
+        };
         show_help = true;
         show_tabs = false;
         history_filter = [
@@ -202,6 +207,7 @@ builtin_log_compact
       shellAliases = {
         ls = "lsd";
         ll = "lsd -Al --date=relative";
+        watch = "viddy";
 	    pu = "pueue";
         "hm-switch" = ''
           home-manager switch --refresh --flake 'github:dustin/dotfiles?dir=home-manager#dustin@${hostname}'
