@@ -20,8 +20,8 @@
           Requires = [ "mnt-books.mount" ];
         };
         Service = {
-          ExecStartPre = ''-${pkgs.rsync}/bin/rsync -vaS --delete /mnt/books/calibre/ /home/dustin/stuff/calibre/'';
-          ExecStart = ''${pkgs.calibre}/bin/calibre-server /home/dustin/stuff/calibre'';
+          ExecStartPre = ''-${pkgs.rsync}/bin/rsync -vaS --delete /mnt/books/calibre/ ${config.home.homeDirectory}/stuff/calibre/'';
+          ExecStart = ''${pkgs.calibre}/bin/calibre-server ${config.home.homeDirectory}/stuff/calibre'';
           Restart = "always";
           StartLimitInterval = 0;
           RestartSec = 60;
@@ -34,8 +34,8 @@
           After = "network.target";
         };
         Service = {
-          Environment="RCLONE=${pkgs.rclone}/bin/rclone";
-          ExecStart = "/home/dustin/.local/bin/s3bak";
+          Environment = "RCLONE=${pkgs.rclone}/bin/rclone";
+          ExecStart = "${config.home.homeDirectory}/.local/bin/s3bak";
           Type = "oneshot";
         };
       };
@@ -52,7 +52,7 @@
               -e TZ=Pacific/Honolulu \
               --user 1000:100 \
               --userns=keep-id:uid=1000,gid=100 \
-              -v /home/dustin/stuff/tesladb:/data \
+              -v ${config.home.homeDirectory}/stuff/tesladb:/data \
               --entrypoint teslauth \
               dustin/tesladb -r --dbpath=tesla.db
           '';

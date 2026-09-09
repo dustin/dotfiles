@@ -72,7 +72,7 @@
         };
 
         Service = {
-          ExecStart = ''/home/dustin/.local/bin/gitmirror -dir /mnt/dustin/stuff/gitmirror -proto https -git /home/dustin/.nix-profile/bin/git'';
+          ExecStart = ''${config.home.homeDirectory}/.local/bin/gitmirror -dir /mnt/dustin/stuff/gitmirror -proto https -git ${config.home.homeDirectory}/.nix-profile/bin/git'';
           Restart = ''always'';
           StartLimitInterval = 0;
           RestartSec = 60;
@@ -86,9 +86,9 @@
         };
         Service = {
           Type = "oneshot";
-          WorkingDirectory = "/home/dustin/prog/papertrails";
+          WorkingDirectory = "${config.home.homeDirectory}/prog/papertrails";
           Environment = "PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:${pkgs.p7zip}/bin";
-          ExecStart = "/home/dustin/.local//bin/papertrails --bucket=logarchive.west.spy.net";
+          ExecStart = "${config.home.homeDirectory}/.local/bin/papertrails --bucket=logarchive.west.spy.net";
         };
       };
 

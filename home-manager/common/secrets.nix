@@ -11,7 +11,7 @@ let
     runtimeInputs = [ pkgs.coreutils ];
     text = ''
       PASSWORD="$(cat "${config.sops.secrets.nut-password.path}")"
-      exec /home/dustin/.local/bin/nut-to-mqtt \
+      exec "${config.home.homeDirectory}/.local/bin/nut-to-mqtt" \
         -mqtt_clientid="" \
         -mqtt_endpoint=tcp://mqtt:1883/ \
         -nut_username=upsmon \
