@@ -1,4 +1,4 @@
-{ systemd, config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   programs.zsh.initContent = lib.mkBefore ''

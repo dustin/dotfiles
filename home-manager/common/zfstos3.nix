@@ -7,7 +7,7 @@ with lib;
 let
   cfg = config.zfstos3;
 
-  zfsSendToS3 = pkgs.writeShellApplication {
+  zfsToS3 = pkgs.writeShellApplication {
     name = "zfs-send-to-s3";
     runtimeInputs = [ pkgs.zfs ];
     text = builtins.readFile ./zfs-send-to-s3.sh;

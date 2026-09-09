@@ -1,6 +1,5 @@
 {
   config,
-  systemd,
   pkgs,
   pkgs-old,
   ...

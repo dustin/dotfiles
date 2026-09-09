@@ -1,4 +1,4 @@
-{ systemd, config, pkgs, pkgs-old, ... }:
+{ config, pkgs, pkgs-old, ... }:
 
 {
   my.secrets = {

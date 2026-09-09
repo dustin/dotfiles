@@ -1,4 +1,4 @@
-{ systemd, config, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
     systemd.user = {
