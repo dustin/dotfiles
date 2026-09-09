@@ -158,7 +158,7 @@ builtin_log_compact
         sync_address = "http://bee2:8888";
         sync_frequency = "5m";
         search = {
-          filters = [ "host" "directory" "global" ];
+          filters = [ "host" "directory" "session" "global" ];
         };
         keys = {
           scroll_exits = false;
