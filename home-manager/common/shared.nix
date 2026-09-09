@@ -1,9 +1,5 @@
 { config, pkgs, lib, hostname, ... }:
 
-let
-  # Choose the destination path for your config file depending on the platform.
-  jjConfig = ".config/jj/config.toml";
-in
 {
   # Common packages
   home.packages = with pkgs; [
@@ -25,7 +21,6 @@ in
     # croc # moving stuff
     age # encryption
     minisign # signing stuff
-    jujutsu # jj git thing
     btop # bee top
     # kitty # terminal graphics?  why not
     bat # show files.  Not really much to do with concatenation
@@ -54,72 +49,6 @@ in
     file = {
       ".config/bat/config".text = "--style=plain";
       ".config/fd/config".text = "--hidden\n--no-ignore\n";
-	  "${jjConfig}".text = ''
-[user]
-name = "Dustin Sallings"
-email = "dustin@spy.net"
-
-[ui]
-default-command = "mylog"
-editor = "vi"
-pager = "diff-so-fancy"
-
-[aliases]
-here = ["b", "m", "--to", "@-"]
-l = ["log", "-r", "::", "--limit", "10"]
-push = ["git", "push"]
-clone = ["git", "clone", "--colocate"]
-fetch = ["git", "fetch"]
-glog = ["log", "-r", "::@"]
-mylog = ["log", "-r", 'alias_l()']
-
-[revset-aliases]
-'alias_l()' = 'ancestors(present(@), 10) | (ancestors(immutable_heads().., 2) & mine()) | present(trunk()) | bookmarks()'
-'alias_ll()' = 'alias_l() | ::@'
-
-
-[template-aliases]
-biglog = ''''
-concat(
-  committer.timestamp(), " ",
-  commit_id.short(), " ",
-  author.email(), "\n",
-  description, "\n",
-  diff.summary())
-''''
-
-difflog = ''''
-concat(
-  committer.timestamp(), " ",
-  commit_id.short(), " ",
-  author.email(), "\n",
-  description, "\n",
-  diff.git())
-''''
-
-[templates]
-log = ''''
-builtin_log_compact
-++ if(
-    !description && !empty,
-    diff.summary(),
-)
-++ if(
-    conflict,
-    self.files(
-        "all()"
-    ).filter(
-        |file| file.conflict()
-    ).map(
-        |file| label(
-            "conflict",
-            concat("conflict ", file.path())
-        )
-    ).join("\n")
-)
-''''
-
-'';
     };
   };
 
@@ -127,6 +56,80 @@ builtin_log_compact
     home-manager.enable = true;
 
     git.enable = true;
+
+    jujutsu = {
+      enable = true;
+      settings = {
+        user = {
+          name = "Dustin Sallings";
+          email = "dustin@spy.net";
+        };
+
+        ui = {
+          "default-command" = "mylog";
+          editor = "vi";
+          pager = "diff-so-fancy";
+        };
+
+        aliases = {
+          here = [ "b" "m" "--to" "@-" ];
+          l = [ "log" "-r" "::" "--limit" "10" ];
+          push = [ "git" "push" ];
+          clone = [ "git" "clone" "--colocate" ];
+          fetch = [ "git" "fetch" ];
+          glog = [ "log" "-r" "::@" ];
+          mylog = [ "log" "-r" "alias_l()" ];
+        };
+
+        "revset-aliases" = {
+          "alias_l()" = "ancestors(present(@), 10) | (ancestors(immutable_heads().., 2) & mine()) | present(trunk()) | bookmarks()";
+          "alias_ll()" = "alias_l() | ::@";
+        };
+
+        "template-aliases" = {
+          biglog = ''
+            concat(
+              committer.timestamp(), " ",
+              commit_id.short(), " ",
+              author.email(), "\n",
+              description, "\n",
+              diff.summary())
+          '';
+
+          difflog = ''
+            concat(
+              committer.timestamp(), " ",
+              commit_id.short(), " ",
+              author.email(), "\n",
+              description, "\n",
+              diff.git())
+          '';
+        };
+
+        templates = {
+          log = ''
+            builtin_log_compact
+            ++ if(
+                !description && !empty,
+                diff.summary(),
+            )
+            ++ if(
+                conflict,
+                self.files(
+                    "all()"
+                ).filter(
+                    |file| file.conflict()
+                ).map(
+                    |file| label(
+                        "conflict",
+                        concat("conflict ", file.path())
+                    )
+                ).join("\n")
+            )
+          '';
+        };
+      };
+    };
 
     direnv = {
       enable = true;
