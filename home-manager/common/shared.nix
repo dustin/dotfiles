@@ -68,7 +68,7 @@
         ui = {
           "default-command" = "mylog";
           editor = "vi";
-          pager = "diff-so-fancy";
+          pager = [ "sh" "-c" "diff-so-fancy | less -RFX" ];
         };
 
         aliases = {
