@@ -3,9 +3,12 @@
 let
   cfg = config.services.ninerouter;
 
+  # Tools the launcher script and npm need at runtime (npm spawns `sh`).
+  servicePkgs = [ cfg.package pkgs.git pkgs.coreutils pkgs.bash ];
+
   ninerouter = pkgs.writeShellApplication {
     name = "9router";
-    runtimeInputs = [ cfg.package pkgs.git pkgs.coreutils pkgs.cacert ];
+    runtimeInputs = servicePkgs ++ [ pkgs.cacert ];
     text = ''
       set -e
 
@@ -21,8 +24,10 @@ let
       export HOME="${config.home.homeDirectory}"
 
       SRC_DIR="${cfg.sourceDir}"
-      LOG_FILE="${config.xdg.stateHome}/9router/update.log"
-      mkdir -p "$(dirname "$LOG_FILE")"
+      STATE_DIR="${config.xdg.stateHome}/9router"
+      LOG_FILE="$STATE_DIR/update.log"
+      BUILT_REV_FILE="$STATE_DIR/built-rev"
+      mkdir -p "$STATE_DIR"
 
       echo "=== 9router startup $(date) ===" >> "$LOG_FILE"
 
@@ -35,14 +40,16 @@ let
         NEEDS_BUILD=1
       ${lib.optionalString cfg.autoUpdate ''
       else
-        OLD_REV="$(git -C "$SRC_DIR" rev-parse HEAD)"
         echo "Pulling latest changes" >> "$LOG_FILE"
         git -C "$SRC_DIR" pull --ff-only >> "$LOG_FILE" 2>&1 || echo "git pull failed, continuing with existing checkout" >> "$LOG_FILE"
-        NEW_REV="$(git -C "$SRC_DIR" rev-parse HEAD)"
-        if [ "$OLD_REV" != "$NEW_REV" ]; then
-          NEEDS_BUILD=1
-        fi
       ''}
+      fi
+
+      CUR_REV="$(git -C "$SRC_DIR" rev-parse HEAD)"
+      BUILT_REV="$(cat "$BUILT_REV_FILE" 2>/dev/null || true)"
+      if [ "$BUILT_REV" != "$CUR_REV" ]; then
+        echo "HEAD $CUR_REV differs from last built ''${BUILT_REV:-none}, rebuilding" >> "$LOG_FILE"
+        NEEDS_BUILD=1
       fi
 
       if [ ! -d "$SRC_DIR/node_modules" ] || [ "$NEEDS_BUILD" = "1" ]; then
@@ -54,6 +61,11 @@ let
         echo "Running npm run build" >> "$LOG_FILE"
         (cd "$SRC_DIR" && npm run build >> "$LOG_FILE" 2>&1)
       fi
+
+      # Only reached if install/build above succeeded (set -e); records
+      # the rev so a failed build retries on the next restart instead of
+      # silently launching a stale .next.
+      echo "$CUR_REV" > "$BUILT_REV_FILE"
 
       cd "$SRC_DIR"
       exec node "$SRC_DIR/custom-server.js" \
@@ -154,7 +166,7 @@ in
           RunAtLoad = true;
           WorkingDirectory = cfg.sourceDir;
           EnvironmentVariables = {
-            PATH = lib.makeBinPath [ cfg.package ];
+            PATH = lib.makeBinPath servicePkgs;
             HOME = config.home.homeDirectory;
             SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
             NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
@@ -174,7 +186,7 @@ in
           WorkingDirectory = cfg.sourceDir;
           Restart = "on-failure";
           Environment = lib.mapAttrsToList (k: v: "${k}=${v}") ({
-            PATH = lib.makeBinPath [ cfg.package ];
+            PATH = lib.makeBinPath servicePkgs;
             HOME = config.home.homeDirectory;
             SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
             NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
