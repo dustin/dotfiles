@@ -26,8 +26,11 @@ let
       SRC_DIR="${cfg.sourceDir}"
       STATE_DIR="${config.xdg.stateHome}/9router"
       LOG_FILE="$STATE_DIR/update.log"
+      BUILD_LOG="$STATE_DIR/builds.log"
       BUILT_REV_FILE="$STATE_DIR/built-rev"
+      TARGET="${if cfg.rev == null then "origin/master" else cfg.rev}"
       mkdir -p "$STATE_DIR"
+      touch "$BUILD_LOG"
 
       echo "=== 9router startup $(date) ===" >> "$LOG_FILE"
 
@@ -40,15 +43,23 @@ let
         NEEDS_BUILD=1
       ${lib.optionalString cfg.autoUpdate ''
       else
-        echo "Pulling latest changes" >> "$LOG_FILE"
-        git -C "$SRC_DIR" pull --ff-only >> "$LOG_FILE" 2>&1 || echo "git pull failed, continuing with existing checkout" >> "$LOG_FILE"
+        echo "Fetching latest changes" >> "$LOG_FILE"
+        git -C "$SRC_DIR" fetch origin >> "$LOG_FILE" 2>&1 || echo "git fetch failed, continuing with existing checkout" >> "$LOG_FILE"
       ''}
       fi
 
-      CUR_REV="$(git -C "$SRC_DIR" rev-parse HEAD)"
+      TARGET_REV="$(git -C "$SRC_DIR" rev-parse "$TARGET")"
+      echo "Target $TARGET resolves to $TARGET_REV" >> "$LOG_FILE"
+      git -C "$SRC_DIR" checkout --detach "$TARGET_REV" >> "$LOG_FILE" 2>&1
+
+      # The on-disk tree is current iff it matches the last *successful*
+      # build. A failed build never updates the marker, so the next
+      # restart retries instead of launching stale output.
       BUILT_REV="$(cat "$BUILT_REV_FILE" 2>/dev/null || true)"
-      if [ "$BUILT_REV" != "$CUR_REV" ]; then
-        echo "HEAD $CUR_REV differs from last built ''${BUILT_REV:-none}, rebuilding" >> "$LOG_FILE"
+      if [ "$BUILT_REV" = "$TARGET_REV" ] && [ -d "$SRC_DIR/.next" ]; then
+        echo "Tree at $TARGET_REV matches last successful build, skipping rebuild" >> "$LOG_FILE"
+      else
+        echo "Tree at $TARGET_REV differs from last built ''${BUILT_REV:-none}, rebuilding" >> "$LOG_FILE"
         NEEDS_BUILD=1
       fi
 
@@ -62,10 +73,11 @@ let
         (cd "$SRC_DIR" && npm run build >> "$LOG_FILE" 2>&1)
       fi
 
-      # Only reached if install/build above succeeded (set -e); records
-      # the rev so a failed build retries on the next restart instead of
-      # silently launching a stale .next.
-      echo "$CUR_REV" > "$BUILT_REV_FILE"
+      # Only reached on success (set -e). Updates the current-tree marker
+      # and appends to the history log of known-good builds, which is
+      # what you consult (and pin `rev` to) when rolling back.
+      echo "$TARGET_REV" > "$BUILT_REV_FILE"
+      echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $TARGET_REV" >> "$BUILD_LOG"
 
       cd "$SRC_DIR"
       exec node "$SRC_DIR/custom-server.js" \
@@ -99,7 +111,14 @@ in
     autoUpdate = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Pull the latest 9router source (and rebuild if it changed) every time the service starts.";
+      description = "Pull the latest 9router source (and rebuild if it changed) every time the service starts. Ignored when rev is pinned.";
+    };
+
+    rev = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0";
+      description = "Pin 9router to this git revision (SHA or symbolic name). Defaults to origin/master.";
     };
 
     port = lib.mkOption {
