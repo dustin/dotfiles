@@ -172,7 +172,7 @@ in
 
   config = lib.mkIf cfg.enable (lib.mkMerge [
     {
-      home.packages = [ cfg.package ninerouter ];
+      home.packages = [ ninerouter ];
     }
 
     (lib.mkIf pkgs.stdenv.isDarwin {
