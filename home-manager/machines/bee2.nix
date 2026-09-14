@@ -11,6 +11,7 @@
   };
 
   services.nutToMqtt.enable = true;
+  services.loaner.enable = true;
 
   home.packages = with pkgs; [
     static-web-server
