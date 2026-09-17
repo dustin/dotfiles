@@ -6,18 +6,6 @@
     export EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
   '';
 
-  programs.headroom = {
-    enable = true;
-    proxy = {
-      enable = true;
-      targetApiUrl = "http://localhost:11434/v1";
-      apiKey = "ollama";
-      mode = "token";
-      disableKompress = true;
-      port = 8787;
-    };
-  };
-
   home.file = {
     ".local/state/atuin-daemon/.keep".text = "";
   };

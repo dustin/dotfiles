@@ -12,6 +12,18 @@
 
   services.ninerouter.enable = true;
 
+  programs.headroom = {
+    enable = true;
+    proxy = {
+      enable = true;
+      targetApiUrl = "http://localhost:11434/v1";
+      apiKey = "ollama";
+      mode = "token";
+      disableKompress = true;
+      port = 8787;
+    };
+  };
+
   home.packages = with pkgs; [
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
     # darcs
