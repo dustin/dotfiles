@@ -1,8 +1,5 @@
 { config, pkgs-old, pkgs, ... }:
 
-let
-  pycentauri = pkgs.callPackage ../pkgs/pycentauri.nix { };
-in
 {
   imports = [
     ../common/zfstos3.nix
@@ -30,7 +27,6 @@ in
 	  # rtl-sdr-librtlsdr
 	  rtl-sdr
 	  libusb1
-    pycentauri
   ];
 
   systemd.user = {
