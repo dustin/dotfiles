@@ -1,5 +1,8 @@
 { config, pkgs-old, pkgs, ... }:
 
+let
+  pycentauri = pkgs.callPackage ../pkgs/pycentauri.nix { };
+in
 {
   imports = [
     ../common/zfstos3.nix
@@ -24,9 +27,10 @@
   home.packages = with pkgs; [
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
     pgcli
-	# rtl-sdr-librtlsdr
-	rtl-sdr
-	libusb1
+	  # rtl-sdr-librtlsdr
+	  rtl-sdr
+	  libusb1
+    pycentauri
   ];
 
   systemd.user = {
