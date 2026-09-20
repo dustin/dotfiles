@@ -12,6 +12,7 @@ decrypt them.
 | `aws-credentials.sops.yaml` | `~/.aws/credentials` | all machines (AWS CLI / rclone / papertrails) |
 | `rclone-config.sops.yaml` | `~/.config/rclone/rclone.conf` | all machines (rclone, zfstos3, s3bak) |
 | `loaner.sops.yaml` | `~/.config/sops-nix/secrets/loaner-env` | bee2 `loaner` service |
+| `bambu-access-code.sops.yaml` | `~/.config/sops-nix/secrets/bambu-access-code` | bee2 `bambu-weight-fetcher` service |
 
 ## Creating a secret for the first time
 

@@ -86,6 +86,7 @@
                 ./modules/9router.nix
                 ./modules/nut-to-mqtt.nix
                 ./modules/loaner.nix
+                ./modules/bambu-weight-fetcher.nix
                 ./common/shared.nix
                 ./common/secrets.nix
                 (if isDarwin then ./common/darwin.nix else ./common/linux.nix)
