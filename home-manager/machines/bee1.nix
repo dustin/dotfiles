@@ -24,30 +24,10 @@
   home.packages = with pkgs; [
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
     pgcli
-	  # rtl-sdr-librtlsdr
-	  rtl-sdr
-	  libusb1
   ];
 
   systemd.user = {
     services = {
-
-      rtl433 = {
-        Install = { WantedBy = ["default.target"]; };
-
-        Unit = {
-          Description = "rtl sdr";
-          After = "network.target";
-        };
-
-        Service = {
-          ExecStart = ''${pkgs.rtl_433}/bin/rtl_433 -F mqtt://localhost:1883,user=rtl433,retain=0,devices=rtl_433[/id]'';
-          Restart = ''always'';
-          StartLimitInterval = 0;
-          RestartSec = 60;
-        };
-      };
-
       gitmirror = {
         Install = { WantedBy = ["default.target"]; };
 
