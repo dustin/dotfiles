@@ -14,7 +14,7 @@ in
   };
 
   services.nutToMqtt.enable = true;
-  services.loaner.enable = true;
+  services.loaner.enable = false;
   services.bambuWeightFetcher.enable = true;
 
   home.packages = with pkgs; [
