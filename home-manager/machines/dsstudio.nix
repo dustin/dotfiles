@@ -75,7 +75,7 @@
       ];
 
       RunAtLoad = false;
-      StartInterval = 3600;
+      StartInterval = 1800;
       KeepAlive = false;
 
       StandardOutPath  = "${config.xdg.stateHome}/buoyupdate/stdout.log";
