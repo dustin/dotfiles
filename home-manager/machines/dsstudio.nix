@@ -15,7 +15,7 @@
   services.ninerouter.rev = "1101453fcd813cae68f0716011422a4edc3d33fa";
 
   services.laya = {
-    enable = true;
+    enable = false;
     device = "mps";
   };
 
