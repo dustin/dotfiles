@@ -39,6 +39,7 @@
     pueue # at like thing
     rdfind # duplicate file handler
     sops # secret manager
+    cachix # push/pull nix store paths to dustin.cachix.org
   ];
 
   home = {
