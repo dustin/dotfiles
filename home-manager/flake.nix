@@ -11,8 +11,15 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Bump duckdb past what's in nixpkgs. To upgrade: bump the tag in this
+    # url, then run `nix flake update duckdb-src`.
+    duckdb-src = {
+      url = "github:duckdb/duckdb/v1.5.6";
+      flake = false;
+    };
   };
-  outputs = { nixpkgs, nixpkgs-old, home-manager, sops-nix, ... }:
+  outputs = { nixpkgs, nixpkgs-old, home-manager, sops-nix, duckdb-src, ... }:
     let
       lib = nixpkgs.lib;
       username = "dustin";
@@ -41,28 +48,34 @@
           throw "`systems` entries in flake.nix have no matching machines/*.nix file: ${toString missingFile}"
         else true;
 
-      # Bump duckdb past what's in nixpkgs
+      # Bump duckdb past what's in nixpkgs. The tag and rev come from
+      # `duckdb-src` (see inputs above), which flake.lock pins to an exact
+      # commit/hash, so there's nothing to hand-copy here. To upgrade: change
+      # the tag in the `duckdb-src` input url, then run
+      # `nix flake update duckdb-src`.
+      duckdbTag = (builtins.fromJSON (builtins.readFile ./flake.lock))
+        .nodes.duckdb-src.original.ref;
+      duckdbVersion = lib.removePrefix "v" duckdbTag;
+
       duckdbOverlay = final: prev: {
         duckdb = prev.duckdb.overrideAttrs (old: {
-          version = "1.5.5";
+          version = duckdbVersion;
+          src = duckdb-src;
 
-          src = final.fetchFromGitHub {
-            owner = "duckdb";
-            repo = "duckdb";
-            tag = "v1.5.5";
-            hash = "sha256-vFXrMcWF5KDYYRjWZb6iJdhGnCAb6SMlSgzlcr+FQ8Y=";
-          };
-
+          # duckdb embeds `git describe` output into its build; since
+          # `duckdb-src` is fetched as a plain tree (no .git dir) we have to
+          # fake that output here.
           cmakeFlags =
             (final.lib.filter
               (f: !(final.lib.hasInfix "OVERRIDE_GIT_DESCRIBE" f))
               old.cmakeFlags)
             ++ [
               (final.lib.cmakeFeature "OVERRIDE_GIT_DESCRIBE"
-                "v1.5.5-0-gd8cdaa33fda8df955cc76ef58a280f68f4cd43fa")
+                "${duckdbTag}-0-g${duckdb-src.rev}")
             ];
 
           # doInstallCheck = false; # uncomment if the test suite chokes
+          # patches = [ ]; # uncomment if nixpkgs' patches stop applying to the newer tag
         });
       };
 
