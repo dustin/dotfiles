@@ -94,8 +94,59 @@
           x86_64LinuxHosts);
         ignoreCollisions = true;
       };
+
+      # Every package actually installed across all hosts. Used below to
+      # figure out which of them are plain nixpkgs packages worth watching
+      # for updates.
+      allHomePackages = lib.concatMap
+        (name: homeConfigurations.${name}.config.home.packages)
+        (builtins.attrNames homeConfigurations);
+
+      # `pname` -> current version for every package in `home.packages`,
+      # across all hosts, that is a plain top-level nixpkgs attribute (e.g.
+      # `pkgs.duckdb`). This is derived automatically -- no hand-maintained
+      # package list -- by checking whether
+      # `nixpkgs.legacyPackages.<system>.<pname>` resolves to that exact same
+      # derivation. That excludes local wrappers built via `pkgs.callPackage
+      # ../pkgs/*.nix` (e.g. laya-serve, headroom, centauri,
+      # bambu-weight-fetcher; they have no matching top-level attribute) and
+      # packages reached through a nested attribute path or a different
+      # nixpkgs pin (e.g. `pkgs-old.haskellPackages.net-mqtt`).
+      #
+      # Evaluate this same output again with
+      # `--override-input nixpkgs github:nixos/nixpkgs/nixpkgs-unstable` to
+      # see what's currently available upstream, using the exact same
+      # filtering logic -- no separate script to keep in sync.
+      trackedVersions =
+        let
+          systemsUsed = lib.unique (map (pkg: pkg.system) allHomePackages);
+          versionsForSystem = system:
+            let
+              pkgsForSystem = nixpkgs.legacyPackages.${system};
+              candidates = builtins.filter (pkg: pkg.system == system) allHomePackages;
+              trackable = builtins.filter (pkg:
+                let
+                  pname = pkg.pname or null;
+                  # Some pnames are retired aliases that just `throw` when
+                  # accessed (e.g. `dust` -> `du-dust`), so this lookup has to
+                  # be wrapped in tryEval rather than a plain `or null`.
+                  topLevelEval =
+                    if pname == null then { success = false; }
+                    else builtins.tryEval (pkgsForSystem.${pname} or null);
+                in
+                  topLevelEval.success
+                  && topLevelEval.value != null
+                  && topLevelEval.value.outPath == pkg.outPath
+              ) candidates;
+            in
+              lib.listToAttrs (map (pkg: {
+                name = pkg.pname;
+                value = pkg.version or "unknown";
+              }) trackable);
+        in
+          lib.genAttrs systemsUsed versionsForSystem;
     in {
-      inherit homeConfigurations;
+      inherit homeConfigurations trackedVersions;
 
       packages.x86_64-linux.ci-shared = x86_64LinuxSharedPackages;
     };

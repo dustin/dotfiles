@@ -1,0 +1,109 @@
+name: Check for package updates in nixpkgs
+
+# Compares the version of every plain-nixpkgs package used across all hosts
+# (flake output `trackedVersions`, derived automatically in flake.nix from
+# each host's `home.packages` -- no hand-maintained list to keep in sync)
+# against nixpkgs-unstable's current tip, and opens/updates a single tracking
+# issue listing anything that's out of date.
+on:
+  schedule:
+    - cron: "0 13 * * 1" # weekly, Monday 13:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+
+      - name: Compare locked vs upstream package versions
+        working-directory: home-manager
+        run: |
+          for system in x86_64-linux aarch64-linux aarch64-darwin; do
+            nix eval --json ".#trackedVersions.$system" > "/tmp/locked-$system.json"
+            nix eval --json --override-input nixpkgs github:nixos/nixpkgs/nixpkgs-unstable ".#trackedVersions.$system" > "/tmp/upstream-$system.json"
+          done
+
+      - name: Compute diff
+        id: diff
+        run: |
+          python3 - <<'PYEOF'
+          import json
+          import os
+
+          lines = []
+          for system in ["x86_64-linux", "aarch64-linux", "aarch64-darwin"]:
+              locked = json.load(open(f"/tmp/locked-{system}.json"))
+              upstream = json.load(open(f"/tmp/upstream-{system}.json"))
+              diffs = sorted(
+                  (name, locked.get(name, "(missing)"), version)
+                  for name, version in upstream.items()
+                  if locked.get(name) != version
+              )
+              for name, old, new in diffs:
+                  lines.append(f"| {system} | `{name}` | {old} | {new} |")
+
+          body_lines = [
+              "Comparing the packages used across all hosts (see `trackedVersions` in `home-manager/flake.nix`) against nixpkgs-unstable's current tip.",
+              "",
+          ]
+          if lines:
+              body_lines += [
+                  "| system | package | locked | upstream |",
+                  "| --- | --- | --- | --- |",
+              ] + lines
+              body_lines += [
+                  "",
+                  "Run `nix flake update nixpkgs` in `home-manager/` to pick these up.",
+              ]
+          else:
+              body_lines.append("Everything is up to date.")
+
+          body = "\n".join(body_lines)
+          has_diff = "true" if lines else "false"
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"has_diff={has_diff}\n")
+              f.write("body<<BODY_EOF\n")
+              f.write(body + "\n")
+              f.write("BODY_EOF\n")
+          PYEOF
+
+      - name: Open or update tracking issue
+        if: steps.diff.outputs.has_diff == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = process.env.ISSUE_BODY;
+            const title = "Package updates available in nixpkgs";
+            const label = "nixpkgs-update";
+
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: label,
+            });
+
+            if (existing.length > 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: [label],
+              });
+            }
+        env:
+          ISSUE_BODY: ${{ steps.diff.outputs.body }}
