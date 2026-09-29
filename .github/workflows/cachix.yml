@@ -1,0 +1,78 @@
+name: Build & cache home-manager configs
+
+# Builds each Linux home-manager configuration natively on its own
+# architecture and pushes the results to cachix, so machines can substitute
+# binaries (e.g. the custom duckdb overlay) instead of compiling them.
+#
+# The x86_64-linux hosts (aws, bee1, bee2) are chained with `needs` rather
+# than run in a parallel matrix: they share an architecture, so anything the
+# first job builds and pushes to cachix (the duckdb overlay, common packages
+# from common/shared.nix, etc.) can be substituted by the next job instead of
+# rebuilt. pied is aarch64-linux, a different architecture that can't
+# substitute from or for the x86_64 jobs, so it runs independently rather
+# than being added to that chain.
+#
+# Darwin machines (dsmac, dsstudio) are intentionally not built here: GitHub
+# doesn't offer hosted aarch64-darwin runners, so there's no native runner to
+# build them on.
+on:
+  push:
+    branches: [master]
+    paths:
+      - "home-manager/**"
+  workflow_dispatch: {}
+
+jobs:
+  aws:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+      - uses: cachix/cachix-action@v17
+        with:
+          name: dustin
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Build home-manager activation package for aws
+        working-directory: home-manager
+        run: nix build '.#homeConfigurations."dustin@aws".activationPackage' --no-link -L
+
+  bee1:
+    needs: aws
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+      - uses: cachix/cachix-action@v17
+        with:
+          name: dustin
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Build home-manager activation package for bee1
+        working-directory: home-manager
+        run: nix build '.#homeConfigurations."dustin@bee1".activationPackage' --no-link -L
+
+  bee2:
+    needs: bee1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+      - uses: cachix/cachix-action@v17
+        with:
+          name: dustin
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Build home-manager activation package for bee2
+        working-directory: home-manager
+        run: nix build '.#homeConfigurations."dustin@bee2".activationPackage' --no-link -L
+
+  pied:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+      - uses: cachix/cachix-action@v17
+        with:
+          name: dustin
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Build home-manager activation package for pied
+        working-directory: home-manager
+        run: nix build '.#homeConfigurations."dustin@pied".activationPackage' --no-link -L
