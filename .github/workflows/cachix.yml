@@ -32,6 +32,7 @@ jobs:
         with:
           name: dustin
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
       - name: Build home-manager activation package for aws
         working-directory: home-manager
         run: nix build '.#homeConfigurations."dustin@aws".activationPackage' --no-link -L
@@ -46,6 +47,7 @@ jobs:
         with:
           name: dustin
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
       - name: Build home-manager activation package for bee1
         working-directory: home-manager
         run: nix build '.#homeConfigurations."dustin@bee1".activationPackage' --no-link -L
@@ -60,6 +62,7 @@ jobs:
         with:
           name: dustin
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
       - name: Build home-manager activation package for bee2
         working-directory: home-manager
         run: nix build '.#homeConfigurations."dustin@bee2".activationPackage' --no-link -L
@@ -73,6 +76,7 @@ jobs:
         with:
           name: dustin
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
       - name: Build home-manager activation package for pied
         working-directory: home-manager
         run: nix build '.#homeConfigurations."dustin@pied".activationPackage' --no-link -L

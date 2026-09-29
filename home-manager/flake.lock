@@ -1,22 +1,5 @@
 {
   "nodes": {
-    "duckdb-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1790532947,
-        "narHash": "sha256-xHcucJA+2nTD9oeoZxDQzGS6QNnzjHQ7t9sz0OHA+zo=",
-        "owner": "duckdb",
-        "repo": "duckdb",
-        "rev": "069cc9f9b5be802405797faecc284961b07c70ef",
-        "type": "github"
-      },
-      "original": {
-        "owner": "duckdb",
-        "ref": "v1.5.6",
-        "repo": "duckdb",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -71,7 +54,6 @@
     },
     "root": {
       "inputs": {
-        "duckdb-src": "duckdb-src",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-old": "nixpkgs-old",
