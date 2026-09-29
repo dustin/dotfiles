@@ -78,7 +78,25 @@
           }
         ) (builtins.attrNames systems)
       );
+
+      # The x86_64-linux hosts (aws, bee1, bee2) all evaluate against the
+      # same nixpkgs, so their `home.packages` overlap heavily and can share
+      # a cache. This buildEnv unions those packages -- derived from each
+      # host's own evaluated config, so it never drifts out of sync with
+      # common/shared.nix or machines/*.nix -- letting CI build it once as a
+      # prerequisite, then build/push all three hosts concurrently instead of
+      # chaining them just to get cache reuse.
+      x86_64LinuxHosts = builtins.filter (h: systems.${h} == "x86_64-linux") (builtins.attrNames systems);
+      x86_64LinuxSharedPackages = nixpkgs.legacyPackages.x86_64-linux.buildEnv {
+        name = "ci-shared-x86_64-linux";
+        paths = lib.unique (lib.concatMap
+          (h: homeConfigurations."${username}@${h}".config.home.packages)
+          x86_64LinuxHosts);
+        ignoreCollisions = true;
+      };
     in {
       inherit homeConfigurations;
+
+      packages.x86_64-linux.ci-shared = x86_64LinuxSharedPackages;
     };
 }

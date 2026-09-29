@@ -2,15 +2,18 @@ name: Build & cache home-manager configs
 
 # Builds each Linux home-manager configuration natively on its own
 # architecture and pushes the results to cachix, so machines can substitute
-# binaries (e.g. the custom duckdb overlay) instead of compiling them.
+# binaries instead of compiling them.
 #
-# The x86_64-linux hosts (aws, bee1, bee2) are chained with `needs` rather
-# than run in a parallel matrix: they share an architecture, so anything the
-# first job builds and pushes to cachix (the duckdb overlay, common packages
-# from common/shared.nix, etc.) can be substituted by the next job instead of
-# rebuilt. pied is aarch64-linux, a different architecture that can't
-# substitute from or for the x86_64 jobs, so it runs independently rather
-# than being added to that chain.
+# The x86_64-linux hosts (aws, bee1, bee2) all evaluate against the same
+# nixpkgs, so their home.packages overlap heavily. Rather than chaining those
+# three jobs just to get cache reuse, `shared-x86_64-linux` builds the union
+# of their packages once (flake output `packages.x86_64-linux.ci-shared`,
+# derived automatically from each host's own config -- see flake.nix) and
+# pushes it to cachix. aws/bee1/bee2 then depend on that job and run
+# concurrently, substituting the shared packages instead of rebuilding them.
+#
+# pied is aarch64-linux, a different architecture that can't substitute from
+# or for the x86_64 jobs, so it runs independently.
 #
 # Darwin machines (dsmac, dsstudio) are intentionally not built here: GitHub
 # doesn't offer hosted aarch64-darwin runners, so there's no native runner to
@@ -23,7 +26,22 @@ on:
   workflow_dispatch: {}
 
 jobs:
+  shared-x86_64-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+      - uses: cachix/cachix-action@v17
+        with:
+          name: dustin
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
+      - name: Build packages shared by aws/bee1/bee2
+        working-directory: home-manager
+        run: nix build '.#packages.x86_64-linux.ci-shared' --no-link -L
+
   aws:
+    needs: shared-x86_64-linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +56,7 @@ jobs:
         run: nix build '.#homeConfigurations."dustin@aws".activationPackage' --no-link -L
 
   bee1:
-    needs: aws
+    needs: shared-x86_64-linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +71,7 @@ jobs:
         run: nix build '.#homeConfigurations."dustin@bee1".activationPackage' --no-link -L
 
   bee2:
-    needs: bee1
+    needs: shared-x86_64-linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
