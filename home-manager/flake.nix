@@ -62,7 +62,6 @@
                 ./modules/nut-to-mqtt.nix
                 ./modules/loaner.nix
                 ./modules/bambu-weight-fetcher.nix
-                ./modules/laya.nix
                 ./common/shared.nix
                 ./common/secrets.nix
                 (if isDarwin then ./common/darwin.nix else ./common/linux.nix)
@@ -108,7 +107,7 @@
       # package list -- by checking whether
       # `nixpkgs.legacyPackages.<system>.<pname>` resolves to that exact same
       # derivation. That excludes local wrappers built via `pkgs.callPackage
-      # ../pkgs/*.nix` (e.g. laya-serve, headroom, centauri,
+      # ../pkgs/*.nix` (e.g. headroom, centauri,
       # bambu-weight-fetcher; they have no matching top-level attribute) and
       # packages reached through a nested attribute path or a different
       # nixpkgs pin (e.g. `pkgs-old.haskellPackages.net-mqtt`).
