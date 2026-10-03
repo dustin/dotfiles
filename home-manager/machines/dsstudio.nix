@@ -70,7 +70,10 @@
       ];
 
       RunAtLoad = false;
-      StartInterval = 1800;
+      StartCalendarInterval = [
+        { Minute = 10; }
+        { Minute = 40; }
+      ];
       KeepAlive = false;
 
       StandardOutPath  = "${config.xdg.stateHome}/buoyupdate/stdout.log";
