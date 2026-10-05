@@ -43,25 +43,6 @@
           Type = "oneshot";
         };
       };
-      teslauth = {
-        Unit = {
-          Description = "tesladb";
-          After = "network.target";
-        };
-
-        Service = {
-          Type = "oneshot";
-          ExecStart = ''
-            ${pkgs.podman}/bin/podman run --rm \
-              -e TZ=Pacific/Honolulu \
-              --user 1000:100 \
-              --userns=keep-id:uid=1000,gid=100 \
-              -v /var/lib/tesladb:/data \
-              --entrypoint teslauth \
-              dustin/tesladb -r --dbpath=tesla.db
-          '';
-        };
-      };
     };
     timers = {
       s3bak = {
@@ -71,15 +52,6 @@
            RandomizedDelaySec = "900";
            Unit = "s3bak.service";
          };
-      };
-      teslauth = {
-        Install = { WantedBy = [ "timers.target" ]; };
-        Timer = {
-          OnBootSec = "300";
-          OnUnitActiveSec = "7200"; # should expire after 28800
-          RandomizedDelaySec = "900";
-          Unit = "teslauth.service";
-        };
       };
     };
   };
