@@ -56,7 +56,7 @@
               -e TZ=Pacific/Honolulu \
               --user 1000:100 \
               --userns=keep-id:uid=1000,gid=100 \
-              -v ${config.home.homeDirectory}/stuff/tesladb:/data \
+              -v /var/lib/tesladb:/data \
               --entrypoint teslauth \
               dustin/tesladb -r --dbpath=tesla.db
           '';
