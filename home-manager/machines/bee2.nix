@@ -16,6 +16,7 @@ in
   services.nutToMqtt.enable = true;
   services.loaner.enable = false;
   services.bambuWeightFetcher.enable = true;
+  services.metubeTranscode.enable = true;
 
   home.packages = with pkgs; [
     static-web-server
