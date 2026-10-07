@@ -113,6 +113,12 @@ in
       description = "metube's completed-downloads state file.";
     };
 
+    cleanInterval = lib.mkOption {
+      type = lib.types.str;
+      default = "*-*-* 03:00:00";
+      description = "systemd OnCalendar for `pueue clean -s -g transcode`.";
+    };
+
     crf = lib.mkOption {
       type = lib.types.int;
       default = 22;
@@ -139,6 +145,27 @@ in
         Type = "oneshot";
         ExecStart = lib.getExe enqueue;
       };
+    };
+
+    # Successful transcodes are just noise in `pueue status`; failures stay.
+    systemd.user.services.metube-transcode-clean = {
+      Unit = {
+        Description = "Clean successful transcode tasks out of pueue";
+        After = [ "pueue.service" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.pueue}/bin/pueue clean -s -g transcode";
+      };
+    };
+
+    systemd.user.timers.metube-transcode-clean = {
+      Unit.Description = "Periodically clean successful transcode tasks";
+      Timer = {
+        OnCalendar = cfg.cleanInterval;
+        Persistent = true;
+      };
+      Install.WantedBy = [ "timers.target" ];
     };
 
     systemd.user.paths.metube-transcode-enqueue = {
