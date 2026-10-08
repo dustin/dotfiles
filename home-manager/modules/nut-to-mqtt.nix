@@ -23,7 +23,8 @@ in
 
     binPath = lib.mkOption {
       type = lib.types.str;
-      default = "${config.home.homeDirectory}/.local/bin/nut-to-mqtt";
+      default = lib.getExe (pkgs.callPackage ../pkgs/nut-to-mqtt.nix { });
+      defaultText = lib.literalExpression "lib.getExe (pkgs.callPackage ../pkgs/nut-to-mqtt.nix { })";
       description = "Path to the nut-to-mqtt binary.";
     };
 

@@ -109,7 +109,8 @@
       # `nixpkgs.legacyPackages.<system>.<pname>` resolves to that exact same
       # derivation. That excludes local wrappers built via `pkgs.callPackage
       # ../pkgs/*.nix` (e.g. headroom, centauri, waitforsocket, unixtime,
-      # bambu-weight-fetcher; they have no matching top-level attribute) and
+      # gitmirror, papertrails, nut-to-mqtt, s3bak, bambu-weight-fetcher;
+      # they have no matching top-level attribute) and
       # packages reached through a nested attribute path or a different
       # nixpkgs pin (e.g. `pkgs-old.haskellPackages.net-mqtt`).
       #
