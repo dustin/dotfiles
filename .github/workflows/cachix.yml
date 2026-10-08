@@ -15,9 +15,10 @@ name: Build & cache home-manager configs
 # pied is aarch64-linux, a different architecture that can't substitute from
 # or for the x86_64 jobs, so it runs independently.
 #
-# Darwin machines (dsmac, dsstudio) are intentionally not built here: GitHub
-# doesn't offer hosted aarch64-darwin runners, so there's no native runner to
-# build them on.
+# The darwin machines (dsmac, dsstudio) are both aarch64-darwin and build on
+# GitHub's Apple Silicon macOS runners. They're built together in a single
+# `darwin` job: one `nix build` of both activation packages shares their
+# common dependencies without needing a separate shared-packages job.
 on:
   push:
     branches: [master]
@@ -98,3 +99,20 @@ jobs:
       - name: Build home-manager activation package for pied
         working-directory: home-manager
         run: nix build '.#homeConfigurations."dustin@pied".activationPackage' --no-link -L
+
+  darwin:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+      - uses: cachix/cachix-action@v17
+        with:
+          name: dustin
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          signingKey: ${{ secrets.CACHIX_SIGNING_KEY }}
+      - name: Build home-manager activation packages for dsmac and dsstudio
+        working-directory: home-manager
+        run: |
+          nix build --no-link -L \
+            '.#homeConfigurations."dustin@dsmac".activationPackage' \
+            '.#homeConfigurations."dustin@dsstudio".activationPackage'
