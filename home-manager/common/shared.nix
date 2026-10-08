@@ -2,6 +2,7 @@
 
 let
   waitforsocket = pkgs.callPackage ../pkgs/waitforsocket.nix { };
+  unixtime = pkgs.callPackage ../pkgs/unixtime.nix { };
 in
 {
   # Common packages
@@ -44,6 +45,7 @@ in
     sops # secret manager
     cachix # push/pull nix store paths to dustin.cachix.org
     waitforsocket # block until network things are up
+    unixtime # show unix timestamps as human dates
   ];
 
   home = {
