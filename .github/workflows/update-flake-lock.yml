@@ -1,0 +1,39 @@
+name: Update flake.lock
+
+# Weekly, runs `nix flake update` in home-manager/ and opens (or refreshes) a
+# PR with the new flake.lock.
+#
+# PRs opened with GITHUB_TOKEN don't trigger other workflows, so after the PR
+# is created this explicitly dispatches cachix.yml on the PR branch
+# (workflow_dispatch is exempt from that rule). Those builds show up as checks
+# on the PR, so every host is built against the new lock before merging.
+on:
+  schedule:
+    - cron: "0 12 * * 0" # weekly, Sunday 12:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31.11.1
+
+      - name: Update flake.lock
+        id: update
+        uses: DeterminateSystems/update-flake-lock@v24
+        with:
+          path-to-flake-dir: home-manager
+          branch: update_flake_lock_action
+          pr-title: "Update flake.lock"
+
+      - name: Build hosts against the new lock
+        if: steps.update.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run cachix.yml --repo "$GITHUB_REPOSITORY" --ref update_flake_lock_action
