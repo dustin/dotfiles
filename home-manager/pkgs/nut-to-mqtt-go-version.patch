@@ -1,0 +1,28 @@
+diff --git a/go.mod b/go.mod
+index a9f0cc0..94e1c60 100644
+--- a/go.mod
++++ b/go.mod
+@@ -5,7 +5,7 @@ go 1.14
+ require (
+ 	github.com/eclipse/paho.mqtt.golang v1.2.0
+ 	github.com/ijustfool/docker-secrets v0.0.0-20191021062307-b25ea5007562
+-	github.com/jnovack/go-version v1.0.0
++	github.com/jnovack/go-version v1.0.1
+ 	github.com/mattn/go-isatty v0.0.12
+ 	github.com/namsral/flag v1.7.4-pre
+ 	github.com/robbiet480/go.nut v0.0.0-20180430014622-246697bfaea7
+diff --git a/go.sum b/go.sum
+index b8c909e..1e07756 100644
+--- a/go.sum
++++ b/go.sum
+@@ -3,8 +3,8 @@ github.com/eclipse/paho.mqtt.golang v1.2.0 h1:1F8mhG9+aO5/xpdtFkW4SxOJB67ukuDC3t
+ github.com/eclipse/paho.mqtt.golang v1.2.0/go.mod h1:H9keYFcgq3Qr5OUJm/JZI/i6U7joQ8SYLhZwfeOo6Ts=
+ github.com/ijustfool/docker-secrets v0.0.0-20191021062307-b25ea5007562 h1:v7V+wm1nJzV1NKyuTRKb8UwHJ7gm9fBV4mqANfQxu+8=
+ github.com/ijustfool/docker-secrets v0.0.0-20191021062307-b25ea5007562/go.mod h1:Y7sfMPseINeLXpzmLeRxHD2rdekjyjl91m0T+DC1UCM=
+-github.com/jnovack/go-version v1.0.0 h1:Rq7qySfkkjaEJeSV8Oh8nl6ZFNCga6KcsG5zmDPDDro=
+-github.com/jnovack/go-version v1.0.0/go.mod h1:+wCtyeQ6/Ttm8Ih/g+48icj4NyFTvKqCC3v61ZV1CLs=
++github.com/jnovack/go-version v1.0.1 h1:kHu1wmhQWGHv5DyubPTiqHfKTMjkvtUZTMWv7PSeC+0=
++github.com/jnovack/go-version v1.0.1/go.mod h1:TrtDww57ZSN3OntPkglhIPj+eFhwtUcsTn6xpctY3J8=
+ github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=
+ github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
+ github.com/mitchellh/mapstructure v1.1.2 h1:fmNYVwqnSfB9mZU6OS2O6GsXM+wcskZDuKQzvN1EDeE=

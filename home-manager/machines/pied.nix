@@ -1,5 +1,8 @@
 { config, pkgs, pkgs-old, ... }:
 
+let
+  s3bak = pkgs.callPackage ../pkgs/s3bak.nix { };
+in
 {
   my.secrets = {
     enable = true;
@@ -35,11 +38,10 @@
         };
         Service = {
           Environment = [
-            "RCLONE=${pkgs.rclone}/bin/rclone"
             "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
             "NIX_SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
           ];
-          ExecStart = "${config.home.homeDirectory}/.local/bin/s3bak";
+          ExecStart = pkgs.lib.getExe s3bak;
           Type = "oneshot";
         };
       };
