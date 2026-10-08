@@ -35,17 +35,6 @@
           };
         };
 
-      nixchanup = {
-        Unit = {
-          Description = "Update nixpkg channels";
-          After = "network.target";
-        };
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.nix}/bin/nix-channel --update";
-        };
-      };
-
       home-manager-cleanup = {
         Unit = {
           Description = "Remove old home-manager generations";
@@ -59,14 +48,6 @@
     };
 
     timers = {
-      nixchanup = {
-        Install = { WantedBy = [ "timers.target" ]; };
-        Timer = {
-          OnCalendar = "daily";
-          RandomizedDelaySec = "900";
-          Unit = "nixchanup.service";
-        };
-      };
       home-manager-cleanup = {
         Install = { WantedBy = [ "timers.target" ]; };
         Timer = {
