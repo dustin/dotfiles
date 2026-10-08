@@ -1,5 +1,8 @@
 { config, pkgs, lib, hostname, ... }:
 
+let
+  waitforsocket = pkgs.callPackage ../pkgs/waitforsocket.nix { };
+in
 {
   # Common packages
   home.packages = with pkgs; [
@@ -40,6 +43,7 @@
     rdfind # duplicate file handler
     sops # secret manager
     cachix # push/pull nix store paths to dustin.cachix.org
+    waitforsocket # block until network things are up
   ];
 
   home = {
