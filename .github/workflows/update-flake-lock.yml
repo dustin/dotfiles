@@ -6,7 +6,8 @@ name: Update flake.lock
 # PRs opened with GITHUB_TOKEN don't trigger other workflows, so after the PR
 # is created this explicitly dispatches cachix.yml on the PR branch
 # (workflow_dispatch is exempt from that rule). Those builds show up as checks
-# on the PR, so every host is built against the new lock before merging.
+# on the PR, so every host is built against the new lock. If every build
+# passes, the PR is merged; if any fails, it's left open for a human.
 on:
   schedule:
     - cron: "0 12 * * 0" # weekly, Sunday 12:00 UTC
@@ -32,8 +33,31 @@ jobs:
           branch: update_flake_lock_action
           pr-title: "Update flake.lock"
 
-      - name: Build hosts against the new lock
+      - name: Build hosts against the new lock, merge if green
         if: steps.update.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run cachix.yml --repo "$GITHUB_REPOSITORY" --ref update_flake_lock_action
+          PR: ${{ steps.update.outputs.pull-request-number }}
+        run: |
+          sha=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid -q .headRefOid)
+          gh workflow run cachix.yml --repo "$GITHUB_REPOSITORY" --ref update_flake_lock_action
+
+          # The dispatched run takes a moment to appear; find it by commit.
+          run=""
+          for _ in $(seq 30); do
+            run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow cachix.yml \
+              --commit "$sha" --event workflow_dispatch --limit 1 \
+              --json databaseId -q '.[0].databaseId')
+            [ -n "$run" ] && break
+            sleep 10
+          done
+          if [ -z "$run" ]; then
+            echo "::error::couldn't find the dispatched cachix.yml run"
+            exit 1
+          fi
+
+          if gh run watch "$run" --repo "$GITHUB_REPOSITORY" --exit-status --interval 60; then
+            gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --delete-branch
+          else
+            echo "::warning::host builds failed; leaving PR #$PR open"
+          fi
