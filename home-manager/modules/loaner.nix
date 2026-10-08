@@ -20,7 +20,7 @@ in
       path = "${config.home.homeDirectory}/.config/sops-nix/secrets/loaner-env";
     };
 
-    systemd.user.services.loaner = lib.mkIf pkgs.stdenv.isLinux {
+    systemd.user.services.loaner = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       Unit = {
         Description = "loaner haskell service";
         After = [ "network.target" ];

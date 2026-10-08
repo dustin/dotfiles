@@ -47,9 +47,9 @@ in
       path = "${config.home.homeDirectory}/.config/sops-nix/secrets/nut-password";
     };
 
-    home.packages = lib.optionals pkgs.stdenv.isLinux [ wrapped ];
+    home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [ wrapped ];
 
-    systemd.user.services.nuttomqtt = lib.mkIf pkgs.stdenv.isLinux {
+    systemd.user.services.nuttomqtt = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       Unit = {
         Description = "nut to mqtt";
         After = "network.target";

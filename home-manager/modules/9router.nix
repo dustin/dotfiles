@@ -196,7 +196,7 @@ in
       };
     })
 
-    (lib.mkIf pkgs.stdenv.isLinux {
+    (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       systemd.user.services.ninerouter = {
         Unit.Description = "9router AI proxy/router";
         Service = {

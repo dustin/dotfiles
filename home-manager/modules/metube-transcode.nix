@@ -132,7 +132,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ enqueue transcodeOne ];
 
     systemd.user.services.metube-transcode-enqueue = {

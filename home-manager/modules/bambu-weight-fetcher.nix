@@ -33,7 +33,7 @@ in
       path = "${config.home.homeDirectory}/.config/sops-nix/secrets/bambu-access-code";
     };
 
-    systemd.user.services.bambu-weight-fetcher = lib.mkIf pkgs.stdenv.isLinux {
+    systemd.user.services.bambu-weight-fetcher = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       Unit = {
         Description = "Bambu printer weight fetcher";
         After = [ "network.target" ];
