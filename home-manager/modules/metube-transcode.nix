@@ -17,7 +17,7 @@ let
 
   transcodeOne = pkgs.writeShellApplication {
     name = "metube-transcode-one";
-    runtimeInputs = with pkgs; [ ffmpeg-headless coreutils ];
+    runtimeInputs = with pkgs; [ ffmpeg-headless coreutils util-linux gawk ];
     text = ''
       src=''${1:?usage: metube-transcode-one <file>}
 
@@ -36,8 +36,22 @@ let
       dir=$(dirname "$src")
       base=$(basename "''${src%.*}")
       out="$dir/$base.mkv"
-      tmp="$dir/.$base.transcoding.mkv"
+
+      # One transcode per file at a time, however it was queued or run.
+      lockdir="''${XDG_RUNTIME_DIR:-/tmp}/metube-transcode"
+      mkdir -p "$lockdir"
+      exec 8>"$lockdir/$(printf '%s' "$src" | sha256sum | cut -c1-32).lock"
+      if ! flock -n 8; then
+        echo "already being transcoded elsewhere: $src" >&2
+        exit 1
+      fi
+
+      tmp=$(mktemp "$dir/.$base.XXXXXX.transcoding.mkv")
       trap 'rm -f "$tmp"' EXIT
+
+      duration() {
+        ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$1"
+      }
 
       echo "$codec -> hevc: $src"
       # -map 0:V skips cover-art "video" streams; audio, subtitles and
@@ -45,11 +59,32 @@ let
       nice -n 19 ffmpeg -nostdin -hide_banner -loglevel warning -stats -y \
         -i "$src" \
         -map 0:V:0 -map '0:a?' -map '0:s?' \
-        -c copy \
+        -c:a copy -c:s copy \
         -c:v libx265 -preset ${lib.escapeShellArg cfg.preset} -crf ${toString cfg.crf} \
         -pix_fmt yuv420p10le -x265-params log-level=error \
         "$tmp"
 
+      # Never trade the original for something broken: the output must be
+      # non-empty, readable, and (when the source knows its length) within
+      # 2% of the source's duration.
+      if [ ! -s "$tmp" ]; then
+        echo "transcode produced an empty file; keeping original: $src" >&2
+        exit 1
+      fi
+      want=$(duration "$src" || true)
+      got=$(duration "$tmp" || true)
+      if [ -z "$got" ] || [ "$got" = "N/A" ]; then
+        echo "can't read duration of transcode; keeping original: $src" >&2
+        exit 1
+      fi
+      if [ -n "$want" ] && [ "$want" != "N/A" ] &&
+         ! awk -v w="$want" -v g="$got" 'BEGIN { exit !(g >= w * 0.98) }'; then
+        echo "transcode is ''${got}s but source is ''${want}s; keeping original: $src" >&2
+        exit 1
+      fi
+
+      # mktemp makes it 0600; match the original.
+      chmod --reference="$src" "$tmp"
       touch -r "$src" "$tmp"
       mv -f "$tmp" "$out"
       if [ "$src" != "$out" ]; then
