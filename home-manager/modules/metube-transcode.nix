@@ -1,43 +1,51 @@
 { config, lib, pkgs, ... }:
 
-# metube downloads the best YouTube has (VP9/AV1, up to 4K/HDR), but the
-# Raspberry Pi 5 that plays it only hardware-decodes HEVC.
+# metube downloads the best YouTube has (VP9/AV1, up to 4K/HDR) into
+# inputDir, but the Raspberry Pi 5 that plays it only hardware-decodes HEVC.
 #
 # A path unit watches metube's completed.json (which metube replaces
 # atomically). On each change, metube-transcode-enqueue queues a pueue job
 # in the `transcode` group for every finished download it hasn't queued
 # before; a ledger in $XDG_STATE_HOME remembers what's been queued, keyed
 # by URL and download timestamp, so `pueue clean` or metube clearing its
-# list doesn't cause re-queues. Each job (metube-transcode-one) re-encodes
-# one file to 10-bit HEVC in place, and does nothing if the file is gone or
-# already HEVC, so a stray duplicate is harmless.
+# list doesn't cause re-queues.
+#
+# Each job (metube-transcode-one) encodes one input file to 10-bit HEVC in
+# a temp file under outputDir, checks the result, and only then moves it
+# into place at the same relative path. The original is parked under
+# inputDir/.done and a delayed task in pueue's `transcode-cleanup` group
+# deletes it after keepInputDays. Inputs that are already HEVC are just
+# linked into place. A missing input is a no-op, so duplicates are harmless.
 
 let
   cfg = config.services.metubeTranscode;
 
   transcodeOne = pkgs.writeShellApplication {
     name = "metube-transcode-one";
-    runtimeInputs = with pkgs; [ ffmpeg-headless coreutils util-linux gawk ];
+    runtimeInputs = with pkgs; [ ffmpeg-headless coreutils util-linux gawk pueue jq ];
     text = ''
       src=''${1:?usage: metube-transcode-one <file>}
+      indir=${lib.escapeShellArg cfg.inputDir}
+      outdir=${lib.escapeShellArg cfg.outputDir}
+      keep=${toString (cfg.keepInputDays * 86400)}
 
       if [ ! -e "$src" ]; then
         echo "gone, nothing to do: $src"
         exit 0
       fi
+      src=$(realpath "$src")
 
-      codec=$(ffprobe -v error -select_streams V:0 -show_entries stream=codec_name \
-                -of default=nw=1:nk=1 "$src")
-      case "$codec" in
-        hevc) echo "already HEVC: $src"; exit 0 ;;
-        "")   echo "no video stream: $src" >&2; exit 1 ;;
+      # A file from metube's input dir lands at the same relative path under
+      # the output dir; anything else is transcoded where it sits.
+      case "$src" in
+        "$indir"/*) rel=''${src#"$indir"/}; dest="$outdir/$(dirname "$rel")" ;;
+        *)          dest=$(dirname "$src") ;;
       esac
-
-      dir=$(dirname "$src")
+      dest=''${dest%/.}
       base=$(basename "''${src%.*}")
-      out="$dir/$base.mkv"
+      out="$dest/$base.mkv"
 
-      # One transcode per file at a time, however it was queued or run.
+      # One run per file at a time, however it was queued or run.
       lockdir="''${XDG_RUNTIME_DIR:-/tmp}/metube-transcode"
       mkdir -p "$lockdir"
       exec 8>"$lockdir/$(printf '%s' "$src" | sha256sum | cut -c1-32).lock"
@@ -46,7 +54,51 @@ let
         exit 1
       fi
 
-      tmp=$(mktemp "$dir/.$base.XXXXXX.transcoding.mkv")
+      # pueue runs commands through a shell; single-quote the path.
+      quote() { printf "'%s'" "''${1//\'/\'\\\'\'}"; }
+
+      # Park the original under $indir/.done and queue its deletion in
+      # `keep` seconds, in pueue's transcode-cleanup group.
+      retire() {
+        local parked
+        parked=$(mktemp -d "$indir/.done/XXXXXXXX")
+        mv "$src" "$parked/"
+        if ! pueue group --json | jq -e 'has("transcode-cleanup")' >/dev/null; then
+          pueue group add transcode-cleanup
+        fi
+        pueue add -g transcode-cleanup -d "$keep" -l "delete $(basename "$src")" \
+          -- rm -rf "$(quote "$parked")"
+        echo "original kept in $parked for $((keep / 86400)) days"
+      }
+
+      mkdir -p "$dest" "$indir/.done"
+
+      codec=$(ffprobe -v error -select_streams V:0 -show_entries stream=codec_name \
+                -of default=nw=1:nk=1 "$src")
+      case "$codec" in
+        "") echo "no video stream: $src" >&2; exit 1 ;;
+        hevc)
+          if [ "$dest" = "$(dirname "$src")" ]; then
+            echo "already HEVC: $src"
+            exit 0
+          fi
+          if [ -e "$out" ]; then
+            echo "already exists, leaving input alone: $out" >&2
+            exit 1
+          fi
+          echo "already HEVC, moving into place: $out"
+          ln "$src" "$out" 2>/dev/null || cp -p "$src" "$out"
+          retire
+          exit 0
+          ;;
+      esac
+
+      if [ -e "$out" ] && [ "$out" != "$src" ]; then
+        echo "already exists, leaving input alone: $out" >&2
+        exit 1
+      fi
+
+      tmp=$(mktemp "$dest/.$base.XXXXXX.transcoding.mkv")
       trap 'rm -f "$tmp"' EXIT
 
       duration() {
@@ -64,9 +116,8 @@ let
         -pix_fmt yuv420p10le -x265-params log-level=error \
         "$tmp"
 
-      # Never trade the original for something broken: the output must be
-      # non-empty, readable, and (when the source knows its length) within
-      # 2% of the source's duration.
+      # Only a good transcode goes into the tree: non-empty, readable, and
+      # (when the source knows its length) within 2% of its duration.
       if [ ! -s "$tmp" ]; then
         echo "transcode produced an empty file; keeping original: $src" >&2
         exit 1
@@ -86,9 +137,13 @@ let
       # mktemp makes it 0600; match the original.
       chmod --reference="$src" "$tmp"
       touch -r "$src" "$tmp"
-      mv -f "$tmp" "$out"
-      if [ "$src" != "$out" ]; then
-        rm -f "$src"
+      if [ "$out" = "$src" ]; then
+        # In-place .mkv: park the original before taking its name.
+        retire
+        mv "$tmp" "$out"
+      else
+        mv "$tmp" "$out"
+        retire
       fi
       echo "done: $out"
     '';
@@ -99,7 +154,7 @@ let
     runtimeInputs = with pkgs; [ pueue jq coreutils gnugrep util-linux ];
     text = ''
       completed=${lib.escapeShellArg cfg.completedJson}
-      dldir=${lib.escapeShellArg cfg.downloadDir}
+      dldir=${lib.escapeShellArg cfg.inputDir}
       state="''${XDG_STATE_HOME:-$HOME/.local/state}/metube-transcode"
       ledger="$state/queued"
 
@@ -136,22 +191,37 @@ in
   options.services.metubeTranscode = {
     enable = lib.mkEnableOption "queueing pueue jobs to transcode metube downloads to HEVC";
 
-    downloadDir = lib.mkOption {
+    inputDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/media/entertainment/yt-input";
+      description = ''
+        metube's download directory, as seen from the host. Must be on the
+        same filesystem as outputDir, so moving files between them is a rename.
+      '';
+    };
+
+    outputDir = lib.mkOption {
       type = lib.types.str;
       default = "/media/entertainment/yt";
-      description = "metube's download directory, as seen from the host.";
+      description = "Where verified transcodes land, mirroring inputDir's layout.";
+    };
+
+    keepInputDays = lib.mkOption {
+      type = lib.types.int;
+      default = 7;
+      description = "Days to keep an original after its transcode is in place.";
     };
 
     completedJson = lib.mkOption {
       type = lib.types.str;
-      default = "${cfg.downloadDir}/.metube/completed.json";
+      default = "${cfg.inputDir}/.metube/completed.json";
       description = "metube's completed-downloads state file.";
     };
 
     cleanInterval = lib.mkOption {
       type = lib.types.str;
       default = "*-*-* 03:00:00";
-      description = "systemd OnCalendar for `pueue clean -s -g transcode`.";
+      description = "systemd OnCalendar for cleaning successful tasks out of pueue.";
     };
 
     crf = lib.mkOption {
@@ -182,7 +252,8 @@ in
       };
     };
 
-    # Successful transcodes are just noise in `pueue status`; failures stay.
+    # Successful transcodes and deletions are just noise in `pueue status`;
+    # failures stay. (transcode-cleanup only exists after the first one.)
     systemd.user.services.metube-transcode-clean = {
       Unit = {
         Description = "Clean successful transcode tasks out of pueue";
@@ -190,7 +261,10 @@ in
       };
       Service = {
         Type = "oneshot";
-        ExecStart = "${pkgs.pueue}/bin/pueue clean -s -g transcode";
+        ExecStart = [
+          "${pkgs.pueue}/bin/pueue clean -s -g transcode"
+          "-${pkgs.pueue}/bin/pueue clean -s -g transcode-cleanup"
+        ];
       };
     };
 
