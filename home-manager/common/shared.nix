@@ -3,6 +3,7 @@
 let
   waitforsocket = pkgs.callPackage ../pkgs/waitforsocket.nix { };
   unixtime = pkgs.callPackage ../pkgs/unixtime.nix { };
+  untilsuccessful = pkgs.callPackage ../pkgs/untilsuccessful.nix { };
 in
 {
   # Common packages
@@ -46,6 +47,7 @@ in
     cachix # push/pull nix store paths to dustin.cachix.org
     waitforsocket # block until network things are up
     unixtime # show unix timestamps as human dates
+    untilsuccessful # retry a command until it works
   ];
 
   home = {
