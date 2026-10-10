@@ -5,6 +5,11 @@
     export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$HOME/local.bin:$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH"
   '';
 
+  programs.claude-code = {
+    enable = true;
+    mutableSettings = true;
+  };
+
   home.file = {
     ".local/state/atuin-daemon/.keep".text = "";
   };
