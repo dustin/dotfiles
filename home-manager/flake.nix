@@ -11,8 +11,13 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Just the source: db/hm-module.nix (the downwind.pro Matrix bot).
+    dwp = {
+      url = "github:dustin/dwp";
+      flake = false;
+    };
   };
-  outputs = { nixpkgs, nixpkgs-old, home-manager, sops-nix, ... }:
+  outputs = { nixpkgs, nixpkgs-old, home-manager, sops-nix, dwp, ... }:
     let
       lib = nixpkgs.lib;
       username = "dustin";
@@ -63,6 +68,7 @@
                 ./modules/loaner.nix
                 ./modules/bambu-weight-fetcher.nix
                 ./modules/metube-transcode.nix
+                "${dwp}/db/hm-module.nix"
                 ./common/shared.nix
                 ./common/secrets.nix
                 (if isDarwin then ./common/darwin.nix else ./common/linux.nix)

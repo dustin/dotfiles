@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "dwp": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791704154,
+        "narHash": "sha256-vGJWcJq9fANyAmisubkEb65UUrKz4FrJHHBe8vfLzro=",
+        "owner": "dustin",
+        "repo": "dwp",
+        "rev": "a4e323550a01ba8b50282e3b916626964d828f15",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dustin",
+        "repo": "dwp",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -54,6 +70,7 @@
     },
     "root": {
       "inputs": {
+        "dwp": "dwp",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-old": "nixpkgs-old",
