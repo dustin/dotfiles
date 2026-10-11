@@ -1,6 +1,9 @@
 # machines/dsstudio.nix
 { config, pkgs-old, pkgs, lib, hostname, ... }:
 
+let
+  dwpMatrixToken = builtins.pathExists ../secrets/dwp-matrix-token.sops.yaml;
+in
 {
   home = {
     homeDirectory = "/Users/dustin";
@@ -26,6 +29,22 @@
       disableKompress = true;
       port = 8787;
     };
+  };
+
+  # downwind.pro Matrix bot: GPX files sent to the room become runs.
+  # Waits for its token: `sops edit secrets/dwp-matrix-token.sops.yaml`
+  # (key dwp-matrix-token), and it starts on the next switch.
+  sops.secrets.dwp-matrix-token = lib.mkIf dwpMatrixToken {
+    sopsFile = ../secrets/dwp-matrix-token.sops.yaml;
+  };
+  services.dwp-matrix-bot = {
+    enable = dwpMatrixToken;
+    dbDir = "${config.home.homeDirectory}/prog/downwind.pro/db";
+    homeserver = "sallings.org";
+    room = "!ovDBT5ES62J937qC7V:sallings.org";
+    users."@dustin:sallings.org" = "dustin";
+    admins = [ "@dustin:sallings.org" ];
+    tokenFile = config.sops.secrets.dwp-matrix-token.path;
   };
 
   home.packages = with pkgs; [

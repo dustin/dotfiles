@@ -13,6 +13,7 @@ decrypt them.
 | `rclone-config.sops.yaml` | `~/.config/rclone/rclone.conf` | all machines (rclone, zfstos3, s3bak) |
 | `loaner.sops.yaml` | `~/.config/sops-nix/secrets/loaner-env` | bee2 `loaner` service |
 | `bambu-access-code.sops.yaml` | `~/.config/sops-nix/secrets/bambu-access-code` | bee2 `bambu-weight-fetcher` service |
+| `dwp-matrix-token.sops.yaml` | sops-nix default path | dsstudio `dwp-matrix-bot` (downwind.pro Matrix bot's access token) |
 
 ## Creating a secret for the first time
 
