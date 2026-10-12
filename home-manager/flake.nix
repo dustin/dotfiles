@@ -129,7 +129,12 @@
           systemsUsed = lib.unique (map (pkg: pkg.system) allHomePackages);
           versionsForSystem = system:
             let
-              pkgsForSystem = nixpkgs.legacyPackages.${system};
+              # Same unfree policy as the home configs, or looking up an
+              # unfree package like claude-code throws.
+              pkgsForSystem = import nixpkgs {
+                inherit system;
+                config.allowUnfree = true;
+              };
               candidates = builtins.filter (pkg: pkg.system == system) allHomePackages;
               trackable = builtins.filter (pkg:
                 let
