@@ -3,11 +3,11 @@
     "dwp": {
       "flake": false,
       "locked": {
-        "lastModified": 1791782459,
-        "narHash": "sha256-pKBBCc5Up3adz8kUM7KU7leiKcIcLdCWCe0fDIPMink=",
+        "lastModified": 1791784607,
+        "narHash": "sha256-IB5GiEI8PPvqDrvIiTM9zTEtrivN4okq8dzlp2P6Kuw=",
         "owner": "dustin",
         "repo": "dwp",
-        "rev": "f62631c1648aa84318c34a58f335ee9b921ebf2e",
+        "rev": "1dd07838fd849137fe479f2c967d3dff27e4caaf",
         "type": "github"
       },
       "original": {

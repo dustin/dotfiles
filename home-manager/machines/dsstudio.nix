@@ -43,7 +43,6 @@ in
     homeserver = "sallings.org";
     room = "!ovDBT5ES62J937qC7V:sallings.org";
     users."@dustin:sallings.org" = "dustin";
-    admins = [ "@dustin:sallings.org" ];
     tokenFile = config.sops.secrets.dwp-matrix-token.path;
   };
 
