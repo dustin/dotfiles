@@ -49,7 +49,7 @@ in
     mqtt = "bee1";
   };
   # Wailea cam water motion every 10 min in daylight, to
-  # weather/conditions/wailea_motion; skipped while the cam reads glassy.
+  # weather/conditions/wailea_motion; skipped while Kihei is under 9 kn.
   services.dwp-wailea-motion = {
     enable = true;
     mqtt = "bee1";
