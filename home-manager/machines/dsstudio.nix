@@ -44,6 +44,9 @@ in
     room = "!ovDBT5ES62J937qC7V:sallings.org";
     users."@dustin:sallings.org" = "dustin";
     tokenFile = config.sops.secrets.dwp-matrix-token.path;
+    # The launchd agent can't make LAN connections (macOS Local Network
+    # privacy); bee1 resolves over Tailscale.
+    mqtt = "bee1";
   };
 
   home.packages = with pkgs; [
