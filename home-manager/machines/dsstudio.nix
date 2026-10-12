@@ -48,6 +48,12 @@ in
     # privacy); bee1 resolves over Tailscale.
     mqtt = "bee1";
   };
+  # Wailea cam water motion every 10 min in daylight, to
+  # weather/conditions/wailea_motion; skipped while the cam reads glassy.
+  services.dwp-wailea-motion = {
+    enable = true;
+    mqtt = "bee1";
+  };
 
   home.packages = with pkgs; [
     pkgs-old.haskellPackages.net-mqtt # my mqtt-watch command
