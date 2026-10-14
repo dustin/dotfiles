@@ -3,11 +3,11 @@
     "dwp": {
       "flake": false,
       "locked": {
-        "lastModified": 1791961528,
-        "narHash": "sha256-GtZLW+Lr+DvCAYpYh46zpKnxx3a0URoDXSPme1ZzvKU=",
+        "lastModified": 1791963323,
+        "narHash": "sha256-bEeB/lKor557KFneQ4YD4Q2AkxyWXeWb4A/VnJWwWL4=",
         "owner": "dustin",
         "repo": "dwp",
-        "rev": "25c6832b163cc375dd2a71278e07434b3fd02ba4",
+        "rev": "0052d86121691ab156eadf3a4c2390aa28779696",
         "type": "github"
       },
       "original": {
@@ -23,11 +23,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791642191,
-        "narHash": "sha256-0bK0A59rVUn1SRZzo4cNi4VSqAe7vR1gL2/MZl53Frw=",
+        "lastModified": 1791940130,
+        "narHash": "sha256-hRCCi4fp5IjLz4cA8+RkUsaYAHzbd7M5FSAjKOq4E+k=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "c58f54c733a7894d84fa2fdff26cc12088c4b78c",
+        "rev": "92a0ed1be12f1e20093faf8af63bae2c74ad521e",
         "type": "github"
       },
       "original": {
