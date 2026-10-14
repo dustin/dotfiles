@@ -78,7 +78,7 @@ in
       StandardErrorPath = "${config.xdg.stateHome}/duckupdate/stderr.log";
 
       EnvironmentVariables = {
-        PATH = lib.makeBinPath [ pkgs.pueue pkgs.duckdb ];
+        PATH = lib.makeBinPath [ pkgs.pueue pkgs.duckdb pkgs.coreutils pkgs.findutils pkgs.gnugrep pkgs.gnused ];
         HOME = config.home.homeDirectory;
         LANG = "en_US.UTF-8";
         SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
@@ -109,7 +109,7 @@ in
       StandardErrorPath = "${config.xdg.stateHome}/buoyupdate/stderr.log";
 
       EnvironmentVariables = {
-        PATH = lib.makeBinPath [ pkgs.duckdb pkgs.rclone ];
+        PATH = lib.makeBinPath [ pkgs.duckdb pkgs.rclone pkgs.coreutils pkgs.findutils pkgs.gnugrep pkgs.gnused ];
         HOME = config.home.homeDirectory;
         LANG = "en_US.UTF-8";
         SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
