@@ -39,7 +39,7 @@ in
   };
   services.dwp-matrix-bot = {
     enable = dwpMatrixToken;
-    dbDir = "${config.home.homeDirectory}/prog/downwind.pro/db";
+    checkout = "${config.home.homeDirectory}/prog/downwind.pro";
     homeserver = "sallings.org";
     room = "!ovDBT5ES62J937qC7V:sallings.org";
     users."@dustin:sallings.org" = "dustin";

@@ -69,6 +69,7 @@
                 ./modules/bambu-weight-fetcher.nix
                 ./modules/metube-transcode.nix
                 "${dwp}/db/hm-module.nix"
+                "${dwp}/bot/hm-module.nix"
                 ./common/shared.nix
                 ./common/secrets.nix
                 (if isDarwin then ./common/darwin.nix else ./common/linux.nix)
