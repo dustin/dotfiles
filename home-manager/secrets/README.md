@@ -10,7 +10,7 @@ decrypt them.
 |------|--------------|---------|
 | `nut-password.sops.yaml` | `~/.config/sops-nix/secrets/nut-password` | bee1/bee2 `nuttomqtt` service |
 | `aws-credentials.sops.yaml` | `~/.aws/credentials` | all machines (AWS CLI / rclone / papertrails) |
-| `rclone-config.sops.yaml` | `~/.config/rclone/rclone.conf` | all machines (rclone, zfstos3, s3bak) |
+| `rclone.conf.sops` | `~/.config/rclone/rclone.conf` | all machines (rclone, zfstos3, s3bak) |
 | `loaner.sops.yaml` | `~/.config/sops-nix/secrets/loaner-env` | bee2 `loaner` service |
 | `bambu-access-code.sops.yaml` | `~/.config/sops-nix/secrets/bambu-access-code` | bee2 `bambu-weight-fetcher` service |
 | `dwp-matrix-token.sops.yaml` | sops-nix default path | dsstudio `dwp-matrix-bot` (downwind.pro Matrix bot's access token) |
@@ -32,8 +32,11 @@ nut-password: YOUR_REAL_NUT_PASSWORD
 
 Save and quit. `sops` encrypts the value automatically.
 
-For multi-line files like `aws-credentials` or `rclone-config`, use a literal
-block:
+Whole config files can instead be stored as-is: name them without `.yaml`
+(e.g. `secrets/rclone.conf.sops`) and `sops edit` opens the raw file. The
+sops-nix secret needs `format = "binary";`.
+
+For multi-line YAML secrets like `aws-credentials`, use a literal block:
 
 ```yaml
 aws-credentials: |
