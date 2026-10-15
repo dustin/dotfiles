@@ -44,7 +44,8 @@ in
 
     (mkIf cfg.rclone-config.enable {
       sops.secrets.rclone-config = {
-        sopsFile = ../secrets/rclone-config.sops.yaml;
+        sopsFile = ../secrets/rclone.conf.sops;
+        format = "binary";
         path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
       };
 
