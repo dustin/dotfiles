@@ -23,7 +23,7 @@ in
   services.metubeTranscode.worker.enable = true;
 
   # zfs-sync-to-ducklake: per-host ZFS manifests into the DuckLake,
-  # daily at 05:00 from ~/stuff/duckdb (where init.sql lives).
+  # daily at 05:00 from ~/stuff/duck (where init.sql lives).
   programs.zfsDucklakeSync.enable = true;
 
   services.ninerouter.enable = true;

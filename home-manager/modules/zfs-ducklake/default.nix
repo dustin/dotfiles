@@ -3,7 +3,7 @@
 # (nixos-configs modules/zfs-manifest, shared from lilnasx) into the
 # DuckLake. The agent runs in workingDirectory, where the script finds
 # init.sql by default. Schema setup and --rebuild stay manual:
-#   cd ~/stuff/duckdb && zfs-sync-to-ducklake --rebuild
+#   cd ~/stuff/duck && zfs-sync-to-ducklake --rebuild
 # The schema file is packaged next to the script, where it looks for it.
 { config, lib, pkgs, ... }:
 
@@ -25,7 +25,7 @@ in
 
     workingDirectory = lib.mkOption {
       type = lib.types.str;
-      default = "${config.home.homeDirectory}/stuff/duckdb";
+      default = "${config.home.homeDirectory}/stuff/duck";
       description = "Where the agent runs; must hold init.sql.";
     };
 
