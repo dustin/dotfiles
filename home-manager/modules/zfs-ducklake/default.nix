@@ -1,7 +1,9 @@
-# zfs-ducklake-sync: puts `zfs-sync-to-ducklake` on the PATH. It merges
-# the per-host ZFS manifest dbs (nixos-configs modules/zfs-manifest,
-# shared from lilnasx) into the DuckLake. Run by hand, e.g.
-#   zfs-sync-to-ducklake --init-sql ~/stuff/duck/init.sql
+# zfs-ducklake-sync: puts `zfs-sync-to-ducklake` on the PATH and runs it
+# daily from launchd. It merges the per-host ZFS manifest dbs
+# (nixos-configs modules/zfs-manifest, shared from lilnasx) into the
+# DuckLake. The agent runs in workingDirectory, where the script finds
+# init.sql by default. Schema setup and --rebuild stay manual:
+#   cd ~/stuff/duckdb && zfs-sync-to-ducklake --rebuild
 # The schema file is packaged next to the script, where it looks for it.
 { config, lib, pkgs, ... }:
 
@@ -18,10 +20,43 @@ let
   '';
 in
 {
-  options.programs.zfsDucklakeSync.enable =
-    lib.mkEnableOption "the zfs-sync-to-ducklake command";
+  options.programs.zfsDucklakeSync = {
+    enable = lib.mkEnableOption "the zfs-sync-to-ducklake command and its daily launchd agent";
+
+    workingDirectory = lib.mkOption {
+      type = lib.types.str;
+      default = "${config.home.homeDirectory}/stuff/duckdb";
+      description = "Where the agent runs; must hold init.sql.";
+    };
+
+    hour = lib.mkOption {
+      type = lib.types.int;
+      default = 5;
+      description = "Hour (24-hour) of the daily sync, after the hosts' 02:00 enqueue and worker.";
+    };
+  };
 
   config = lib.mkIf cfg.enable {
     home.packages = [ sync ];
+
+    launchd.agents.zfs-ducklake-sync = {
+      enable = true;
+      config = {
+        Label = "net.spy.zfs-ducklake-sync";
+        ProgramArguments = [ "${sync}/bin/zfs-sync-to-ducklake" ];
+        RunAtLoad = false;
+        StartCalendarInterval = [ { Hour = cfg.hour; Minute = 0; } ];
+        KeepAlive = false;
+        StandardOutPath  = "${config.xdg.stateHome}/zfs-ducklake-sync/stdout.log";
+        StandardErrorPath = "${config.xdg.stateHome}/zfs-ducklake-sync/stderr.log";
+        EnvironmentVariables = {
+          HOME = config.home.homeDirectory;
+          LANG = "en_US.UTF-8";
+          SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+          NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        };
+        WorkingDirectory = cfg.workingDirectory;
+      };
+    };
   };
 }
