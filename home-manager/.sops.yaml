@@ -1,5 +1,5 @@
 creation_rules:
-  - path_regex: secrets/.*\.sops\.yaml$
+  - path_regex: secrets/.*\.sops(\.yaml)?$
     key_groups:
       - age:
           - age1fgehy439lr05wwjqqju7zpx4s74m5deyr633mp9lawpcw4mvk95qkf9jey   # dsstudio
