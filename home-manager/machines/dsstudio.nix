@@ -14,6 +14,9 @@ in
     rclone-config = {
       enable = true;
       remotes = [ "drive" "dropbox" "gphoto" "s3" ];
+      # The dwp bot finds riders' Drive folders by remote name and
+      # publishes to s3; walter is only for it.
+      extra.dwp-bot.remotes = [ "walter" "s3" ];
     };
   };
 
@@ -52,6 +55,8 @@ in
     # privacy); bee1 resolves over Tailscale.
     mqtt = "bee1";
   };
+  launchd.agents.dwp-matrix-bot.config.EnvironmentVariables.RCLONE_CONFIG =
+    config.my.secrets.rclone-config.extra.dwp-bot.path;
   # Wailea cam water motion every 10 min in daylight, to
   # weather/conditions/wailea_motion; skipped while Kihei is under 9 kn.
   services.dwp-wailea-motion = {
