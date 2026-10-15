@@ -10,8 +10,8 @@ decrypt them.
 |------|--------------|---------|
 | `nut-password.sops.yaml` | `~/.config/sops-nix/secrets/nut-password` | bee1/bee2 `nuttomqtt` service |
 | `aws-credentials.sops.yaml` | `~/.aws/credentials` | all machines (AWS CLI / rclone / papertrails) |
-| `rclone.conf.sops` | `~/.config/rclone/rclone.conf` | machines with no `my.secrets.rclone-config.remotes` set (legacy, every remote) |
-| `rclone/<remote>.conf.sops` | concatenated into `~/.config/rclone/rclone.conf` | machines listing `<remote>` in `my.secrets.rclone-config.remotes` |
+| `rclone/<remote>.conf.sops` | `~/.config/rclone/rclone.conf` | hosts listing `<remote>` in `my.secrets.rclone-config.remotes` |
+| `rclone/<remote>.conf.sops` | `~/.config/rclone/<name>.conf` | services via `my.secrets.rclone-config.extra.<name>.remotes` (dsstudio `dwp-bot`: walter, s3) |
 | `loaner.sops.yaml` | `~/.config/sops-nix/secrets/loaner-env` | bee2 `loaner` service |
 | `bambu-access-code.sops.yaml` | `~/.config/sops-nix/secrets/bambu-access-code` | bee2 `bambu-weight-fetcher` service |
 | `dwp-matrix-token.sops.yaml` | sops-nix default path | dsstudio `dwp-matrix-bot` (downwind.pro Matrix bot's access token) |
@@ -34,7 +34,7 @@ nut-password: YOUR_REAL_NUT_PASSWORD
 Save and quit. `sops` encrypts the value automatically.
 
 Whole config files can instead be stored as-is: name them without `.yaml`
-(e.g. `secrets/rclone.conf.sops`) and `sops edit` opens the raw file. The
+(e.g. `secrets/rclone/s3.conf.sops`) and `sops edit` opens the raw file. The
 sops-nix secret needs `format = "binary";`.
 
 For multi-line YAML secrets like `aws-credentials`, use a literal block:
