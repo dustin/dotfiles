@@ -22,6 +22,9 @@ in
 
   services.metubeTranscode.worker.enable = true;
 
+  # zfs-sync-to-ducklake: per-host ZFS manifests into the DuckLake.
+  programs.zfsDucklakeSync.enable = true;
+
   services.ninerouter.enable = true;
   services.ninerouter.host = "0.0.0.0";
   services.ninerouter.rev = "1101453fcd813cae68f0716011422a4edc3d33fa";

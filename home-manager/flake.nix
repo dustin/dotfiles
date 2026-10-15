@@ -68,6 +68,7 @@
                 ./modules/loaner.nix
                 ./modules/bambu-weight-fetcher.nix
                 ./modules/metube-transcode.nix
+                ./modules/zfs-ducklake
                 "${dwp}/db/hm-module.nix"
                 "${dwp}/bot/hm-module.nix"
                 ./common/shared.nix
