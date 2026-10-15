@@ -10,7 +10,8 @@ decrypt them.
 |------|--------------|---------|
 | `nut-password.sops.yaml` | `~/.config/sops-nix/secrets/nut-password` | bee1/bee2 `nuttomqtt` service |
 | `aws-credentials.sops.yaml` | `~/.aws/credentials` | all machines (AWS CLI / rclone / papertrails) |
-| `rclone.conf.sops` | `~/.config/rclone/rclone.conf` | all machines (rclone, zfstos3, s3bak) |
+| `rclone.conf.sops` | `~/.config/rclone/rclone.conf` | machines with no `my.secrets.rclone-config.remotes` set (legacy, every remote) |
+| `rclone/<remote>.conf.sops` | concatenated into `~/.config/rclone/rclone.conf` | machines listing `<remote>` in `my.secrets.rclone-config.remotes` |
 | `loaner.sops.yaml` | `~/.config/sops-nix/secrets/loaner-env` | bee2 `loaner` service |
 | `bambu-access-code.sops.yaml` | `~/.config/sops-nix/secrets/bambu-access-code` | bee2 `bambu-weight-fetcher` service |
 | `dwp-matrix-token.sops.yaml` | sops-nix default path | dsstudio `dwp-matrix-bot` (downwind.pro Matrix bot's access token) |

@@ -15,6 +15,18 @@ in
 
     rclone-config = {
       enable = mkEnableOption "rclone config file";
+
+      remotes = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        example = [ "s3" ];
+        description = ''
+          rclone remotes this machine gets. Each one is a config fragment in
+          secrets/rclone/<name>.conf.sops; the fragments are concatenated into
+          ~/.config/rclone/rclone.conf. Empty means the legacy all-remotes
+          secrets/rclone.conf.sops.
+        '';
+      };
     };
   };
 
@@ -43,14 +55,29 @@ in
     })
 
     (mkIf cfg.rclone-config.enable {
+      home.file = {
+        ".config/rclone/.keep".text = "";
+      };
+    })
+
+    (mkIf (cfg.rclone-config.enable && cfg.rclone-config.remotes == [ ]) {
       sops.secrets.rclone-config = {
         sopsFile = ../secrets/rclone.conf.sops;
         format = "binary";
         path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
       };
+    })
 
-      home.file = {
-        ".config/rclone/.keep".text = "";
+    (mkIf (cfg.rclone-config.enable && cfg.rclone-config.remotes != [ ]) {
+      sops.secrets = listToAttrs (map (r: nameValuePair "rclone-${r}" {
+        sopsFile = ../secrets/rclone + "/${r}.conf.sops";
+        format = "binary";
+      }) cfg.rclone-config.remotes);
+
+      sops.templates."rclone.conf" = {
+        content = concatMapStringsSep "\n"
+          (r: config.sops.placeholder."rclone-${r}") cfg.rclone-config.remotes;
+        path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
       };
     })
   ]);
