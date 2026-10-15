@@ -6,6 +6,10 @@ in
 {
   my.secrets = {
     enable = true;
+    rclone-config = {
+      enable = true;
+      remotes = [ "s3" ];
+    };
   };
 
   home.packages = with pkgs; [

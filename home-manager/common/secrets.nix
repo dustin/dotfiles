@@ -7,7 +7,7 @@ let
 
   # Every rclone config built from secrets/rclone/ fragments.
   rcloneConfigs = cfg.rclone-config.extra
-    // optionalAttrs (cfg.rclone-config.enable && cfg.rclone-config.remotes != [ ]) {
+    // optionalAttrs cfg.rclone-config.enable {
       default = {
         inherit (cfg.rclone-config) remotes;
         path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
@@ -23,17 +23,16 @@ in
     };
 
     rclone-config = {
-      enable = mkEnableOption "rclone config file";
+      enable = mkEnableOption "a managed ~/.config/rclone/rclone.conf";
 
       remotes = mkOption {
         type = types.listOf types.str;
         default = [ ];
         example = [ "s3" ];
         description = ''
-          rclone remotes this machine gets. Each one is a config fragment in
-          secrets/rclone/<name>.conf.sops; the fragments are concatenated into
-          ~/.config/rclone/rclone.conf. Empty means the legacy all-remotes
-          secrets/rclone.conf.sops.
+          rclone remotes this machine's rclone.conf gets. Each one is a config
+          fragment in secrets/rclone/<name>.conf.sops; the fragments are
+          concatenated into ~/.config/rclone/rclone.conf.
         '';
       };
 
@@ -72,7 +71,6 @@ in
 
       # Common secrets: installed by default on any machine with secrets enabled.
       my.secrets.aws-credentials.enable = mkDefault true;
-      my.secrets.rclone-config.enable = mkDefault true;
     }
 
     (mkIf cfg.aws-credentials.enable {
@@ -89,14 +87,6 @@ in
     (mkIf cfg.rclone-config.enable {
       home.file = {
         ".config/rclone/.keep".text = "";
-      };
-    })
-
-    (mkIf (cfg.rclone-config.enable && cfg.rclone-config.remotes == [ ]) {
-      sops.secrets.rclone-config = {
-        sopsFile = ../secrets/rclone.conf.sops;
-        format = "binary";
-        path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
       };
     })
 

@@ -8,6 +8,10 @@
 
   my.secrets = {
     enable = true;
+    rclone-config = {
+      enable = true;
+      remotes = [ "drive" "dropbox" "gphoto" "s3" ];
+    };
   };
 
   home.packages = with pkgs; [
