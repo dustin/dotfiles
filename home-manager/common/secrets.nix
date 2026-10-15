@@ -4,6 +4,15 @@ with lib;
 
 let
   cfg = config.my.secrets;
+
+  # Every rclone config built from secrets/rclone/ fragments.
+  rcloneConfigs = cfg.rclone-config.extra
+    // optionalAttrs (cfg.rclone-config.enable && cfg.rclone-config.remotes != [ ]) {
+      default = {
+        inherit (cfg.rclone-config) remotes;
+        path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
+      };
+    };
 in
 {
   options.my.secrets = {
@@ -25,6 +34,29 @@ in
           secrets/rclone/<name>.conf.sops; the fragments are concatenated into
           ~/.config/rclone/rclone.conf. Empty means the legacy all-remotes
           secrets/rclone.conf.sops.
+        '';
+      };
+
+      extra = mkOption {
+        type = types.attrsOf (types.submodule ({ name, ... }: {
+          options = {
+            remotes = mkOption {
+              type = types.listOf types.str;
+              description = "Fragments from secrets/rclone/ joined into this config.";
+            };
+            path = mkOption {
+              type = types.str;
+              default = "${config.home.homeDirectory}/.config/rclone/${name}.conf";
+              description = "Where the config is installed.";
+            };
+          };
+        }));
+        default = { };
+        example = { dwp-bot.remotes = [ "walter" ]; };
+        description = ''
+          Separate rclone configs for services that should only see their own
+          remotes, independent of rclone-config.enable. Point the service at
+          one with RCLONE_CONFIG.
         '';
       };
     };
@@ -68,17 +100,16 @@ in
       };
     })
 
-    (mkIf (cfg.rclone-config.enable && cfg.rclone-config.remotes != [ ]) {
+    {
       sops.secrets = listToAttrs (map (r: nameValuePair "rclone-${r}" {
         sopsFile = ../secrets/rclone + "/${r}.conf.sops";
         format = "binary";
-      }) cfg.rclone-config.remotes);
+      }) (unique (concatLists (mapAttrsToList (_: c: c.remotes) rcloneConfigs))));
 
-      sops.templates."rclone.conf" = {
-        content = concatMapStringsSep "\n"
-          (r: config.sops.placeholder."rclone-${r}") cfg.rclone-config.remotes;
-        path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
-      };
-    })
+      sops.templates = mapAttrs' (name: c: nameValuePair "rclone-${name}.conf" {
+        content = concatMapStringsSep "\n" (r: config.sops.placeholder."rclone-${r}") c.remotes;
+        inherit (c) path;
+      }) rcloneConfigs;
+    }
   ]);
 }
