@@ -70,6 +70,39 @@ in
 	# pgcli
   ];
 
+  launchd.agents.duckbackup = {
+    enable = true;
+    config = {
+      Label = "net.spy.duckbackup";
+
+      ProgramArguments = [
+        "${config.home.homeDirectory}/stuff/duck/back-the-duck-up.sh"
+      ];
+
+      RunAtLoad = false;
+      StartCalendarInterval = [
+        {
+          Hour = 3;
+          Minute = 0;
+        }
+      ];
+      KeepAlive = false;
+
+      StandardOutPath  = "${config.xdg.stateHome}/duckbackup/stdout.log";
+      StandardErrorPath = "${config.xdg.stateHome}/duckbackup/stderr.log";
+
+      EnvironmentVariables = {
+        PATH = lib.makeBinPath [ pkgs.pueue pkgs.duckdb pkgs.xz pkgs.rclone pkgs.coreutils ];
+        HOME = config.home.homeDirectory;
+        LANG = "en_US.UTF-8";
+        SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+        NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+      };
+
+      WorkingDirectory = "${config.home.homeDirectory}/stuff/duck";
+    };
+  };
+
   launchd.agents.duckupdate = {
     enable = true;
     config = {
